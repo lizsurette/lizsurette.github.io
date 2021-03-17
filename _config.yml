@@ -35,8 +35,6 @@ urls:
       url: /about/
     - text: My Projects
       url: /projects/
-    - text: XML Feed
-      url: /feed.xml
 
 url: "https://lizsurette.github.io"
 baseurl: ""
