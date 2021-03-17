@@ -1,2 +1,2 @@
 # blog
-Liz Blanchard's Blog
+Welcome to my blog...updates to come!
