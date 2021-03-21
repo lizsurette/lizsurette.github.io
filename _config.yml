@@ -15,14 +15,10 @@ collections:
     permalink: /project/:path/
 
 social:
-    - icon: fa-facebook
-      link: "#"
     - icon: fa-twitter
-      link: "lizsurette"
+      link: "https://twitter.com/lizsurette"
     - icon: fa-linkedin
-      link: "#"
-    - icon: fa-stack-exchange
-      link: "#"
+      link: "https://www.linkedin.com/in/liz-blanchard-a1365b2/"
     - icon: fa-github
       link: "https://github.com/lizsurette"
 
