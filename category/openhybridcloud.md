@@ -1,6 +1,6 @@
 ---
 layout: posts_by_category
-categories: openhybridcloud
+categories: open hybrid cloud
 title: Open Hybrid Cloud
-permalink: /category/openhybridcloud
+permalink: /category/open hybrid cloud
 ---

@@ -5,8 +5,8 @@
     <description>How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 29 Mar 2021 20:20:50 -0400</pubDate>
-    <lastBuildDate>Mon, 29 Mar 2021 20:20:50 -0400</lastBuildDate>
+    <pubDate>Tue, 30 Mar 2021 12:54:38 -0400</pubDate>
+    <lastBuildDate>Tue, 30 Mar 2021 12:54:38 -0400</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -21,6 +21,233 @@
         <category>personal</category>
         
         <category>open hybrid cloud</category>
+        
+      </item>
+    
+      <item>
+        <title>Maturing the Horizon Overview Page Part 2 - Interaction Design</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;This was originally written and shared on January 30, 2014 when I was working daily with the OpenStack Community.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;After going through an activity to &lt;a href=&quot;https://lizsurette.github.io/openstack/2014/01/27/maturing-horizon-overview-part-1.html&quot;&gt;understand the user and gather a list of requirements&lt;/a&gt;, Ju and I were in great shape to begin designing an Overview page that we could be sure would meet our Horizon users needs. As mentioned in my previous post, Ju played a big role in defining both the users and their requirements, but she continued to participate as I was designing to give feedback along the way as a use case expert.&lt;/p&gt;
+
+&lt;p&gt;The first step in almost all of my designs includes some sort of sketching and/or whiteboarding. Depending on where I am and if I’m collaboratively designing, I’ll either sketch in my &lt;a href=&quot;http://www.moleskine.com/en/&quot;&gt;Moleskine&lt;/a&gt; or jump into a room with a whiteboard and start drawing. I normally just let my mind go over the requirements and try to capture things on paper/whiteboard as fast as I can, trying to avoid overthinking things. The best thing about drawing on paper or on a whiteboard is that you don’t get too attached to your designs. It’s easy to scrap ideas if you haven’t put a ton of effort into them. Here is a look into the very first ideas that Ju and I came up with for the updated Overview page:
+&lt;img src=&quot;/static/img/_posts/overview-sketches.png&quot; alt=&quot;Overview Sketches&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Pretty ugly at this point, right? Yes, I know I don’t have a future as a sketch artist. Well, the ideas are just starting to form at this point and organization and legibility isn’t a huge factor. At this point I’m talking and thinking much faster than my hand can capture. Let me try to translate a bit about the thought process here… We’d like to break down the information that a user would want to see on the Overview page into 3 main sections: Compute, Storage, and Network &amp;amp; Security. It would be great to give the user some visualizations that they can glance at quickly to get an idea of how their environment is performing. Perhaps a mixture of a sparkline to show the trend over time and a bar graph to give the user a picture of the current utilization would be the best way to represent this mix of data. Since this is an Overview page, the user will likely jump off and perform certain actions from this page. It would be nice to have a section of quick links to common actions to support this. There will be additional links and details for certain categories of information that also need to be represented on the screen.&lt;/p&gt;
+
+&lt;p&gt;After a good hour of sketching and further discussion with Ju, I took a stab at translating these ideas into wireframes. Wireframes are more solid than sketching, but that doesn’t mean they are a final product. The goal behind wireframes is to get them into a legible format that can be distributed. Wireframes can still be changed very easily. They are not set in stone by any means, but they serve as a great way to get feedback on what certain pieces of the UI could start to look like. For these wireframes, I used Adobe InDesign, although I’ve used a lot of other tools in the past eight years of my design career. A quick side bar on a few of the tools I’ve used and why I’d use them in the future:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;h4 id=&quot;axure&quot;&gt;Axure&lt;/h4&gt;
+  &lt;p&gt;Great for working on a shared prototype with a group. Can check in /out files to prevent from stepping on each others toes. The output is a clickable HTML prototype which is great for getting a sense of the small interaction details of a design.&lt;/p&gt;
+  &lt;h4 id=&quot;photoshop&quot;&gt;Photoshop&lt;/h4&gt;
+  &lt;p&gt;Super steep learning curve, but a very powerful tool once you get the basics down. Great for prototyping high-fidelity mockups or even cutting up and editing an existing mockup quickly.&lt;/p&gt;
+  &lt;h4 id=&quot;illustrator&quot;&gt;Illustrator&lt;/h4&gt;
+  &lt;p&gt;Similar to Photoshop with respect to learning curve. Certain basics like selecting objects isn't consistent with Photoshop which can be frustrating, but a great tool in the end for creating vector designs that may need to scale. I've also used this for print designs with success.&lt;/p&gt;
+  &lt;h4 id=&quot;balsamiq&quot;&gt;Balsamiq&lt;/h4&gt;
+  &lt;p&gt;Awesome for really quick WISIWIG wireframing/prototyping. Very nice “Sketch” skin that makes it clear these wireframes can be changed easily. There is also a way to change the skin to look a bit more polished if needed. This tool also allows assigning of clickable elements which produces a PDF that acts like a clickable prototype.&lt;/p&gt;
+  &lt;h4 id=&quot;indesign&quot;&gt;InDesign&lt;/h4&gt;
+  &lt;p&gt;The use of masters makes larger sets of designs where elements are reused throughout pages easy to wrangle. Similar to Photoshop and Illustrator with respect to features, but again the slight difference in interactions gives the user yet another learning curve. There is also a way to make elements clickable in an outputted PDF, so this can simulate a prototype.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A big factor in the tool I use is which other designers I’m working with and what tools they are using. I try really hard to sync up with the majority of other designers that I’m working collaboratively and use what they are using. It makes it that much easier to bounce ideas off of each other, share, and reuse designs.&lt;/p&gt;
+
+&lt;p&gt;After half of a day of translating sketches to wireframes and adding in a few extra details, here is how the first cut panned out:
+&lt;img src=&quot;/static/img/_posts/overview-wireframes.png&quot; alt=&quot;Overview Wireframes&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are familiar with Horizon, you will probably first notice that the navigation structure looks a bit different from the current Havana release. We have been experimenting with updating the navigation design and the idea of horizontal navigation just happened to make this set of wireframes, so if you can, ignore the navigation changes for now and focus on the content of this Overview page. As in the early sketches, the wireframe is broken down into 3 sections. The first focuses on Compute information. Users are presented a graph of information showing details for Instances, vCores, vCPUs, and Memory. They can quickly view how many of each of these are currently in use compared to the quota that is allowed. Users can also quickly jump via links to public or private images that are being used by instances. Similarly, the user can view a section for Storage information: specifically Ephemeral, Object, Block, and Snapshot usage and quotas. I decided to break down the larger “Quick Links” area into a list of links specific to each section of data. This breakdown, for example, will make it easier to jump to Storage actions if the user is currently focused on a Storage task. With respect to Network and Security, the user can quickly see the number of Floating IPs both mapped and unmapped as well as the number of Security Groups.&lt;/p&gt;
+
+&lt;p&gt;After getting to a solid point with the wireframes, the next step was to reach out to a few different groups for feedback. I &lt;a href=&quot;http://ask-openstackux.rhcloud.com/question/59/improvements-to-horizon-overview/&quot;&gt;reached out&lt;/a&gt; to the UX community for some thoughts. This community is fairly new. I didn’t get much feedback here considering two of the main contributors to the site are Ju and me. Another team that I reached out to for feedback was the Horizon development team. During the weekly meeting I shared my progress and they were excited about the direction of this design. I figured using the weekly meeting would be a more targeted way of getting feedback rather than blasting the entire openstack-dev mailing list, but using the mailing list in the future might be a good way to get more eyes on designs.  Currently, I’m seeking out feedback from end users to validate that these wireframes would meet their needs. I’ve &amp;lt;a href=&quot;http://lists.openstack.org/pipermail/openstack-operators/2014-January/003956.html&quot; target=&quot;_blank&quot;&amp;gt;posted&amp;lt;/a&amp;gt; to the openstack-operators mailing list in hopes that some potential users will be able to give some thoughts on these designs.\r\n\r\nI've linked to these designs in the Horizon &amp;lt;a href=&quot;https://blueprints.launchpad.net/horizon/+spec/project-overview-page-ceilometer&quot; target=&quot;_blank&quot;&amp;gt;blueprint&amp;lt;/a&amp;gt; for this feature. My next steps are to give any design support that is needed (answering questions, updating the design) during the development of this blueprint. After the implementation is done, I want to do some usability testing with end users to be sure it works for them in their work environment. Stay tuned for posts on both of these topics.\r\n\r\nWhat do you think about this design? Is there anything missing at an overview level that you would expect to be here for an end user? How about the design process? I’d love to hear if you have any suggestions on improving this as well.\r\n\r\nBest,\r\nLiz&lt;/p&gt;
+</description>
+        <pubDate>Thu, 30 Jan 2014 00:00:00 -0500</pubDate>
+        <link>http://localhost:4000/openstack/2014/01/30/maturing-horizon-overview-part-2.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2014/01/30/maturing-horizon-overview-part-2.html</guid>
+        
+        
+        <category>openstack</category>
+        
+      </item>
+    
+      <item>
+        <title>Maturing the Horizon Overview Page Part 1 - Understanding the User and Gathering</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;This was originally written and shared on January 27, 2014 when I was working daily with the OpenStack Community.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Let’s take a quick look at the current (Havana) Horizon Overview page:
+&lt;img src=&quot;/static/img/_posts/current-horizon-overview-page.png&quot; alt=&quot;Havana Horizon Overview!&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Upon login, non-administrator users are taken to the Project Overview page within &lt;a href=&quot;http://docs.openstack.org/developer/horizon/&quot;&gt;Horizon&lt;/a&gt;. Here the user can see a basic set of information about the number of instances, VCPUs, RAM, Floating IPs, and Security Groups that are currently in use in their environment along with the quota that they are allowed. There is also a table that lets the user view the running instances along with a usage summary for the instances shown. The user has the opportunity to filter this table by date range when needed. While this information might cover certain use cases, my colleague &lt;a href=&quot;https://plus.google.com/105626042354015503324/posts&quot;&gt;Ju Lim&lt;/a&gt; and I wanted to take a step back from the current Overview page and think through the type of information that this user of Horizon would want to see when they first log in.&lt;/p&gt;
+
+&lt;p&gt;Now before I go on, this is when &lt;a href=&quot;http://en.wikipedia.org/wiki/Persona_(user_experience)&quot;&gt;Personas&lt;/a&gt; could have &lt;em&gt;REALLY&lt;/em&gt;  helped us. Unfortunately, we hadn’t gotten far enough along with our Persona work within OpenStack to use them, so we had to rely on what we knew from past projects we’ve worked on as well as the data we had from the set of users we had talked to about how they currently use OpenStack. In the coming months, I’ll share the work that we are starting to do in the Persona space, but for now I’d like to note that we plan to revisit these requirements once we have some great Persona data so that we are sure that these completely meet end users needs.&lt;/p&gt;
+
+&lt;p&gt;After reviewing the current state of the Horizon Project Overview page, Ju and I started to brainstorm on how we might improve this page for end users. The goal of this effort was to take this page to the next level of maturity. The big questions that we needed to answer were:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Who is the main end user of this page?&lt;/li&gt;
+  &lt;li&gt;What does this user want and need to see at an Overview level?&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Without Personas, we started off by defining the main responsibilities and objectives of the Consumer, the end user of the Overview page:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;As a Consumer, I need to understand the usage of the resources I consume within each project. Due to this, I am concerned with getting a bird’s eye view to the resources within my project. I want to monitor usage data over time so that I can optimize the utilization of my resources.&lt;/p&gt;
+
+  &lt;p&gt;My responsibilities/objectives:&lt;/p&gt;
+  &lt;ol&gt;
+    &lt;li&gt;I’m interested in monitoring usage for the projects that I manage:
+      &lt;ul&gt;
+        &lt;li&gt;I want to be able to see usage vs. quota limit.&lt;/li&gt;
+        &lt;li&gt;I’d like to be able to drill-down in order to view more details.&lt;/li&gt;
+        &lt;li&gt;I need to be able to troubleshoot an alert to identify root cause.&lt;/li&gt;
+        &lt;li&gt;I want to analyze usage levels and trends to see if the resource is running out of capacity&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;I’m responsible for managing resources within my project:
+      &lt;ul&gt;
+        &lt;li&gt;I can have access to one or more projects but currently have no ability to see an overview page with multiple projects.  I can only switch between projects.&lt;/li&gt;
+        &lt;li&gt;I interact with project images (create, rename, delete).&lt;/li&gt;
+        &lt;li&gt;I launch and terminate instances.&lt;/li&gt;
+        &lt;li&gt;I attach and detach network interfaces.&lt;/li&gt;
+        &lt;li&gt;I associate and unassociate Floating IP addresses.&lt;/li&gt;
+        &lt;li&gt;I manage key pairs (as needed for object storage).&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;After gathering a better understanding of what the primary user looking at the Overview page wants to do, it was important for us to stay focused on the word Overview. As we talked about all of the information that we could &lt;i&gt;potentially&lt;/i&gt; show, we kept a list. Of course, we needed to make sure we kept ourselves honest and took a look through the metrics that are &lt;a href=&quot;http://docs.openstack.org/developer/ceilometer/measurements.html&quot;&gt;available in Ceilometer today&lt;/a&gt;. Here is the list of important metrics that we came up with:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Instances&lt;/li&gt;
+    &lt;li&gt;Public Images&lt;/li&gt;
+    &lt;li&gt;Private Images&lt;/li&gt;
+    &lt;li&gt;vCores&lt;/li&gt;
+    &lt;li&gt;vCPUs&lt;/li&gt;
+    &lt;li&gt;Memory usage&lt;/li&gt;
+    &lt;li&gt;Ephemeral storage capacity&lt;/li&gt;
+    &lt;li&gt;Duration of the ephemeral storage&lt;/li&gt;
+    &lt;li&gt;Object storage capacity&lt;/li&gt;
+    &lt;li&gt;Objects&lt;/li&gt;
+    &lt;li&gt;Average object size&lt;/li&gt;
+    &lt;li&gt;Containers&lt;/li&gt;
+    &lt;li&gt;Key Pairs&lt;/li&gt;
+    &lt;li&gt;Block volume capacity&lt;/li&gt;
+    &lt;li&gt;Block volumes&lt;/li&gt;
+    &lt;li&gt;Snapshot capacity&lt;/li&gt;
+    &lt;li&gt;Snapshots&lt;/li&gt;
+    &lt;li&gt;Backup capacity&lt;/li&gt;
+    &lt;li&gt;Backups&lt;/li&gt;
+    &lt;li&gt;Floating IPs Mapped / Allocated&lt;/li&gt;
+    &lt;li&gt;Floating IPs Unmapped / Unallocated&lt;/li&gt;
+    &lt;li&gt;Load Balancers&lt;/li&gt;
+    &lt;li&gt;Security Groups&lt;/li&gt;
+    &lt;li&gt;Services’ Status – globally and across region (and domain)&lt;/li&gt;
+    &lt;li&gt;Alerts&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;We took this rough list of metrics and started to discuss each one.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;What specifically about each would the user be interested in seeing?&lt;/li&gt;
+  &lt;li&gt;What would the units be?&lt;/li&gt;
+  &lt;li&gt;Is this really a piece of information that’s helpful to see at an overview level?&lt;/li&gt;
+  &lt;li&gt;Would it make more sense for the user to drill in further for this information?&lt;/li&gt;
+  &lt;li&gt;Is this a future concept?&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We wanted to be sure that our current requirements are attainable. We also started to think about not only the metrics that a user would want to monitor, but what actions would a user want to be able to quickly perform from this view? After a few revisions, we ended up with a more detailed requirement list, organized by metric type:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Summary (Count) of resources
+      &lt;ul&gt;
+        &lt;li&gt;Instances and Images&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;ul&gt;
+        &lt;li&gt;Instances (used / running and available out my quota limit)&lt;/li&gt;
+        &lt;li&gt;Images (aka instance snapshots)&lt;/li&gt;
+        &lt;li&gt;Public Images&lt;/li&gt;
+        &lt;li&gt;Private Images&lt;/li&gt;
+        &lt;li&gt;vCores (used and available)&lt;/li&gt;
+        &lt;li&gt;vCPUs (used and available)&lt;/li&gt;
+        &lt;li&gt;Memory (used and available)&lt;/li&gt;
+        &lt;li&gt;Quick Links: Launch a new instance, Launch a new stack&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Storage
+      &lt;ul&gt;
+        &lt;li&gt;Ephemeral
+          &lt;ul&gt;
+            &lt;li&gt;Ephemeral capacity (used and available)&lt;/li&gt;
+            &lt;li&gt;Duration of the ephemeral storage&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/li&gt;
+        &lt;li&gt;Object
+          &lt;ul&gt;
+            &lt;li&gt;Object capacity (used and available)&lt;/li&gt;
+            &lt;li&gt;Number of Objects&lt;/li&gt;
+            &lt;li&gt;Average object size&lt;/li&gt;
+            &lt;li&gt;Number of Containers&lt;/li&gt;
+            &lt;li&gt;Number of Key Pairs&lt;/li&gt;
+            &lt;li&gt;Quick Links: Create a container, Create a key pair&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/li&gt;
+        &lt;li&gt;Block / Persistent
+          &lt;ul&gt;
+            &lt;li&gt;Block volume capacity (used / active and available)&lt;/li&gt;
+            &lt;li&gt;Number of Block volumes (used and available)&lt;/li&gt;
+            &lt;li&gt;Snapshot capacity (used and available)&lt;/li&gt;
+            &lt;li&gt;Number of Snapshots&lt;/li&gt;
+            &lt;li&gt;Backup capacity (used and available)&lt;/li&gt;
+            &lt;li&gt;Number of Backups&lt;/li&gt;
+            &lt;li&gt;Quick Links: Create a volume&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Network
+      &lt;ul&gt;
+        &lt;li&gt;Number of Floating IPs&lt;/li&gt;
+        &lt;li&gt;Number of Mapped / Number of Allocated&amp;lt;&lt;/li&gt;
+        &lt;li&gt;Number of Unmapped / Number of Unallocated&amp;lt;&lt;/li&gt;
+        &lt;li&gt;Number of Load Balancers (currently available on experimental basis)&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Security
+      &lt;ul&gt;
+        &lt;li&gt;Number of Security Groups&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Health
+      &lt;ul&gt;
+        &lt;li&gt;Services’ Status – globally and across region (and domain)&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Alerts
+      &lt;ul&gt;
+        &lt;li&gt;Number of Alerts&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;There. A nice organized list of metrics that we want to design towards. Do you have any feedback on this list of requirements as it exists so far? I’m always looking to improve requirements and designs based on user feedback.&lt;/p&gt;
+
+&lt;p&gt;Also, keep an eye out for my next post in the “Maturing the Overview page in Horizon&quot; series where I walk through the design phase of this effort.&lt;/p&gt;
+
+&lt;p&gt;Best,
+Liz&lt;/p&gt;
+</description>
+        <pubDate>Mon, 27 Jan 2014 00:00:00 -0500</pubDate>
+        <link>http://localhost:4000/openstack/2014/01/27/maturing-horizon-overview-part-1.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2014/01/27/maturing-horizon-overview-part-1.html</guid>
+        
+        
+        <category>openstack</category>
         
       </item>
     
