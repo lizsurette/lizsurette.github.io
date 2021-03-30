@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Experience Design in the Open Hybrid Cloud</title>
+    <description>How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 29 Mar 2021 20:20:50 -0400</pubDate>
+    <lastBuildDate>Mon, 29 Mar 2021 20:20:50 -0400</lastBuildDate>
+    <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Hello Again, World</title>
+        <description>&lt;p&gt;I’ve decided that I’m going to start blogging again. Previously, I had written all about my design work with OpenStack. Since then, I’ve worked on a number of different projects including OpenShift and have recently transitioned to thinking about the Open Hybrid Cloud experience broadly. I’ll be sharing my stories as I enter and design for this brave new world. Stay tuned for more posts.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 17 Mar 2021 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html</link>
+        <guid isPermaLink="true">http://localhost:4000/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html</guid>
+        
+        
+        <category>personal</category>
+        
+        <category>open hybrid cloud</category>
+        
+      </item>
+    
+      <item>
+        <title>The OpenStack Years: Which groups in OpenStack do User Experience designers influence today?</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;This was originally written and shared on December 16, 2013 when I was working daily with the OpenStack Community.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Before I jump into blog posts about OpenStack user experience requirements, designs, and user testing, I wanted to start with some level setting and explain some of the groups that have been a focus in the user experience space.&lt;/p&gt;
+
+&lt;h4 id=&quot;user-experience&quot;&gt;User Experience&lt;/h4&gt;
+&lt;p&gt;To start, let me give a quick introduction to the way user experience design currently works within OpenStack. How do we as user experience professionals work within the OpenStack community? Today, we work very closely with the Horizon and TripleO/Tuskar teams. We attend the weekly IRC meetings, participate in feature requirement discussions, register blueprints, report bugs, design wireframes for new features, and test existing features with users.&lt;/p&gt;
+
+&lt;p&gt;User experience isn’t an official program in OpenStack, but a few of us have started to form a team around the efforts in the UX space. We now have an &lt;a href=&quot;http://ask-openstackux.rhcloud.com/questions/&quot;&gt;Ask OpenStack UX&lt;/a&gt; site where we house design discussions. Weekly, we send out an update to the mailing list on the &lt;a href=&quot;http://lists.openstack.org/pipermail/openstack-dev/2013-December/020935.html\&quot;&gt;current topics&lt;/a&gt; that are being discussed. As a group we are continuously improving our processes. We are discussing the option of moving to and using the &lt;a href=&quot;https://github.com/openstack-infra/storyboard\&quot;&gt;StoryBoard&lt;/a&gt; tool that Thierry Carrez proposed at the Hong Kong summit.&lt;/p&gt;
+
+&lt;p&gt;How could you contribute to the user experience effort in OpenStack? Join us in discussions on Ask OpenStack UX, share your wireframes, give your feedback as an OpenStack user, or simply give your thoughts on how we could improve our way of working. You can find us in #openstack-ux on Freenode if you’d like to chat.&lt;/p&gt;
+
+&lt;h4 id=&quot;horizon&quot;&gt;Horizon&lt;/h4&gt;
+&lt;p&gt;As I mentioned in &lt;a href=&quot;https://lizsurette.github.io/openstack/2013/12/12/openstack-an-introduction.html&quot;&gt;my first blog post&lt;/a&gt;, Horizon is where I jumped into the OpenStack world. This is the only user interface that is currently shipped with the core OpenStack product and it seems obvious to me that others will have the same experience. The Horizon Dashboard gives the user a visual way to perform basic OpenStack tasks like spinning up an Instance and assigning that instance a floating IP. Of course, the user can do these things from the command line interface (CLI), but the UI is where most of the user experience work that has been done so far has been focused.&lt;/p&gt;
+
+&lt;p&gt;The Horizon development team is a great bunch to work with and are extremely supportive of making sure this component has great user experience design. Currently, Horizon only supports the other core components, but developers are welcomed to add plugins to Horizon for components they are working on outside of the core.&lt;/p&gt;
+
+&lt;p&gt;There are a few options that I know about for quickly getting access to a running version of Horizon if you’d like to poke around and test things out.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;http://trystack.org/ - You can get a free account by joining their Facebook group. Once you’ve been added to the group, simply use your Facebook credentials for authentication and you’ll be able to view the Horizon UI.&lt;/li&gt;
+  &lt;li&gt;http://www.stacklab.org/ - This is another quick way to get access to Horizon to poke around.&lt;/li&gt;
+  &lt;li&gt;If you are feeling brave and would like to get your own environment up and running – Spin up a RHEL-based Linux distro in a VM and run through the &lt;a href=&quot;http://openstack.redhat.com/Quickstart&quot;&gt;Quick Start guide&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Another way to get a development environment up and running would be to use http://devstack.org/&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you are interested in jumping into the development or review side of Horizon, feel free to come to one of our &lt;a href=&quot;https://wiki.openstack.org/wiki/Meetings#Horizon_team_meeting&quot;&gt;weekly meetings on IRC&lt;/a&gt; to get a feel for what we are working on today. Also, getting started with Horizon can be done by following the &lt;a href=&quot;http://docs.openstack.org/developer/horizon/quickstart.html&quot;&gt;quick start instructions&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;tripleo&quot;&gt;TripleO&lt;/h4&gt;
+&lt;p&gt;In my introductory &lt;a href=&quot;https://lizsurette.github.io/openstack/2013/12/12/openstack-an-introduction.html&quot;&gt;Why a blog? Who is the intended audience of this blog?&lt;/a&gt;, I mentioned that I quickly realized that installation and deployment are big areas in which the usability of OpenStack could be improved. &lt;a href=&quot;https://wiki.openstack.org/wiki/TripleO&quot;&gt;TripleO&lt;/a&gt; and Tuskar work together to tackle just this.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;TripleO is a program aimed at installing, upgrading and operating OpenStack clouds using OpenStack’s own cloud facilities as the foundations - building on nova, neutron and heat to automate fleet management at data center scale. (https://wiki.openstack.org/wiki/TripleO)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It’s a bit of a mind bending concept, but I highly recommend watching Robert Collins’ &lt;a href=&quot;https://www.youtube.com/watch?v=RjUvpfzejtU&amp;amp;ab_channel=OpenInfrastructureFoundation&quot;&gt;talk from the Portland OpenStack Summit&lt;/a&gt;. Although TripleO continues to evolve with each release, I found this talk to be a great introduction.&lt;/p&gt;
+
+&lt;h4 id=&quot;tuskar&quot;&gt;Tuskar&lt;/h4&gt;
+&lt;p&gt;We haven’t worked on any user experience designs specifically for TripleO, but this is where &lt;a href=&quot;https://wiki.openstack.org/wiki/TripleO/Tuskar&quot;&gt;Tuskar&lt;/a&gt; comes into play.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Tuskar gives administrators the ability to control how and where OpenStack services are deployed across the data center. Using Tuskar, administrators divide hardware into “resource classes” that allow predictable elastic scaling as cloud demands grow. This resource orchestration allows Tuskar users to ensure SLAs, improve performance, and maximize utilization across the data center. (https://wiki.openstack.org/wiki/TripleO/Tuskar)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Tuskar has recently combined efforts with the TripleO program and is bringing a user interface into the mix. Although there are &lt;a href=&quot;http://lists.openstack.org/pipermail/openstack-dev/2013-December/021388.html&quot;&gt;huge discussions&lt;/a&gt; currently taking place about the requirements for the Icehouse release of Tuskar working with TripleO, a demo of the initial concepts shown at the Hong Kong Summit can be seen &lt;a href=&quot;https://www.youtube.com/watch?v=VEY035-Lyzo&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Ultimately, TripleO and Tuskar will work together to provide a community solution for installing and deploying an OpenStack environment solving a huge need for the end users of OpenStack!&lt;/p&gt;
+
+&lt;p&gt;Thoughts?&lt;/p&gt;
+</description>
+        <pubDate>Mon, 16 Dec 2013 00:00:00 -0500</pubDate>
+        <link>http://localhost:4000/openstack/2013/12/16/openstack-user-experience-influence.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2013/12/16/openstack-user-experience-influence.html</guid>
+        
+        
+        <category>openstack</category>
+        
+      </item>
+    
+      <item>
+        <title>The OpenStack Years: Why a blog?</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;This was originally written and shared on December 12, 2013 when I was working daily with the OpenStack Community.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I should start off with an introduction. I’m Liz and I’ve been working for Red Hat for just over a year. I work on the User Experience Design team with a focus on the &lt;a href=&quot;http://www.openstack.org/&quot;&gt;OpenStack&lt;/a&gt; project.&lt;/p&gt;
+
+&lt;p&gt;Since I started working at Red Hat I’ve been working on the OpenStack project. That means I’ve been involved with the project for almost a year now. So why has it taken me a year to decide to start this blog? Well, there has definitely been a learning curve. With everything that I’ve done in the OpenStack space, I’ve tried to take the view point of the OpenStack customer or end user. I started off very small in the OpenStack world by installing the latest release (which was Folsom at the time). I realized that there wasn’t one solid way to go about installing OpenStack, so I spent a lot of my days hacking around and getting something up and running. Ultimately, I ended up getting a development environment running on Fedora 19 using &lt;a href=&quot;http://devstack.org/&quot;&gt;DevStack&lt;/a&gt;. As many other people in the OpenStack community have already done, I came to the conclusion that installation and deployment should be high on the priority list when it comes to improving the usability of OpenStack.&lt;/p&gt;
+
+&lt;p&gt;Once I got access to a running version of OpenStack, I spent time reviewing the Horizon Dashboard. Although the usability field doesn’t have to be limited to user interfaces, it was a great place for me to start. I needed to get familiar with what features were offered in OpenStack and what better way to do this than to try the features out myself. Come to find out later that there are actually features in OpenStack that aren’t surfaced in the UI. I had no idea they even existed at this point. I went about reviewing the dashboard and I logged a fair amount of bugs in &lt;a href=&quot;https://bugs.launchpad.net/horizon/+bugs&quot;&gt;Launchpad&lt;/a&gt;. Most of the bugs were small, but a few were for some larger usability issues that would be great to solve. I was so excited to see a few of these bugs get picked up and fixed right away.&lt;/p&gt;
+
+&lt;p&gt;I was lucky enough to be able to attend my first OpenStack Summit as we planned for the Grizzly release in Portland, OR. Getting to meet the majority of the Horizon community in person was awesome. I realized during this Summit just how passionate and supportive this group of people are working together on OpenStack. I was so happy to be a part of this. As I’ve continued my work on OpenStack and have become more familiar with the processes, I’ve stepped up the amount of work that I’ve been able to contribute to the project. I’ve done work on creating use cases, developing personas, sketching, wireframing, and user testing. I’ve shared my work via e-mails, conversations over IRC, or documents and spreadsheets that have been created.&lt;/p&gt;
+
+&lt;p&gt;As I look back over the last year’s worth of work, I realize that I’ve influenced a lot of small features, but it takes some time to compile the list of items I’ve completed. As I move forward with my OpenStack work, I’d like to make sure that I take some time with each of the tasks I work on to do a small write up of what I’m working on and why it’s important to the OpenStack community. I hope this blog will generate further discussion and help improve the usability of OpenStack even more than if I simply share my work via e-mail and IRC.&lt;/p&gt;
+
+&lt;p&gt;Another goal of this blog is for it to serve as a history of some of the usability topics that have been discussed in the OpenStack community. It would be great if my posts sparked some conversations about moving certain features forward. I definitely won’t confine my posts to just UI topics, so as I start to explore some of the ways that user experience professionals can influence things like APIs and the command line, I hope others find my discoveries helpful.&lt;/p&gt;
+
+&lt;p&gt;Thoughts?&lt;/p&gt;
+</description>
+        <pubDate>Thu, 12 Dec 2013 00:00:00 -0500</pubDate>
+        <link>http://localhost:4000/openstack/2013/12/12/openstack-an-introduction.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2013/12/12/openstack-an-introduction.html</guid>
+        
+        
+        <category>openstack</category>
+        
+      </item>
+    
+  </channel>
+</rss>

@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Hello World"
+title:  "Hello Again, World"
 date:   2021-03-17
-categories: [personal]
+categories: [personal, open hybrid cloud]
 ---
-I'm tinkering with kicking off a new blog to capture my Experiences in the Open Hybrid Cloud space. This will likely include stories as I try out solutions and technologies as well as design thoughts along the way. Stay tuned for more posts.
+I've decided that I'm going to start blogging again. Previously, I had written all about my design work with OpenStack. Since then, I've worked on a number of different projects including OpenShift and have recently transitioned to thinking about the Open Hybrid Cloud experience broadly. I'll be sharing my stories as I enter and design for this brave new world. Stay tuned for more posts.

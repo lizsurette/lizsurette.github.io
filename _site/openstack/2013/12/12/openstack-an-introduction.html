@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>The OpenStack Years: Why a blog? - Experience Design in the Open Hybrid Cloud</title>
+    <meta name="author" content="Liz Blanchard" />
+    <meta name="description" content="The OpenStack Years: Why a blog?" />
+    <meta name="keywords" content="The OpenStack Years: Why a blog?, Experience Design in the Open Hybrid Cloud, openstack" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Experience Design in the Open Hybrid Cloud" property="og:site_name">
+
+    
+
+    
+      <meta content="The OpenStack Years: Why a blog?" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/openstack/2013/12/12/openstack-an-introduction.html" property="og:url">
+    
+
+    
+      <meta content="2013-12-12T00:00:00-05:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="openstack" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="The OpenStack Years: Why a blog?">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/openstack/2013/12/12/openstack-an-introduction.html">
+    
+
+    
+      <meta name="twitter:description" content="How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <div class="avatar">
+            <img class="profile" src="/static/img/lb.jpg">
+          </div>
+          <h1 class="author-name"><a href="/">Liz Blanchard</a></h1>
+          
+            <div class="profile-about">
+              I'm a Product Designer working in the Open Hybrid Cloud space.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/lizsurette" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://www.linkedin.com/in/liz-blanchard-a1365b2/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/lizsurette" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About Me</a></li>
+            
+              <li><a class="about" href="/projects/">My Projects</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">The OpenStack Years: Why a blog?</h1>
+</header>
+
+<span class="time">12 Dec 2013</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/openstack">openstack</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><blockquote>
+  <p>This was originally written and shared on December 12, 2013 when I was working daily with the OpenStack Community.</p>
+</blockquote>
+
+<hr />
+
+<p>I should start off with an introduction. I’m Liz and I’ve been working for Red Hat for just over a year. I work on the User Experience Design team with a focus on the <a href="http://www.openstack.org/">OpenStack</a> project.</p>
+
+<p>Since I started working at Red Hat I’ve been working on the OpenStack project. That means I’ve been involved with the project for almost a year now. So why has it taken me a year to decide to start this blog? Well, there has definitely been a learning curve. With everything that I’ve done in the OpenStack space, I’ve tried to take the view point of the OpenStack customer or end user. I started off very small in the OpenStack world by installing the latest release (which was Folsom at the time). I realized that there wasn’t one solid way to go about installing OpenStack, so I spent a lot of my days hacking around and getting something up and running. Ultimately, I ended up getting a development environment running on Fedora 19 using <a href="http://devstack.org/">DevStack</a>. As many other people in the OpenStack community have already done, I came to the conclusion that installation and deployment should be high on the priority list when it comes to improving the usability of OpenStack.</p>
+
+<p>Once I got access to a running version of OpenStack, I spent time reviewing the Horizon Dashboard. Although the usability field doesn’t have to be limited to user interfaces, it was a great place for me to start. I needed to get familiar with what features were offered in OpenStack and what better way to do this than to try the features out myself. Come to find out later that there are actually features in OpenStack that aren’t surfaced in the UI. I had no idea they even existed at this point. I went about reviewing the dashboard and I logged a fair amount of bugs in <a href="https://bugs.launchpad.net/horizon/+bugs">Launchpad</a>. Most of the bugs were small, but a few were for some larger usability issues that would be great to solve. I was so excited to see a few of these bugs get picked up and fixed right away.</p>
+
+<p>I was lucky enough to be able to attend my first OpenStack Summit as we planned for the Grizzly release in Portland, OR. Getting to meet the majority of the Horizon community in person was awesome. I realized during this Summit just how passionate and supportive this group of people are working together on OpenStack. I was so happy to be a part of this. As I’ve continued my work on OpenStack and have become more familiar with the processes, I’ve stepped up the amount of work that I’ve been able to contribute to the project. I’ve done work on creating use cases, developing personas, sketching, wireframing, and user testing. I’ve shared my work via e-mails, conversations over IRC, or documents and spreadsheets that have been created.</p>
+
+<p>As I look back over the last year’s worth of work, I realize that I’ve influenced a lot of small features, but it takes some time to compile the list of items I’ve completed. As I move forward with my OpenStack work, I’d like to make sure that I take some time with each of the tasks I work on to do a small write up of what I’m working on and why it’s important to the OpenStack community. I hope this blog will generate further discussion and help improve the usability of OpenStack even more than if I simply share my work via e-mail and IRC.</p>
+
+<p>Another goal of this blog is for it to serve as a history of some of the usability topics that have been discussed in the OpenStack community. It would be great if my posts sparked some conversations about moving certain features forward. I definitely won’t confine my posts to just UI topics, so as I start to explore some of the ways that user experience professionals can influence things like APIs and the command line, I hope others find my discoveries helpful.</p>
+
+<p>Thoughts?</p>
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/openstack/2013/12/12/openstack-an-introduction.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/openstack/2013/12/16/openstack-user-experience-influence.html">The OpenStack Years: Which groups in OpenStack do User Experience designers influence today?</a>
+                  
+                    (Categories: <a href="/category/openstack">openstack</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+  
+    <a class="next" href="/openstack/2013/12/16/openstack-user-experience-influence.html">The OpenStack Years: Which groups in OpenStack do User Experience designers influence today? &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_The OpenStack Years: Why a blog?";
+    var disqus_title = "The OpenStack Years: Why a blog?";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          &copy; Liz Blanchard
+          
+            - <a href="https://github.com/lizsurette">https://github.com/lizsurette</a> - Powered by Jekyll.
+          
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+
