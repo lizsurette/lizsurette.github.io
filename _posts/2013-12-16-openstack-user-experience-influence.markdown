@@ -5,7 +5,7 @@ date:   2013-12-16
 categories: [openstack]
 ---
 
-> This was originally written and shared on December 16, 2013 when I was working daily with the OpenStack Community.
+> <em>This was originally written and shared on December 16, 2013 when I was working daily with the OpenStack Community.</em>
 
 ---
 

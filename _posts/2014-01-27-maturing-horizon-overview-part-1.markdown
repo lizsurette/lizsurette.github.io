@@ -1,11 +1,11 @@
 ---
 layout: post
-title:  "Maturing the Horizon Overview Page Part 1 - Understanding the User and Gathering"
+title:  "The OpenStack Years: Maturing the Horizon Overview Page Part 1 - Understanding the User and Gathering Requirements"
 date:   2014-01-27
 categories: [openstack]
 ---
 
-> This was originally written and shared on January 27, 2014 when I was working daily with the OpenStack Community.
+> <em>This was originally written and shared on January 27, 2014 when I was working daily with the OpenStack Community.</em>
 
 ---
 

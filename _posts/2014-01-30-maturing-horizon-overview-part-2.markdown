@@ -1,11 +1,11 @@
 ---
 layout: post
-title:  "Maturing the Horizon Overview Page Part 2 - Interaction Design"
+title:  "The OpenStack Years: Maturing the Horizon Overview Page Part 2 - Interaction Design"
 date:   2014-01-30
 categories: [openstack]
 ---
 
-> This was originally written and shared on January 30, 2014 when I was working daily with the OpenStack Community.
+> <em>This was originally written and shared on January 30, 2014 when I was working daily with the OpenStack Community.</em>
 
 ---
 

@@ -1,10 +1,12 @@
 .avatar {
-  height: 110px;
-  width: 100px;
+  height: 125px;
+  width: 115px;
+  margin-left: 24px;
 }
 
 .profile {
   max-width: 100%;
+  border-radius: 50%;
 }
 
 body {

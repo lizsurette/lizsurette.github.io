@@ -5,8 +5,8 @@
     <description>How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 30 Mar 2021 18:50:51 -0400</pubDate>
-    <lastBuildDate>Tue, 30 Mar 2021 18:50:51 -0400</lastBuildDate>
+    <pubDate>Tue, 30 Mar 2021 20:51:11 -0400</pubDate>
+    <lastBuildDate>Tue, 30 Mar 2021 20:51:11 -0400</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -25,9 +25,248 @@
       </item>
     
       <item>
-        <title>Maturing the Horizon Overview Page Part 2 - Interaction Design</title>
+        <title>The OpenStack Years: Running a Baseline Usability Test on Horizon</title>
         <description>&lt;blockquote&gt;
-  &lt;p&gt;This was originally written and shared on January 30, 2014 when I was working daily with the OpenStack Community.&lt;/p&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on March 25, 2014 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Over the last few months, I’ve been working with a group of folks from multiple companies on doing research around &lt;a href=&quot;https://wiki.openstack.org/wiki/Personas#The_OpenStack_Personas_Working_Group&quot;&gt;building a set of Personas&lt;/a&gt; to present at the Atlanta Summit. In one of our first meetings, we talked about the need to do some &lt;a href=&quot;http://en.wikipedia.org/wiki/Usability_testing&quot;&gt;usability testing&lt;/a&gt; as a separate effort from the Persona research. Earlier this month, a few of the folks from HP mentioned that they were hoping to run a usability test on the most recent (Icehouse) version of Horizon. This would be the first usability test within the community that I’m aware of and I was super excited that they were willing to let those of us interested to be a part of this testing effort.&lt;/p&gt;
+
+&lt;p&gt;The decision was made to focus this first round of testing on self-service end users of Horizon and write tasks for our participants to perform based on typical tasks these types of users often perform. NOTE: We would like to do more and more usability testing and continue to include other types of users and tasks.&lt;/p&gt;
+
+&lt;p&gt;We started out by putting together a &lt;a href=&quot;https://www.surveymonkey.com/s/R8QZ2RB&quot;&gt;screener&lt;/a&gt; to be sure that we got the correct people to test. Here’s a quick look at the questions that we asked:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;What company do your work for?&lt;/li&gt;
+    &lt;li&gt;How many people work for your organization worldwide? Please take into account all branches and locations.&lt;/li&gt;
+    &lt;li&gt;What is the primary business or industry of your company?&lt;/li&gt;
+    &lt;li&gt;What is your job title?&lt;/li&gt;
+    &lt;li&gt;What is your primary job role?&lt;/li&gt;
+    &lt;li&gt;How many years have you performed system administration and/or network management/administration?&lt;/li&gt;
+    &lt;li&gt;Do your PRIMARY job responsibilities include any of the following?&lt;/li&gt;
+    &lt;li&gt;Do you manage or use cloud services?&lt;/li&gt;
+    &lt;li&gt;Please select the cloud service providers and technologies that you have good working knowledge of.&lt;/li&gt;
+    &lt;li&gt;Which of the following administration tasks do you perform at least once a month?&lt;/li&gt;
+    &lt;li&gt;In your daily software use as an IT professional, what percent of your time do you use?&lt;/li&gt;
+    &lt;li&gt;Does your IT department currently offer cloud computing services at you company?&lt;/li&gt;
+    &lt;li&gt;How many virtual servers are there in your server environment?&lt;/li&gt;
+    &lt;li&gt;Who owns the servers in your company?&lt;/li&gt;
+    &lt;li&gt;Please provide your email so we can potentially contact you for a study.&lt;/li&gt;
+    &lt;li&gt;Please provide your first and last name.&lt;/li&gt;
+    &lt;li&gt;Would you like us to consider you for other OpenStack community studies?&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is one of the most important pieces to doing a usability test. It’s really important to be sure to test the users on tasks that they would actually perform in their daily work so that you get the best results possible. We kept the screener nice and short so that folks didn’t feel overwhelmed and could respond to the survey in just a few minutes. We actually ended up getting a really great response from the community mailing lists and LinkedIn on the screener. It was very encouraging as responses of people interested in participating in the testing started to flow in.&lt;/p&gt;
+
+&lt;p&gt;As we sifted through the screener results, we took some time to write up the scenarios and tasks that each participant would go through. We made sure to list these in priority order since depending on time, we might not be able to get to each task with all of our users. Here’s a list of what the users would be doing during the testing:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Scenario 1: Launching an instance&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Individual Tasks:
+      &lt;ul&gt;
+        &lt;li&gt;Create a security key pair.&lt;/li&gt;
+        &lt;li&gt;Create a network.&lt;/li&gt;
+        &lt;li&gt;Boot from cirros image.&lt;/li&gt;
+        &lt;li&gt;Confirm that instance was launched successfully.&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Scenario 2: Understand how many vCPUs are currently in use vs. how much quota is left.&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Individual Tasks:
+      &lt;ul&gt;
+        &lt;li&gt;Check out Overview Page to review current quota use/limit details.&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Scenario 3: Take a snapshot of an Instance to save for later use.&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Individual Tasks:
+      &lt;ul&gt;
+        &lt;li&gt;Either Launch an instance successfully, or identify a running instance in the instance view.&lt;/li&gt;
+        &lt;li&gt;Choose to take a snapshot of that instance.&lt;/li&gt;
+        &lt;li&gt;Confirm that the snapshot was successful.&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Scenario 4: Launch an instance from a snapshot.&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Individual Tasks:
+      &lt;ul&gt;
+        &lt;li&gt;Choose to either create an instance and boot from a snapshot, or identify a snapshot to create an instance from.&lt;/li&gt;
+        &lt;li&gt;Confirm that the instance was started successfully.&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Scenario 5: Launch an instance that boots from a specific volume.&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Individual Tasks:
+      &lt;ul&gt;
+        &lt;li&gt;Create a volume.&lt;/li&gt;
+        &lt;li&gt;Launch an instance using Volume X as a boot source.&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;At this point, we were pretty much ready to run the tests. HP had a system running the latest and greatest version of Horizon that our users could access, it was just a matter of scheduling some time with a few of the people who responded to the screener. Scheduling can sometimes take a fair amount of time, but these users were extremely quick to respond. I wondered if that’s just the way it is with testing passionate open source software users.&lt;/p&gt;
+
+&lt;p&gt;We didn’t record the testing, since we wanted to be sure that the identity of the participants was protected, but we did take a ton of notes during each of the tests to be sure we captured everything that went on both good and bad. Since there were a few of us who wanted to observe the testing and one person running the test, we used online meeting software in order to share the screen and audio during the test. We had a few hiccups with audio quality and definitely have areas that we could improve on for the next round of testing, but for a first test we got some awesome results.&lt;/p&gt;
+
+&lt;p&gt;Throughout the testing, we found that the majority of the hour that we had with participants was taken up by the first task. This isn’t necessarily a bad thing, especially for a first time test within the community. There were a lot of findings that came out of “Launching your first Instance” since it is fairly broad and hit a lot of pieces of the UI. We did get to go through a few of the other scenarios with a few users as well for additional findings, but here’s where we ended up with the list of improvements that we can make:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;High Priority&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Improve error messages and error message catalog.&lt;/li&gt;
+    &lt;li&gt;Fix Launch Instance workflow for end user and power user.&lt;/li&gt;
+    &lt;li&gt;Improve informational help information about form fields.&lt;/li&gt;
+    &lt;li&gt;Fix terminology. (e.g. launch instance, boot, shutoff, shutdown, etc.)&lt;/li&gt;
+    &lt;li&gt;Show details for key pair and network in Launch Instance workflow.&lt;/li&gt;
+    &lt;li&gt;Recommend a new Information Architecture.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Medium Priority&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Create UI guidelines (of best practices) for Developers to use.&lt;/li&gt;
+    &lt;li&gt;Improve Online Help.&lt;/li&gt;
+    &lt;li&gt;Provide clearer indication the application is working after clicking a button and the application doesn’t respond immediately.&lt;/li&gt;
+    &lt;li&gt;Ensure consistency of network selection. (Drag and drop of networks very inconsistent from the other pieces of the launch instance modal)&lt;/li&gt;
+    &lt;li&gt;Create consistency of visualizations and section of action button recommendations on Instance table.&lt;/li&gt;
+    &lt;li&gt;Suggest defaults for the forms entry fields.&lt;/li&gt;
+    &lt;li&gt;Provide Image information details during image selection.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Low Priority&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Allow users to edit the network an instance after launching instance.&lt;/li&gt;
+    &lt;li&gt;Resolve confusion around the split inline actions button.&lt;/li&gt;
+    &lt;li&gt;Explain what the Instance Boot Source field in Create Instance modal.&lt;/li&gt;
+    &lt;li&gt;Provide description/high level information about flavors for flavor selection.&lt;/li&gt;
+    &lt;li&gt;Make sorting clearer visually.&lt;/li&gt;
+    &lt;li&gt;Provide solution for subnet checkbox to improve usability.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Nice to Have&lt;/strong&gt;&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Provide “Save as Draft” option in the wizard.&lt;/li&gt;
+    &lt;li&gt;Change security group default name to “Default security group”.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now that we’ve gathered a lot of great data, we will be focusing on how to make improvements to Horizon based initially on the high priority findings. This includes logging bugs and registering blueprints within Launchpad (both in the &lt;a href=&quot;https://launchpad.net/horizon&quot;&gt;Horizon&lt;/a&gt; and &lt;a href=&quot;https://launchpad.net/openstack-ux&quot;&gt;User Experience&lt;/a&gt; spaces). The current plan is to come up with some proposal designs and have a &lt;a href=&quot;http://summit.openstack.org/cfp/details/32&quot;&gt;design session&lt;/a&gt; at the Atlanta Summit to create a plan for next steps on making sure Juno releases with features and improved functionality in Horizon that is important to our OpenStack users.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 25 Mar 2014 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/openstack/2014/03/25/horizon-baseline-usability-test.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2014/03/25/horizon-baseline-usability-test.html</guid>
+        
+        
+        <category>openstack</category>
+        
+      </item>
+    
+      <item>
+        <title>The OpenStack Years: How does Horizon Stack up versus other Cloud Computing UIs?</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on February 21, 2014 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;One big part of designing a solution is understanding how the design compares to the other things out there that are similar. What has been done already? What are other users and designers doing in this space? In some cases, the design might be one of a kind, but in the case of Horizon, there are a fair amount of other players in the space. I took some time recently to look into some of the other UIs that exist. It gave me a good idea of how Horizon stacked up compared to these other UIs:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Netflix Asgard&lt;/li&gt;
+    &lt;li&gt;Windows Azure&lt;/li&gt;
+    &lt;li&gt;PayPal Aurora&lt;/li&gt;
+    &lt;li&gt;CloudStack&lt;/li&gt;
+    &lt;li&gt;Google Compute Engine&lt;/li&gt;
+    &lt;li&gt;Amazon Web Services&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This exercise gave me some great inspiration for improvements that could be made to Horizon. What are others doing out there to solve the needs that Horizon can’t solve for users? How can we improve Horizon to meet these needs? Here are some of the things that I noticed from a design perspective.&lt;/p&gt;
+
+&lt;h4 id=&quot;netflix-asgard&quot;&gt;Netflix Asgard&lt;/h4&gt;
+&lt;p&gt;If you’ve used OpenStack enough, you know that certain tables begin to grow to be extremely large. Currently, there is a filter function on the Instances table within Horizon, but it’s not quite as slick as the one that is available in Asgard. A simple, yet powerful search which gives instant feedback to the user will be crucial to be available on all of the tables that continue to grow as OpenStack users continue to gain more and more historical data. Here is a look at a section of a table with 564 items in it. The user does have the option to sort by any of the columns available in the table, but more powerfully, they can start typing in the filter text box to start weeding down the table items:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/asgard-search-1.png&quot; alt=&quot;Asgard Search 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As the user starts typing, the table below is filtered automatically, and quickly:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/asgard-search-2.png&quot; alt=&quot;Asgard Search 2&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;windows-azure&quot;&gt;Windows Azure&lt;/h4&gt;
+&lt;p&gt;Azure is overall a very polished UI. One thing that stuck out to me as great inspiration is the simplicity of the wizards in this UI for creating items in your cloud. Although this slickness can be done in many different ways, the Azure designers chose to use vertical blades to show the number of steps and the progress that the user has made through the wizard.&lt;/p&gt;
+
+&lt;p&gt;Another very nice design decision that the Azure team made was to build responsive forms. As a user navigates through all of the fields for which they need to provide data, the forms are constantly checking for errors inline. The user will notice right away if a field that requires a unique name needs to be changed before they continue filling out the form. It’s a nice time saver for later on when they click the “Create” button and don’t have to go back to the form to figure out which errors may need to be fixed. Take a look at this design in action:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/azure-wizard-and-form.png&quot; alt=&quot;Azure Wizard and Form&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;paypal-aurora&quot;&gt;PayPal Aurora&lt;/h4&gt;
+&lt;p&gt;The PayPal designers have done a great job taking the information available via OpenStack and reworking the Information Architecture in their Aurora UI. Take a look at a snapshot of their current navigation structure:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/aurora-ia.png&quot; alt=&quot;Aurora IA&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Not only have they grouped things logically in buckets that the user might be looking to act on, but they’ve included breadcrumbs above the working area on the left for users to be able to ground themselves on where they are at any time in the application. This is especially useful if the user has drilled down into a low level details page. Overall, I think this Information Architecture is a huge improvement over the one in Horizon.&lt;/p&gt;
+
+&lt;h4 id=&quot;cloudstack&quot;&gt;CloudStack&lt;/h4&gt;
+&lt;p&gt;I personally haven’t had the chance to use CloudStack, but any time I catch a glimpse of the dashboards that are in their UI, I know the designers are doing it right. The information is organized in a clear and concise way without too much clutter. It looks as though the folks working on this UI have done research to figure out what is the most important data to surface to users at a glance, and they’ve left the rest to further drill down detail pages. The visuals are soft are inviting which makes it easy for users to have up on one of their screens throughout the day if needed for monitoring a cloud environment. Here are some of the examples I’ve seen out there:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-1.jpg&quot; alt=&quot;CloudStack Dashboard 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-2.jpg&quot; alt=&quot;CloudStack Dashboard 2&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;google-compute-engine&quot;&gt;Google Compute Engine&lt;/h4&gt;
+&lt;p&gt;I hadn’t tried out Google Compute Engine before, so when I gave it a go I was pleasantly surprised at the first time user experience. Rather than dropping the user into an Overview with statistics that are empty considering they haven’t spun up any instances, Google decided to try and push the user in the right direction. They give a few options right off the bat:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/google-first-time-user-1.png&quot; alt=&quot;Google First Time User 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/google-first-time-user-2.png&quot; alt=&quot;Google First Time User 2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another important decision that Google made was to be sure to give users plenty of information before they decide to take certain actions. For example, when a user tries to delete a project (a pretty huge action), they are given a description of what will happen next if they confirm the action. I think this is a great view into designers thinking about how certain actions will impact users long term:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/google-delete-project.png&quot; alt=&quot;Google Delete Project&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;amazon-web-services&quot;&gt;Amazon Web Services&lt;/h4&gt;
+&lt;p&gt;Amazon Web Services includes a ton of different applications that a user can take advantage of. They’ve done a great job organizing their information architecture to handle all of these selections. One key design feature they added was to take into consideration the importance of horizontal screen space and to allow the user to hide/show the left hand navigation as needed.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/aws-dashboard.png&quot; alt=&quot;AWS Dashboard&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The dashboard in this view is also something to note. The designers have included a mixture of statistics along with common actions that they know a user will want to take when they jump into this UI.&lt;/p&gt;
+
+&lt;p&gt;Are there any features that you’ve seen out there that inspire you to have something better in Horizon? These are definitely some of the things that have caught my eye. Let me know if you have seen any others, I’m happy to log blueprints and put together designs!&lt;/p&gt;
+
+&lt;p&gt;Best,
+Liz&lt;/p&gt;
+</description>
+        <pubDate>Fri, 21 Feb 2014 00:00:00 -0500</pubDate>
+        <link>http://localhost:4000/openstack/2014/02/21/horizon-vs-others.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2014/02/21/horizon-vs-others.html</guid>
+        
+        
+        <category>openstack</category>
+        
+      </item>
+    
+      <item>
+        <title>The OpenStack Years: Maturing the Horizon Overview Page Part 2 - Interaction Design</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on January 30, 2014 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;hr /&gt;
@@ -79,9 +318,9 @@ Liz&lt;/p&gt;
       </item>
     
       <item>
-        <title>Maturing the Horizon Overview Page Part 1 - Understanding the User and Gathering</title>
+        <title>The OpenStack Years: Maturing the Horizon Overview Page Part 1 - Understanding the User and Gathering Requirements</title>
         <description>&lt;blockquote&gt;
-  &lt;p&gt;This was originally written and shared on January 27, 2014 when I was working daily with the OpenStack Community.&lt;/p&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on January 27, 2014 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;hr /&gt;
@@ -261,7 +500,7 @@ Liz&lt;/p&gt;
       <item>
         <title>The OpenStack Years: Which groups in OpenStack do User Experience designers influence today?</title>
         <description>&lt;blockquote&gt;
-  &lt;p&gt;This was originally written and shared on December 16, 2013 when I was working daily with the OpenStack Community.&lt;/p&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on December 16, 2013 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;hr /&gt;
@@ -324,7 +563,7 @@ Liz&lt;/p&gt;
       <item>
         <title>The OpenStack Years: Why a blog?</title>
         <description>&lt;blockquote&gt;
-  &lt;p&gt;This was originally written and shared on December 12, 2013 when I was working daily with the OpenStack Community.&lt;/p&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on December 12, 2013 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;hr /&gt;

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>The OpenStack Years: Running a Baseline Usability Test on Horizon - Experience Design in the Open Hybrid Cloud</title>
+    <meta name="author" content="Liz Blanchard" />
+    <meta name="description" content="The OpenStack Years: Running a Baseline Usability Test on Horizon" />
+    <meta name="keywords" content="The OpenStack Years: Running a Baseline Usability Test on Horizon, Experience Design in the Open Hybrid Cloud, openstack" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Experience Design in the Open Hybrid Cloud" property="og:site_name">
+
+    
+
+    
+      <meta content="The OpenStack Years: Running a Baseline Usability Test on Horizon" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/openstack/2014/03/25/horizon-baseline-usability-test.html" property="og:url">
+    
+
+    
+      <meta content="2014-03-25T00:00:00-04:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="openstack" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="The OpenStack Years: Running a Baseline Usability Test on Horizon">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/openstack/2014/03/25/horizon-baseline-usability-test.html">
+    
+
+    
+      <meta name="twitter:description" content="How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <div class="avatar">
+            <img class="profile" src="/static/img/lb.jpg">
+          </div>
+          <h1 class="author-name"><a href="/">Liz Blanchard</a></h1>
+          
+            <div class="profile-about">
+              I'm a Product Designer working in the Open Hybrid Cloud space.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/lizsurette" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://www.linkedin.com/in/liz-blanchard-a1365b2/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/lizsurette" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="search posts" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About Me</a></li>
+            
+              <li><a class="about" href="/projects/">My Projects</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">The OpenStack Years: Running a Baseline Usability Test on Horizon</h1>
+</header>
+
+<span class="time">25 Mar 2014</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/openstack">openstack</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><blockquote>
+  <p><em>This was originally written and shared on March 25, 2014 when I was working daily with the OpenStack Community.</em></p>
+</blockquote>
+
+<hr />
+
+<p>Over the last few months, I’ve been working with a group of folks from multiple companies on doing research around <a href="https://wiki.openstack.org/wiki/Personas#The_OpenStack_Personas_Working_Group">building a set of Personas</a> to present at the Atlanta Summit. In one of our first meetings, we talked about the need to do some <a href="http://en.wikipedia.org/wiki/Usability_testing">usability testing</a> as a separate effort from the Persona research. Earlier this month, a few of the folks from HP mentioned that they were hoping to run a usability test on the most recent (Icehouse) version of Horizon. This would be the first usability test within the community that I’m aware of and I was super excited that they were willing to let those of us interested to be a part of this testing effort.</p>
+
+<p>The decision was made to focus this first round of testing on self-service end users of Horizon and write tasks for our participants to perform based on typical tasks these types of users often perform. NOTE: We would like to do more and more usability testing and continue to include other types of users and tasks.</p>
+
+<p>We started out by putting together a <a href="https://www.surveymonkey.com/s/R8QZ2RB">screener</a> to be sure that we got the correct people to test. Here’s a quick look at the questions that we asked:</p>
+<blockquote>
+  <ol>
+    <li>What company do your work for?</li>
+    <li>How many people work for your organization worldwide? Please take into account all branches and locations.</li>
+    <li>What is the primary business or industry of your company?</li>
+    <li>What is your job title?</li>
+    <li>What is your primary job role?</li>
+    <li>How many years have you performed system administration and/or network management/administration?</li>
+    <li>Do your PRIMARY job responsibilities include any of the following?</li>
+    <li>Do you manage or use cloud services?</li>
+    <li>Please select the cloud service providers and technologies that you have good working knowledge of.</li>
+    <li>Which of the following administration tasks do you perform at least once a month?</li>
+    <li>In your daily software use as an IT professional, what percent of your time do you use?</li>
+    <li>Does your IT department currently offer cloud computing services at you company?</li>
+    <li>How many virtual servers are there in your server environment?</li>
+    <li>Who owns the servers in your company?</li>
+    <li>Please provide your email so we can potentially contact you for a study.</li>
+    <li>Please provide your first and last name.</li>
+    <li>Would you like us to consider you for other OpenStack community studies?</li>
+  </ol>
+</blockquote>
+
+<p>This is one of the most important pieces to doing a usability test. It’s really important to be sure to test the users on tasks that they would actually perform in their daily work so that you get the best results possible. We kept the screener nice and short so that folks didn’t feel overwhelmed and could respond to the survey in just a few minutes. We actually ended up getting a really great response from the community mailing lists and LinkedIn on the screener. It was very encouraging as responses of people interested in participating in the testing started to flow in.</p>
+
+<p>As we sifted through the screener results, we took some time to write up the scenarios and tasks that each participant would go through. We made sure to list these in priority order since depending on time, we might not be able to get to each task with all of our users. Here’s a list of what the users would be doing during the testing:</p>
+
+<blockquote>
+  <p><strong>Scenario 1: Launching an instance</strong></p>
+  <ul>
+    <li>Individual Tasks:
+      <ul>
+        <li>Create a security key pair.</li>
+        <li>Create a network.</li>
+        <li>Boot from cirros image.</li>
+        <li>Confirm that instance was launched successfully.</li>
+      </ul>
+    </li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>Scenario 2: Understand how many vCPUs are currently in use vs. how much quota is left.</strong></p>
+  <ul>
+    <li>Individual Tasks:
+      <ul>
+        <li>Check out Overview Page to review current quota use/limit details.</li>
+      </ul>
+    </li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>Scenario 3: Take a snapshot of an Instance to save for later use.</strong></p>
+  <ul>
+    <li>Individual Tasks:
+      <ul>
+        <li>Either Launch an instance successfully, or identify a running instance in the instance view.</li>
+        <li>Choose to take a snapshot of that instance.</li>
+        <li>Confirm that the snapshot was successful.</li>
+      </ul>
+    </li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>Scenario 4: Launch an instance from a snapshot.</strong></p>
+  <ul>
+    <li>Individual Tasks:
+      <ul>
+        <li>Choose to either create an instance and boot from a snapshot, or identify a snapshot to create an instance from.</li>
+        <li>Confirm that the instance was started successfully.</li>
+      </ul>
+    </li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>Scenario 5: Launch an instance that boots from a specific volume.</strong></p>
+  <ul>
+    <li>Individual Tasks:
+      <ul>
+        <li>Create a volume.</li>
+        <li>Launch an instance using Volume X as a boot source.</li>
+      </ul>
+    </li>
+  </ul>
+</blockquote>
+
+<p>At this point, we were pretty much ready to run the tests. HP had a system running the latest and greatest version of Horizon that our users could access, it was just a matter of scheduling some time with a few of the people who responded to the screener. Scheduling can sometimes take a fair amount of time, but these users were extremely quick to respond. I wondered if that’s just the way it is with testing passionate open source software users.</p>
+
+<p>We didn’t record the testing, since we wanted to be sure that the identity of the participants was protected, but we did take a ton of notes during each of the tests to be sure we captured everything that went on both good and bad. Since there were a few of us who wanted to observe the testing and one person running the test, we used online meeting software in order to share the screen and audio during the test. We had a few hiccups with audio quality and definitely have areas that we could improve on for the next round of testing, but for a first test we got some awesome results.</p>
+
+<p>Throughout the testing, we found that the majority of the hour that we had with participants was taken up by the first task. This isn’t necessarily a bad thing, especially for a first time test within the community. There were a lot of findings that came out of “Launching your first Instance” since it is fairly broad and hit a lot of pieces of the UI. We did get to go through a few of the other scenarios with a few users as well for additional findings, but here’s where we ended up with the list of improvements that we can make:</p>
+
+<blockquote>
+  <p><strong>High Priority</strong></p>
+  <ul>
+    <li>Improve error messages and error message catalog.</li>
+    <li>Fix Launch Instance workflow for end user and power user.</li>
+    <li>Improve informational help information about form fields.</li>
+    <li>Fix terminology. (e.g. launch instance, boot, shutoff, shutdown, etc.)</li>
+    <li>Show details for key pair and network in Launch Instance workflow.</li>
+    <li>Recommend a new Information Architecture.</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>Medium Priority</strong></p>
+  <ul>
+    <li>Create UI guidelines (of best practices) for Developers to use.</li>
+    <li>Improve Online Help.</li>
+    <li>Provide clearer indication the application is working after clicking a button and the application doesn’t respond immediately.</li>
+    <li>Ensure consistency of network selection. (Drag and drop of networks very inconsistent from the other pieces of the launch instance modal)</li>
+    <li>Create consistency of visualizations and section of action button recommendations on Instance table.</li>
+    <li>Suggest defaults for the forms entry fields.</li>
+    <li>Provide Image information details during image selection.</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>Low Priority</strong></p>
+  <ul>
+    <li>Allow users to edit the network an instance after launching instance.</li>
+    <li>Resolve confusion around the split inline actions button.</li>
+    <li>Explain what the Instance Boot Source field in Create Instance modal.</li>
+    <li>Provide description/high level information about flavors for flavor selection.</li>
+    <li>Make sorting clearer visually.</li>
+    <li>Provide solution for subnet checkbox to improve usability.</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>Nice to Have</strong></p>
+  <ul>
+    <li>Provide “Save as Draft” option in the wizard.</li>
+    <li>Change security group default name to “Default security group”.</li>
+  </ul>
+</blockquote>
+
+<p>Now that we’ve gathered a lot of great data, we will be focusing on how to make improvements to Horizon based initially on the high priority findings. This includes logging bugs and registering blueprints within Launchpad (both in the <a href="https://launchpad.net/horizon">Horizon</a> and <a href="https://launchpad.net/openstack-ux">User Experience</a> spaces). The current plan is to come up with some proposal designs and have a <a href="http://summit.openstack.org/cfp/details/32">design session</a> at the Atlanta Summit to create a plan for next steps on making sure Juno releases with features and improved functionality in Horizon that is important to our OpenStack users.</p>
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/openstack/2014/03/25/horizon-baseline-usability-test.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+  
+    
+      
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/openstack/2014/02/21/horizon-vs-others.html">The OpenStack Years: How does Horizon Stack up versus other Cloud Computing UIs?</a>
+                  
+                    (Categories: <a href="/category/openstack">openstack</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/openstack/2014/01/30/maturing-horizon-overview-part-2.html">The OpenStack Years: Maturing the Horizon Overview Page Part 2 - Interaction Design</a>
+                  
+                    (Categories: <a href="/category/openstack">openstack</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/openstack/2014/01/27/maturing-horizon-overview-part-1.html">The OpenStack Years: Maturing the Horizon Overview Page Part 1 - Understanding the User and Gathering Requirements</a>
+                  
+                    (Categories: <a href="/category/openstack">openstack</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/openstack/2013/12/16/openstack-user-experience-influence.html">The OpenStack Years: Which groups in OpenStack do User Experience designers influence today?</a>
+                  
+                    (Categories: <a href="/category/openstack">openstack</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/openstack/2013/12/12/openstack-an-introduction.html">The OpenStack Years: Why a blog?</a>
+                  
+                    (Categories: <a href="/category/openstack">openstack</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/openstack/2014/02/21/horizon-vs-others.html">&laquo; The OpenStack Years: How does Horizon Stack up versus other Cloud Computing UIs?</a>
+  
+  
+    <a class="next" href="/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html">Hello Again, World &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_The OpenStack Years: Running a Baseline Usability Test on Horizon";
+    var disqus_title = "The OpenStack Years: Running a Baseline Usability Test on Horizon";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          &copy; Liz Blanchard
+          
+            - <a href="https://github.com/lizsurette">https://github.com/lizsurette</a> - Powered by Jekyll.
+          
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+
