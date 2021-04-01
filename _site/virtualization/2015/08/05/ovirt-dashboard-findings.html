@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/static/img/favicon.ico" />
-    <title>Hello Again, World - Experience Design in the Open Hybrid Cloud</title>
+    <title>Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit - Experience Design in the Open Hybrid Cloud</title>
     <meta name="author" content="Liz Blanchard" />
-    <meta name="description" content="Hello Again, World" />
-    <meta name="keywords" content="Hello Again, World, Experience Design in the Open Hybrid Cloud, personal, open hybrid cloud" />
+    <meta name="description" content="Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit" />
+    <meta name="keywords" content="Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit, Experience Design in the Open Hybrid Cloud, virtualization" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     <meta content="1749788565247320" property="fb:app_id">
     <meta content="Experience Design in the Open Hybrid Cloud" property="og:site_name">
@@ -16,7 +16,7 @@
     
 
     
-      <meta content="Hello Again, World" property="og:title">
+      <meta content="Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit" property="og:title">
       <meta content="article" property="og:type">
     
 
@@ -25,11 +25,11 @@
     
 
     
-      <meta content="http://localhost:4000/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html" property="og:url">
+      <meta content="http://localhost:4000/virtualization/2015/08/05/ovirt-dashboard-findings.html" property="og:url">
     
 
     
-      <meta content="2021-03-17T00:00:00-04:00" property="article:published_time">
+      <meta content="2015-08-05T00:00:00-04:00" property="article:published_time">
       <meta content="http://localhost:4000/about/" property="article:author">
     
 
@@ -37,7 +37,7 @@
 
     
       
-        <meta content="personal" property="article:section">
+        <meta content="virtualization" property="article:section">
       
     
 
@@ -50,11 +50,11 @@
     <meta name="twitter:creator" content="@github.io">
 
     
-      <meta name="twitter:title" content="Hello Again, World">
+      <meta name="twitter:title" content="Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit">
     
 
     
-      <meta name="twitter:url" content="http://localhost:4000/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html">
+      <meta name="twitter:url" content="http://localhost:4000/virtualization/2015/08/05/ovirt-dashboard-findings.html">
     
 
     
@@ -122,18 +122,47 @@
       </div>
       <div class="col-sm-8 col-offset-1 main-layout">
         <header class="post-header">
-  <h1 class="post-title">Hello Again, World</h1>
+  <h1 class="post-title">Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit</h1>
 </header>
 
-<span class="time">17 Mar 2021</span>
+<span class="time">05 Aug 2015</span>
 
   <span class="categories">
-    &raquo; <a href="/category/personal">personal</a>, <a href="/category/open hybrid cloud">open hybrid cloud</a>
+    &raquo; <a href="/category/virtualization">virtualization</a>
   </span>
 
 
 <div class="content">
-  <div class="post"><p>I’ve decided that I’m going to start blogging again. Previously, I had written all about my design work with OpenStack. Since then, I’ve worked on a number of different projects including OpenShift and have recently transitioned to thinking about the Open Hybrid Cloud experience broadly. I’ll be sharing my stories as I enter and design for this brave new world. Stay tuned for more posts.</p>
+  <div class="post"><blockquote>
+  <p><em>This was originally written and shared on August 5, 2015 when I was working with the oVirt Community.</em></p>
+</blockquote>
+
+<hr />
+
+<p>At <a href="http://www.redhat.com/summit/">Red Hat Summit</a> this past year, we presented a few concepts that we hope to include as features in oVirt.NEXT. One of those concepts was a design for an overall dashboard. This dashboard would aggregate all of the data from within an environment (all data centers) and present the user with visualizations of this information. The following is the initial design concept for the overall dashboard that we showed:
+<img src="https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/overall-dashboard.png" alt="Overall Dashboard" /></p>
+
+<p>We talked to about a dozen people at Summit as they visited our locations in Customer Central as well as Community Central and asked them to give their initial reactions to the design. The questions that we focused on were:</p>
+<ol>
+  <li>What do you like with this design?</li>
+  <li>What could be improved with this design?</li>
+  <li>Is there anything missing in this design?</li>
+  <li>Is there anything that could be taken away to simplify this design?</li>
+</ol>
+
+<p>A list of the top findings that we came away with are:</p>
+<ol>
+  <li>This dashboard needs to be broken down to focus on each Data Center to be really useful. An example that I talked to one user about is how currently we show that there is 300GB of free storage. If the user wants to create a storage domain and allocate 150GB to it they need to know which Data Center to create that Storage Domain in. If Data Center 1 has 200GB free and Data Center 2 has 100GB free, there is currently no way to know that the user should create this Storage Domain in Data Center 1. If they try to create it in Data Center 2 they will be unsuccessful.</li>
+  <li>The “Most Utilized” lists will be EXTREMELY useful. They are a must-keep.</li>
+  <li>Perhaps the data that makes up the Health statistics could be filtered for just within last day. This way the user could see these and know that if a change occurs it is something they should take a look at right away.</li>
+  <li>The differences between the Storage in Utilization and the Storage Capacity area could be explained better. More research and design is needed to work these details out to make it clear to the user.</li>
+  <li>Users really liked seeing trends. The radial graphs with trends for history will be very helpful while monitoring oVirt environments.</li>
+</ol>
+
+<p>Based on this feedback that we got from our users, we have a clear path on the updates that we’d like to make to this design. Stay tuned for the next version! If you have any feedback of your own, please feel free to leave a comment below.</p>
+
+<p>Thanks,
+Liz</p>
 </div>
   <div class="share-page">
   <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
@@ -143,7 +172,7 @@
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
   <!-- Facebook -->
-  <div class="fb-share-button" data-href="http://localhost:4000/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+  <div class="fb-share-button" data-href="http://localhost:4000/virtualization/2015/08/05/ovirt-dashboard-findings.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
 </div>
 
 <div id="fb-root"></div>
@@ -164,12 +193,8 @@
         
           
       
-          
-      
     
         
-          
-      
           
       
     
@@ -179,6 +204,32 @@
         
           
       
+    
+  
+    
+      
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/virtualization/2015/06/18/fresh-look-oVirt-admin-portal.html">A fresh look for the oVirt Administrator Portal Dashboard</a>
+                  
+                    (Categories: <a href="/category/virtualization">virtualization</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
           
       
     
@@ -188,6 +239,11 @@
         
           
       
+    
+  
+    
+      
+        
           
       
     
@@ -197,6 +253,11 @@
         
           
       
+    
+  
+    
+      
+        
           
       
     
@@ -206,6 +267,11 @@
         
           
       
+    
+  
+    
+      
+        
           
       
     
@@ -215,8 +281,6 @@
         
           
       
-          
-      
     
   
     
@@ -224,61 +288,19 @@
         
           
       
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
     
   
   
+  </ul>
+</div>
+
 
 <div class="PageNavigation">
   
-    <a class="prev" href="/virtualization/2015/08/05/ovirt-dashboard-findings.html">&laquo; Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit</a>
+    <a class="prev" href="/virtualization/2015/06/18/fresh-look-oVirt-admin-portal.html">&laquo; A fresh look for the oVirt Administrator Portal Dashboard</a>
   
+  
+    <a class="next" href="/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html">Hello Again, World &raquo;</a>
   
 </div>
 
@@ -287,8 +309,8 @@
   <script type="text/javascript">
     /* <![CDATA[ */
     var disqus_shortname = "";
-    var disqus_identifier = "http://localhost:4000_Hello Again, World";
-    var disqus_title = "Hello Again, World";
+    var disqus_identifier = "http://localhost:4000_Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit";
+    var disqus_title = "Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit";
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

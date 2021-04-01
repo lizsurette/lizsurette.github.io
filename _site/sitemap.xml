@@ -5,8 +5,8 @@
     <description>How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 30 Mar 2021 20:51:11 -0400</pubDate>
-    <lastBuildDate>Tue, 30 Mar 2021 20:51:11 -0400</lastBuildDate>
+    <pubDate>Wed, 31 Mar 2021 21:20:58 -0400</pubDate>
+    <lastBuildDate>Wed, 31 Mar 2021 21:20:58 -0400</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -21,6 +21,291 @@
         <category>personal</category>
         
         <category>open hybrid cloud</category>
+        
+      </item>
+    
+      <item>
+        <title>Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on August 5, 2015 when I was working with the oVirt Community.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;At &lt;a href=&quot;http://www.redhat.com/summit/&quot;&gt;Red Hat Summit&lt;/a&gt; this past year, we presented a few concepts that we hope to include as features in oVirt.NEXT. One of those concepts was a design for an overall dashboard. This dashboard would aggregate all of the data from within an environment (all data centers) and present the user with visualizations of this information. The following is the initial design concept for the overall dashboard that we showed:
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/overall-dashboard.png&quot; alt=&quot;Overall Dashboard&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We talked to about a dozen people at Summit as they visited our locations in Customer Central as well as Community Central and asked them to give their initial reactions to the design. The questions that we focused on were:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;What do you like with this design?&lt;/li&gt;
+  &lt;li&gt;What could be improved with this design?&lt;/li&gt;
+  &lt;li&gt;Is there anything missing in this design?&lt;/li&gt;
+  &lt;li&gt;Is there anything that could be taken away to simplify this design?&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;A list of the top findings that we came away with are:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;This dashboard needs to be broken down to focus on each Data Center to be really useful. An example that I talked to one user about is how currently we show that there is 300GB of free storage. If the user wants to create a storage domain and allocate 150GB to it they need to know which Data Center to create that Storage Domain in. If Data Center 1 has 200GB free and Data Center 2 has 100GB free, there is currently no way to know that the user should create this Storage Domain in Data Center 1. If they try to create it in Data Center 2 they will be unsuccessful.&lt;/li&gt;
+  &lt;li&gt;The “Most Utilized” lists will be EXTREMELY useful. They are a must-keep.&lt;/li&gt;
+  &lt;li&gt;Perhaps the data that makes up the Health statistics could be filtered for just within last day. This way the user could see these and know that if a change occurs it is something they should take a look at right away.&lt;/li&gt;
+  &lt;li&gt;The differences between the Storage in Utilization and the Storage Capacity area could be explained better. More research and design is needed to work these details out to make it clear to the user.&lt;/li&gt;
+  &lt;li&gt;Users really liked seeing trends. The radial graphs with trends for history will be very helpful while monitoring oVirt environments.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Based on this feedback that we got from our users, we have a clear path on the updates that we’d like to make to this design. Stay tuned for the next version! If you have any feedback of your own, please feel free to leave a comment below.&lt;/p&gt;
+
+&lt;p&gt;Thanks,
+Liz&lt;/p&gt;
+</description>
+        <pubDate>Wed, 05 Aug 2015 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/virtualization/2015/08/05/ovirt-dashboard-findings.html</link>
+        <guid isPermaLink="true">http://localhost:4000/virtualization/2015/08/05/ovirt-dashboard-findings.html</guid>
+        
+        
+        <category>virtualization</category>
+        
+      </item>
+    
+      <item>
+        <title>A fresh look for the oVirt Administrator Portal Dashboard</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on June 18, 2015 when I was working with the oVirt Community.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;In the next major release of &lt;a href=&quot;http://www.ovirt.org/Home&quot;&gt;oVirt&lt;/a&gt;, we have been putting some thought into updating the Dashboard for the Administrator Portal. The goal for this update would be to allow admins to quickly glance at the state of their environment, see the metrics that are most important to them, and then jump off to dig even deeper from there.&lt;/p&gt;
+
+&lt;p&gt;The first step in our design efforts was to research what exists today in the oVirt Administrator Portal as well as other virtualization administration UIs out there and decide which of this information might make sense to surface on a dashboard. We did an initial mock-up based on this research so that we could show people and get some first glance reactions.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/ovirt-dashboard-1.png&quot; alt=&quot;oVirt Dashboard 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After running this initial mockup by a few people who know the virtualization space well, we put together and sent out a &lt;a href=&quot;https://docs.google.com/forms/d/1nGMgjHeWszisxWAuiV5eCahW_-OK_ytIiCpwEx_gFQE/viewform&quot;&gt;survey&lt;/a&gt; to the oVirt community &lt;a href=&quot;https://twitter.com/ovirt/status/601452731493011456&quot;&gt;asking for feedback&lt;/a&gt; from any and all administrators on what they’d like to see on a dashboard.&lt;/p&gt;
+
+&lt;p&gt;After excellent feedback in both areas, we were able to bring everything together that we’d learned and landed on a more polished first cut of what the oVirt.next Administrator Portal Dashboard could look like.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/ovirt-dashboard-2.png&quot; alt=&quot;oVirt Dashboard 2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We are still looking to gather feedback on the first round of this dashboard design. Please feel free to leave your thoughts in a comment below. Are you going to be attending &lt;a href=&quot;http://www.redhat.com/summit/&quot;&gt;Red Hat Summit&lt;/a&gt; this year? Stop by the oVirt booth in Community Central on Wednesday or Thursday if you want to take a closer look and give your feedback in person. We are working on a few other concepts that we will be sharing there as well, so come help shape the future direction of the oVirt Administrator Portal!&lt;/p&gt;
+
+&lt;p&gt;Thanks,
+Liz&lt;/p&gt;
+</description>
+        <pubDate>Thu, 18 Jun 2015 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/virtualization/2015/06/18/fresh-look-oVirt-admin-portal.html</link>
+        <guid isPermaLink="true">http://localhost:4000/virtualization/2015/06/18/fresh-look-oVirt-admin-portal.html</guid>
+        
+        
+        <category>virtualization</category>
+        
+      </item>
+    
+      <item>
+        <title>The OpenStack Years: Streamlining the Install of OpenStack with the RDO Manager UI</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on June 10, 2015 when I was working with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This post was &lt;a href=&quot;http://greenstack.die.upm.es/2015/06/10/streamlining-the-install-of-openstack-with-the-rdo-manager-ui/&quot;&gt;featured on GreenStack&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Before being able to use everything that OpenStack has to offer, you need to be able to install it. The installation step of OpenStack has been a heavily talked about topic over the last few years. Whether you are a developer or tester trying to get your environment up and running or an end user trying to use OpenStack to spin up VMs, you’ve most likely put a fair amount of time into the install and configuration step. Since it’s the first thing every user experiences with OpenStack we really need to make it as effortless as possible. OpenStack is an interesting beast because there are so many pieces to the project (some being optional) which make configuration very tricky. We’ve set out to reduce the frustration from a user’s point of view as we designed &lt;a href=&quot;https://www.rdoproject.org/RDO-Manager&quot;&gt;RDO Manager&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since OpenStack is so complex, it’s difficult to design an installation and configuration UI that steps the user through every single setting. One of the main goals we had in designing the RDO Manager UI is to surface the common configuration parameters to the user and tuck away the rest. This way, the novice user could install and configure their cloud without having to dig. The advanced user could dig a little deeper and get into additional settings that they might want to control. Designing the UI this way requires talking with as many people as possible who will use this application to install OpenStack so that we are sure we surface the most important configuration options. We are still learning more as new people use RDO Manager and give us feedback. The following is a walkthrough of the current design of the Overview page of the RDO Manager UI.&lt;/p&gt;
+
+&lt;p&gt;For all users, when they log into the RDO Manager UI they will first see the Overview page. From this view, the user should be able to do everything they need to for a simple OpenStack install. On the right, they will see a checklist to follow as they complete the necessary steps to plan their cloud deployment. Once they have fulfilled each step, they will be ready to deploy their cloud.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/checklist.png&quot; alt=&quot;Checklist&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The first thing a user will do to begin the planning process is register nodes. This is the hardware that will run the cloud. Clicking on “Register Nodes” will bring up a modal dialog for the user to either register nodes manually, or upload a set of nodes from a file such as a CSV.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/register-nodes.png&quot; alt=&quot;Register Nodes&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We’ve designed this modal to allow for registering multiple nodes at once so that the user doesn’t have to continue to come back into this modal for each additional node they’d like to register. Uploading a CSV file will populate the nodes from that file in a list on the left of the modal. The user can edit any parameters they wish before clicking “Register Nodes”.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/register-nodes-modal.png&quot; alt=&quot;Register Nodes Modal&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As nodes are registered, they will drop into groups (or Node Profiles) based on the their hardware specifications. This will make it easier to identify which nodes should be assigned to perform Compute, Controller, or Storage functions.&lt;/p&gt;
+
+&lt;p&gt;Once the nodes have been registered, the user will want to define their network configuration. In the first version of RDO Manager, there will be templates provided to create the networks, generate IP addresses for each node, and configure the services to run on the appropriate networks. Users will be able to edit this configuration file within a modal in the UI.&lt;/p&gt;
+
+&lt;p&gt;Before assigning deployment roles to nodes, the user may need to provide configuration details for some of the roles. This configuration includes things such as the provisioning image and service configuration for each role.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/edit-role.png&quot; alt=&quot;Edit Role&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Editing the service configuration will apply these parameters to the underlying services running on a node with this deployment role. This is where the most work has been needed to be sure we surface the most important configuration and hide away the advanced parameters so that we can keep it as simple as possible for the user.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/edit-role-modal.png&quot; alt=&quot;Edit Role Modal&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Assigning deployment roles to nodes is the last step in the checklist before the user can Verify and Deploy their environment. Users can either drag and drop roles onto node profiles or they can click the “+” to assign a role to a number of nodes. After assigning a role, the user can choose how many nodes they would like from the node profile to take on that deployment role.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/assign-roles.png&quot; alt=&quot;Assign Roles&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once the user has met all of the requirements in the checklist, they can click the Verify and Deploy button to kick off the deployment of their cloud.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/verify-and-deploy.png&quot; alt=&quot;Verify and Deploy&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What do you think about this design so far? Feel free to leave your thoughts in a comment below :) In a following post, I will cover the initial design thinking around monitoring the environment during and after deployment.&lt;/p&gt;
+
+&lt;p&gt;Will you be at &lt;a href=&quot;http://www.redhat.com/summit/&quot;&gt;Red Hat Summit&lt;/a&gt; this year and want to try RDO Manager out? Come to the RDO Booth in the Community Central area and I will have a system running for you to poke at and give comments on. I’d love to get your feedback in person!&lt;/p&gt;
+
+&lt;p&gt;Thanks!
+Liz&lt;/p&gt;
+</description>
+        <pubDate>Wed, 10 Jun 2015 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/openstack/2015/06/10/streamlining-openstack-install.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2015/06/10/streamlining-openstack-install.html</guid>
+        
+        
+        <category>openstack</category>
+        
+      </item>
+    
+      <item>
+        <title>The OpenStack Years: Moving forward as a User Experience Team in the OpenStack Juno release cycle</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on June 13, 2014 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This post was &lt;a href=&quot;https://superuser.openstack.org/articles/moving-forward-as-a-user-experience-team-in-the-openstack-juno-release-cycle/&quot;&gt;featured on superuser.openstack.org&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;OpenStack Juno Summit in Atlanta was a major turning point for User Experience professionals working on OpenStack. Not only did we have 3 specific design sessions around UX work and &lt;a href=&quot;https://www.openstack.org/summit/openstack-summit-atlanta-2014/session-videos/presentation/user-experience-in-the-openstack-community&quot;&gt;1 talk on the persona work we’ve done&lt;/a&gt;, all with great attendance, but we’ve committed to a number of actions we will be taking over the course of the Juno development cycle. All of these actions will improve User Experience work within the OpenStack community and the best part is that we will be working as a team to do this.&lt;/p&gt;
+
+&lt;h4 id=&quot;better-communication&quot;&gt;Better Communication…&lt;/h4&gt;
+&lt;p&gt;The first session that we had at Summit around UX was an hour and a half long design session to talk about all things User Experience. It was great to have almost everyone working on design and user focused work in one room together brainstorming on how we can work better as a team moving forward now that there are more than 2 of us :) One major step forward that we agreed on is that we will start &lt;a href=&quot;https://wiki.openstack.org/wiki/Meetings/UX&quot;&gt;meeting bi-weekly over IRC&lt;/a&gt;. We had our first meeting already and the communication channel is so much better already. There were just about 15 people who attended (a mixture of developers and designers) representing at least 7 different companies that I’m aware of. We covered a few basic topics during the first meeting such as a standing schedule of times for future meetings. But this meeting will eventually be important for us all to be on the same page around what we are designing towards for a specific release. We also invite anyone working on any project within OpenStack who may need some UX guidance. This gives a specific time and place that is published for anyone looking to get their requests on our radar.&lt;/p&gt;
+
+&lt;h4 id=&quot;making-it-easy-for-folks-to-get-in-touch-with-the-ux-team&quot;&gt;Making it Easy for Folks to Get in Touch with the UX Team…&lt;/h4&gt;
+&lt;p&gt;Coming to our bi-weekly meeting would be a great option. Also, if you prefer IRC and have something you’d like to contact us about right away you can find us in the #openstack-ux channel on Freenode. We agreed at summit that we will standardize on using the tag [UX] on the developer mailing list for communications as well, so if it’s an e-mail you’d like to craft and send, adding this tag to the subject line will be sure to get our attention.&lt;/p&gt;
+
+&lt;h4 id=&quot;prioritizing-work-on-the-ui-cli-and-api&quot;&gt;Prioritizing work on the UI, CLI, and API…&lt;/h4&gt;
+&lt;p&gt;A big topic within the UX team currently is around how we can be sure to evangelize User Experience work that can be done for projects that don't include a UI. We’d love to be able to contribute resources with 100% focus on UX work towards CLI and API efforts, but we unfortunately don’t have anyone with bandwidth to take this on currently. We are thinking it would be a good idea to reach out to folks in each project to be sure they know how UX could help with things like consistency of CLIs and APIs. If there is anyone currently working on these projects who have interest in UX type work, it would be great to connect with them and help drive forward their current UX efforts. Keep an eye out for more discussion on this topic within each of the teams. Also, if you currently work on a team and are interested in bringing more UX focus to CLIs, APIs, or anything else, let us know and we can do our best to help out!&lt;/p&gt;
+
+&lt;h4 id=&quot;tracking-ux-tasks&quot;&gt;Tracking UX Tasks…&lt;/h4&gt;
+&lt;p&gt;UX tasks are a bit unique in the way that the outcome of the tasks normally influence tasks that already exist or need to be created in other projects. &lt;a href=&quot;https://storyboard.openstack.org/#!/&quot;&gt;Storyboard&lt;/a&gt; is a tool that has been created within the OpenStack community that is being designed and developed based on the OpenStack task tracking process needs. The &lt;a href=&quot;https://wiki.openstack.org/wiki/StoryBoard&quot;&gt;Storyboard team&lt;/a&gt; has been amazing to work with and have been really interested in getting feedback from all of their users and potential users (including the UX team!). They are currently focusing on the features that are needed for users to transition over to using StoryBoard. The UX team has some requirements that are different from other projects (such as attaching images to stories) but the Storyboard team has been very responsive to getting these features in for us. We have already decided to move over to using Storyboard as a way to track out work as soon as a few infrastructure issues have been ironed out. This will be a great way to continue to give early feedback to the team as they solidify the first version of Storyboard for all of their end users.&lt;/p&gt;
+
+&lt;h4 id=&quot;a-standard-design-review-tool&quot;&gt;A Standard Design Review Tool…&lt;/h4&gt;
+&lt;p&gt;We’ve been attempting to find a great design review tool that we can all use to share and get feedback on our designs as a team. We haven’t had any luck with finding a great open source tool for this, but we are still searching. One tool that we’ve considered using is called &lt;a href=&quot;http://www.invisionapp.com/&quot;&gt;InVision&lt;/a&gt;. With this tool, we can upload images and keep revision history of images. Reviewers can come in and view these images and provide feedback directly on the images in the place that the comment applies. A conversation can then take place on this topic right inline to the design. Having one tool that everyone can subscribe to would make it easy to take our design communication to the next step. If you have any suggestions on open source design review tools, please let us know! In the meantime, we will continue to use a mixture of InVision and the mailing list to get feedback on our designs.&lt;/p&gt;
+
+&lt;h4 id=&quot;a-standard-design-tool&quot;&gt;A Standard Design Tool?…&lt;/h4&gt;
+&lt;p&gt;We talked a little bit about whether we need to standardize on one tool for design work or not. We all ultimately agreed that since there are a lot of stages of designs (ranging from sketching to high fidelity) and people have preferences and access to different design tools it makes sense to not standardize on one tool, but rather to have design template files for a number of different tools that folks can use. This file would include all of the basic design elements used in Horizon designs today. We will most likely start with templates for tools that a few of the very active designers are using (InDesign, Balsamiq, and maybe Axure). If there is a designer who starts contributing in the community and wants to use a new tool, they could put together a template for that tool and contribute that to the community as a first step. These templates will eventually live on the &lt;a href=&quot;https://wiki.openstack.org/wiki/UX&quot;&gt;UX wiki&lt;/a&gt; for designer consumption.&lt;/p&gt;
+
+&lt;h4 id=&quot;juno-design-priorities&quot;&gt;Juno Design Priorities…&lt;/h4&gt;
+&lt;p&gt;Since we had a few design sessions within the Horizon track, we were able to discuss some of the specific design work that we’ve been doing and would like to continue working on through the Juno cycle. We &lt;a href=&quot;https://etherpad.openstack.org/p/juno-summit-horizon-usability-test-results&quot;&gt;discussed&lt;/a&gt; the results that we got from running the baseline Horizon Usability Testing and all agreed that we should continue to make design proposal updates for the Launch Instance Workflow, Error Messaging Guidelines, and Inline Help Guidelines within Horizon. We also proposed some ideas about improving the Overview Pages within Horizon. This work will continue to move forward this release based on &lt;a href=&quot;https://etherpad.openstack.org/p/juno-summit-overview-page-horizon&quot;&gt;feedback&lt;/a&gt; from the Horizon developers and operators in attendance. Another big focus during the Juno cycle will be around &lt;a href=&quot;https://etherpad.openstack.org/p/juno-summit-horizon-tuskar-ui&quot;&gt;finding the right place for the Tuskar UI work&lt;/a&gt; that has been done. This UI is starting to touch more components than just Horizon and TripleO and will continue to grow throughout the next release. And of course, we will continue to push our &lt;a href=&quot;https://wiki.openstack.org/wiki/Personas&quot;&gt;Persona work&lt;/a&gt; forward and strive towards having a final first set of personas to use as we design new features.&lt;/p&gt;
+
+&lt;p&gt;This isn’t an exhaustive list of things we plan to accomplish in the Juno release cycle, and some of these will continue throughout releases moving forward. But I’m proud of the incredible progress we’ve made as a new group that is still forming within such a large community of lots of projects. Are there items that you think the UX team should get involved with in the community? Drop me a note if you think so and we can add in new stories to Storyboard :)&lt;/p&gt;
+
+&lt;p&gt;Best,
+Liz&lt;/p&gt;
+</description>
+        <pubDate>Fri, 13 Jun 2014 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/openstack/2014/06/13/moving-forward-in-juno.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2014/06/13/moving-forward-in-juno.html</guid>
+        
+        
+        <category>openstack</category>
+        
+      </item>
+    
+      <item>
+        <title>The OpenStack Years: An explosion of User Experience discussions at the OpenStack Juno Summit</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;em&gt;This was originally written and shared on May 6, 2014 when I was working daily with the OpenStack Community.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Next week OpenStackers will be getting together in person for the Juno Summit in Atlanta to plan out what exactly we think is important to deliver in the Juno release of OpenStack. I’m extremely happy to say that there are a number of sessions that are focused on talking through use cases, users, and User Experience efforts within OpenStack. I wanted to take some time to introduce the sessions that I plan to participate in with respect to UX and I hope to see any of you who are interested join me!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Sessions 1 &amp;amp; 2 - &lt;a href=&quot;http://junodesignsummit.sched.org/event/e13c8775849567fe8576c16875d5c547#.U2ewpuZdXC4&quot;&gt;User Experience Designers Gathering&lt;/a&gt;&lt;/strong&gt; on the Cross-Project track
+&lt;em&gt;Tuesday May 13, 2:50pm-4:20pm&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The last time I was at summit, it seemed like there were a lot of “Cross-project” topics that needed to be discussed in the design summit sessions. This year, the coordinators of these sessions made sure that there was a track set up for this type of discussion. Although they don’t specify one specific component of OpenStack, these talks are just as important as the core track sessions since they could actually contain one or more of the components. The User Experience group was lucky enough to get two of these session times back-to-back where we will have time to discuss moving ourselves forward as a group.&lt;/p&gt;
+
+&lt;p&gt;In this session we will try to get through as much as we can around the following topics:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Introduction of everyone in the session.
+    &lt;ul&gt;
+      &lt;li&gt;What role do you have today?&lt;/li&gt;
+      &lt;li&gt;How does UX affect you?&lt;/li&gt;
+      &lt;li&gt;How will you (if you plan to) contribute to OpenStack UX?&lt;/li&gt;
+      &lt;li&gt;How active do you plan to be for the Juno development cycle?&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Discussion of where are are currently in UX.
+    &lt;ul&gt;
+      &lt;li&gt;What components have we worked on so far?&lt;/li&gt;
+      &lt;li&gt;What does our current process look like?&lt;/li&gt;
+      &lt;li&gt;What tools do we use?&lt;/li&gt;
+      &lt;li&gt;What has worked well?&lt;/li&gt;
+      &lt;li&gt;What could be improved?&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Discussion on where we want to go for Juno.
+    &lt;ul&gt;
+      &lt;li&gt;How should we improve our process and tooling during the Juno release? How do we track this and who will take certain action items?&lt;/li&gt;
+      &lt;li&gt;What tools should we remove/add?&lt;/li&gt;
+      &lt;li&gt;What are our goals for UX during the Juno release? (More research/requirements work? More designing? More user testing?…) Which components will we focus on? (Horizon? Tuskar? Heat? Ceilometer?….) Which features will we focus on?&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;UX as a program.
+    &lt;ul&gt;
+      &lt;li&gt;What does it mean to be a program?&lt;/li&gt;
+      &lt;li&gt;Would UX make sense to be a program? If so, how should we work together to make this something we could propose as a team?&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The design summit sessions are separate from the main conference sessions. They happen in parallel, so you might need to make some hard decisions as a designer, developer, or operator on which talks vs. design sessions you attend. The great news is that mostly all of the talks given in the main conference are recorded and shared on the &lt;a href=&quot;https://www.youtube.com/user/OpenStackFoundation&quot;&gt;OpenStack Foundation youtube channel&lt;/a&gt; a few weeks after summit. Also, all of the design summit session notes will be tracked in &lt;a href=&quot;https://wiki.openstack.org/wiki/Summit/Juno/Etherpads&quot;&gt;respective etherpads&lt;/a&gt;. You can find the etherpad for this specific session &lt;a href=&quot;https://etherpad.openstack.org/p/juno-summit-cross-project-user-experience&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Session 3 - &lt;a href=&quot;http://openstacksummitmay2014atlanta.sched.org/event/e19260fd989bb307e94b5a25558612f4#.U2eNceZdWG_&quot;&gt;User Experience in the OpenStack Community&lt;/a&gt;&lt;/strong&gt; as part of the main conference &lt;em&gt;Wednesday May 14, 3:30pm-4:10pm&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the one talk during the main conference that I will be delivering with 3 other UX professionals. It was exciting to me that this was accepted in the main conference since it showed that there is interest from the attendees in where we’ve been with User Experience so far in OpenStack and where we plan to go.&lt;/p&gt;
+
+&lt;p&gt;In this talk we will be sharing our progress in the following areas:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Understanding the OpenStack users&lt;/li&gt;
+  &lt;li&gt;Requirements gathering&lt;/li&gt;
+  &lt;li&gt;Interaction design&lt;/li&gt;
+  &lt;li&gt;Design support during development&lt;/li&gt;
+  &lt;li&gt;Usability testing and feeding results back into new requirements&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We will also discuss the recent efforts, which build on Dave Neary’s previous work, to develop a set of personas to help the development community align with their users’ needs and tasks. We’ll review the methodology used to develop the personas, insights from the user interviews, and the personas created from the effort. Finally, we will provide recommendations and examples for how the community can effectively use the personas during their own planning, design, development, and testing efforts to improve the overall user experience.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Session 4 - &lt;a href=&quot;http://junodesignsummit.sched.org/event/db0c611f2dce2bf80df2287039c68d76#.U2ew2uZdWG8&quot;&gt;Review Horizon Usability Test feedback, proposals&lt;/a&gt;&lt;/strong&gt; on the Horizon track &lt;em&gt;Friday May 16, 9:00am-9:40am&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Back in March we conducted a set of baseline usability tests on the Horizon UI. My last blog post explained the process we took and reported out our findings. In this design session, we will quickly review these findings and then start discussing the design directions we’ve started to take on fixing these usability issues that were identified. The main proposals we will go through cover the following topics:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Fix Launch Instance workflow for end user and power user.&lt;/li&gt;
+  &lt;li&gt;Improve error messages and error message catalog.&lt;/li&gt;
+  &lt;li&gt;Improve informational help information about form fields.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;A &lt;a href=&quot;http://lists.openstack.org/pipermail/openstack-dev/2014-April/033625.html&quot;&gt;discussion&lt;/a&gt; has been started on the development mailing list, so if you plan to attend this session, take a quick look at the history to familiarize yourself with the topics and designs we will be discussing.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Session 5 - &lt;a href=&quot;http://junodesignsummit.sched.org/event/5114c75a9b7567d6bca752fcd0c28302#.U2ew3eZdWG8&quot;&gt;Dashboard Accessibility / Improving Overview Pages in Horizon&lt;/a&gt;&lt;/strong&gt; on the Horizon track &lt;em&gt;Friday May 16, 9:50am - 10:30am&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;There were so many great design summit proposals this time around, that our PTL suggested we try to combine a few so that each can have time during Summit for discussion. This session combines a talk around the current state and next steps of making sure the Horizon UI is accessible with an effort around improving the Overview pages in Horizon. Both topics encompass bringing a new level of maturity to the Horizon dashboard and focusing on needs of the end-user.&lt;/p&gt;
+
+&lt;p&gt;The Accessibility talk will go through a &lt;a href=&quot;https://wiki.openstack.org/wiki/Horizon/WebAccessibility&quot;&gt;wiki page&lt;/a&gt; of ideas around both improving accessibility as well as continuing to test for issues.&lt;/p&gt;
+
+&lt;p&gt;The Overview page discussion time will be used to present some design options for using data from Ceilometer that would be shown to End Users or Administrators depending on their role. A few early concepts have been created and can be seen in the &lt;a href=&quot;http://junodesignsummit.sched.org/event/5114c75a9b7567d6bca752fcd0c28302#.U2ew3eZdWG8&quot;&gt;session schedule details&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Session 6 - &lt;a href=&quot;http://junodesignsummit.sched.org/event/056d1eccc8485910e62bed8c65f7a8e5#.U2ew3-ZdWG8&quot;&gt;Horizon Dev/Ops Session&lt;/a&gt;&lt;/strong&gt; on the Horizon track &lt;em&gt;Friday May 16, 10:50am-11:30am&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;There has been feedback from operators who attended past summits that they didn’t feel welcome to attend any of the design summit sessions. The goal of these sessions is to allow for uninterrupted planning discussions for deciding what will be accomplished in the next release of OpenStack, but I know that the intention was not to shut operators out! Coordinators heard this feedback and are making sure that all operators feel welcome to come give their real-world feedback to developers as we work through planning the Juno release.&lt;/p&gt;
+
+&lt;p&gt;On top of this, Tom Fifield had the brilliant idea of setting aside some time for each track to have a specific discussion between operators and developers to be sure that developers understand the needs of their end-users. What are developers working on today that they need feedback on from operators? Where are there gaps in Horizon for operators today that developers need to put some focus on? I’m mostly looking forward to observing this discussion, but would love to make some contacts with operators for future usability testing and persona research efforts.&lt;/p&gt;
+
+&lt;p&gt;If you have any interest in User Experience in OpenStack, I highly recommend that you try to attend at least one of these sessions and get to know other designers and developers who are working in this space. Even if you are an end user or administrator of a cloud environment today and have some feedback for us, make sure you track us down!&lt;/p&gt;
+
+&lt;p&gt;Best,
+Liz&lt;/p&gt;
+</description>
+        <pubDate>Tue, 06 May 2014 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/openstack/2014/05/06/explosion-ux-juno-summit.html</link>
+        <guid isPermaLink="true">http://localhost:4000/openstack/2014/05/06/explosion-ux-juno-summit.html</guid>
+        
+        
+        <category>openstack</category>
         
       </item>
     
