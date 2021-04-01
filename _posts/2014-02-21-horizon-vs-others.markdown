@@ -42,7 +42,7 @@ Not only have they grouped things logically in buckets that the user might be lo
 I personally haven't had the chance to use CloudStack, but any time I catch a glimpse of the dashboards that are in their UI, I know the designers are doing it right. The information is organized in a clear and concise way without too much clutter. It looks as though the folks working on this UI have done research to figure out what is the most important data to surface to users at a glance, and they've left the rest to further drill down detail pages. The visuals are soft are inviting which makes it easy for users to have up on one of their screens throughout the day if needed for monitoring a cloud environment. Here are some of the examples I've seen out there:
 ![CloudStack Dashboard 1](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-1.jpg)
 
-![CloudStack Dashboard 2](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-2.jpg)
+![CloudStack Dashboard 2](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-2.png)
 
 
 #### Google Compute Engine
