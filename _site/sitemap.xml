@@ -5,13 +5,77 @@
     <description>How does if feel currently to experience the Open Hybrid Cloud? What do users see today and how can we design for the future?</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 31 Mar 2021 21:20:58 -0400</pubDate>
-    <lastBuildDate>Wed, 31 Mar 2021 21:20:58 -0400</lastBuildDate>
+    <pubDate>Thu, 01 Apr 2021 17:32:58 -0400</pubDate>
+    <lastBuildDate>Thu, 01 Apr 2021 17:32:58 -0400</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
+        <title>Running an Example Node.js Kubernetes based Application with the new Developer Sandbox for Red Hat OpenShift</title>
+        <description>&lt;p&gt;I’m a Product Designer at Red Hat. Every day I must consider “How can we improve the experience for our users?”. Let me share my experience with the &lt;a href=&quot;https://developers.redhat.com/developer-sandbox&quot;&gt;new Developer Sandbox for Red Hat OpenShift&lt;/a&gt;. In my opinion it’s an excellent step towards improving our Developer’s Experience of using OpenShift.&lt;/p&gt;
+
+&lt;p&gt;You might be wondering “who is this Developer persona?” that we are serving with this Sandbox environment. A lot of the features of the OpenShift Developer Console target a DevOps Engineer. This person may be exploring what it would mean for their team to transition to a containerized deployment. It could be argued that an IT Decision Maker like an IT Manager or Director, an Architect, or a trailblazing Application Developer are personas that are also targeted with this Sandbox.&lt;/p&gt;
+
+&lt;p&gt;Let’s walk through the process of launching your Developer Sandbox for Red Hat OpenShift. Then I’ll take you through the process of deploying an example Node.js application.&lt;/p&gt;
+
+&lt;h4 id=&quot;first-request-your-developer-sandbox-for-red-hat-openshift&quot;&gt;First: Request your Developer Sandbox for Red Hat OpenShift.&lt;/h4&gt;
+&lt;p&gt;What does it mean to have a Developer Sandbox? You’ll get Developer access to an OpenShift cluster at zero charge for 30 days.  If you’d like to follow along, you can &lt;a href=&quot;https://developers.redhat.com/developer-sandbox&quot;&gt;request a Sandbox of your own&lt;/a&gt;.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/developer-sandbox.png&quot; alt=&quot;Developer Sandbox&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In order to launch a Sandbox, you will need to create a Red Hat account or if you already have one, log in to your existing account. Once you have requested a Sandbox, logging in is a breeze since you make use of your Red Hat account. Make sure you select to log in as the “DevSandbox” user. The “OpenShift_SRE” user is the login that the team ensuring your cluster remains running and functional uses to administer things :)&lt;/p&gt;
+
+&lt;h4 id=&quot;second-enjoy-a-guided-tour-of-the-developer-console&quot;&gt;Second: Enjoy a guided tour of the Developer Console.&lt;/h4&gt;
+&lt;p&gt;Now that you are logged in, you can walk through a quick guided tour of the Developer perspective of the Console. (Of course if you wish, you can skip this!) In this tour you will get a better grounding around where you might go for Monitoring, how to Search for resources, and how to get Help if you need further assistance. You’ll also learn about the Perspective switcher that will allow you to switch from the Developer perspective to the Administrator perspective. While you do have access to this Administrator area of the console, you won’t be able to see and manage EVERYTHING a user with Admin privileges would be able to.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/welcome-dev-perspective.png&quot; alt=&quot;Developer Perspective Welcome&quot; /&gt;
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/guided-tour.png&quot; alt=&quot;Guided Tour&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;third-get-a-sample-application-up-and-running&quot;&gt;Third: Get a sample application up and running.&lt;/h4&gt;
+&lt;p&gt;Now let’s get an application running. I recommend starting with creating a sample application to get a feel for what you can do ultimately with your own application. Within the “Topology” section, there is a card that lists out a few “Quick Starts”. The first link allows you to work through a tutorial on creating a sample application. Click that link to find that a side panel slides out with a few steps to follow.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/select-quickstart.png&quot; alt=&quot;Select Quickstart&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Following the instructions in the quick start, you’ll notice a number of choice you’d be able to make if you wanted to get started using a code sample. In this case we will follow the quick start’s lead and select Node.js.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/select-nodejs.png&quot; alt=&quot;Select Node.js&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since we are making use of the sample, we can go ahead and accept the defaults that have been filled in on the form. This is where if you are deploying your own Node.js application you could point to your own Git Repo.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/create-application.png&quot; alt=&quot;Create Application&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s as simple as that! The application will take just a few seconds to spin up and the donut chart around the Node.js logo will turn from a light blue to a darker blue signifying there is a pod running.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/application-created.png&quot; alt=&quot;Application Created&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;fourth-dig-in-a-bit-deeper-to-get-to-know-the-details-of-your-application&quot;&gt;Fourth: Dig in a bit deeper to get to know the details of your application.&lt;/h4&gt;
+&lt;p&gt;If you are following the quick start, you can continue on to get an understanding of a few extra pieces around your application running. There are a few icons surrounding the Node.js logo that we should explore.&lt;/p&gt;
+
+&lt;p&gt;In the bottom left, there is an icon that represents the build status. Hovering over it will give you a quick textual status and clicking it will drill into the log for the build that has run. Typically, you’d really only need to navigate in this far if something seems like it’s gone wrong with the build.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/build-status.png&quot; alt=&quot;Build Status&quot; /&gt;
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/build-logs.png&quot; alt=&quot;Build Logs&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the bottom right, there is an icon that represents the source code location. Hovering over it will give you a quick textual hint that you can access the code and clicking it will drill into the source code for editing. In the case of this sample running on the OpenShift Developer Sandbox, it opens up &lt;a href=&quot;https://developers.redhat.com/products/codeready-workspaces/overview&quot;&gt;Red Hat CodeReady Workspaces&lt;/a&gt; which is an OpenShift-native developer workspace server and IDE.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/source-code.png&quot; alt=&quot;Source Code&quot; /&gt;
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/crw.png&quot; alt=&quot;CodeReady Workspaces&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, in the top right, there is an icon that represents the URL to your running application. Hovering over it will guide you towards opening the URL and clicking it will open the application in a new tab. In this case we get to see the sample application output running which gives even more guidance around developing with OpenShift.
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/open-url.png&quot; alt=&quot;Open URL&quot; /&gt;
+&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/application.png&quot; alt=&quot;Application&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That’s it for the quick tour of creating an example application making use of the OpenShift Developer Sandbox. If you fall into the category of any type of Developer, I’d encourage you to give it a shot and I’d love to hear any feedback you have. Feel free to &lt;a href=&quot;https://lizsurette.github.io/about/&quot;&gt;send me an email&lt;/a&gt;! It’s always great to hear how we might be able to make improvements on user experience.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 01 Apr 2021 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/open%20hybrid%20cloud/kubernetes/openshift/nodejs/2021/04/01/example-kubernetes-on-openshift-sandbox.html</link>
+        <guid isPermaLink="true">http://localhost:4000/open%20hybrid%20cloud/kubernetes/openshift/nodejs/2021/04/01/example-kubernetes-on-openshift-sandbox.html</guid>
+        
+        
+        <category>open hybrid cloud</category>
+        
+        <category>kubernetes</category>
+        
+        <category>openshift</category>
+        
+        <category>nodejs</category>
+        
+      </item>
+    
+      <item>
         <title>Hello Again, World</title>
-        <description>&lt;p&gt;I’ve decided that I’m going to start blogging again. Previously, I had written all about my design work with OpenStack. Since then, I’ve worked on a number of different projects including OpenShift and have recently transitioned to thinking about the Open Hybrid Cloud experience broadly. I’ll be sharing my stories as I enter and design for this brave new world. Stay tuned for more posts.&lt;/p&gt;
+        <description>&lt;p&gt;I’ve decided that I’m going to start blogging again. Previously, I had written all about my design work with OpenStack and a bit about the oVirt community work I did. Since then, I’ve worked on a number of different projects including OpenShift and have recently transitioned to thinking about the Open Hybrid Cloud experience broadly. I’ll be sharing my stories as I enter and design for this brave new world. Stay tuned for more posts.&lt;/p&gt;
 </description>
         <pubDate>Wed, 17 Mar 2021 00:00:00 -0400</pubDate>
         <link>http://localhost:4000/personal/open%20hybrid%20cloud/2021/03/17/hello-world.html</link>
@@ -517,7 +581,7 @@ Liz&lt;/p&gt;
 &lt;p&gt;I personally haven’t had the chance to use CloudStack, but any time I catch a glimpse of the dashboards that are in their UI, I know the designers are doing it right. The information is organized in a clear and concise way without too much clutter. It looks as though the folks working on this UI have done research to figure out what is the most important data to surface to users at a glance, and they’ve left the rest to further drill down detail pages. The visuals are soft are inviting which makes it easy for users to have up on one of their screens throughout the day if needed for monitoring a cloud environment. Here are some of the examples I’ve seen out there:
 &lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-1.jpg&quot; alt=&quot;CloudStack Dashboard 1&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-2.jpg&quot; alt=&quot;CloudStack Dashboard 2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/cloudstack-dashboard-2.png&quot; alt=&quot;CloudStack Dashboard 2&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;google-compute-engine&quot;&gt;Google Compute Engine&lt;/h4&gt;
 &lt;p&gt;I hadn’t tried out Google Compute Engine before, so when I gave it a go I was pleasantly surprised at the first time user experience. Rather than dropping the user into an Overview with statistics that are empty considering they haven’t spun up any instances, Google decided to try and push the user in the right direction. They give a few options right off the bat:
