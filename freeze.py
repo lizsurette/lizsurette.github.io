@@ -16,6 +16,10 @@ def about():
     yield {}
 
 @freezer.register_generator
+def writings():
+    yield {}
+
+@freezer.register_generator
 def games():
     yield {}
 
