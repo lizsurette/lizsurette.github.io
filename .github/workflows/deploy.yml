@@ -23,11 +23,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Generate static site
-        run: python generate_static.py
+        run: python freeze.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          cname: www.stackabledesign.com 
+          publish_dir: ./_site 
