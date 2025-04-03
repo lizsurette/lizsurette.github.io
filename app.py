@@ -1,10 +1,11 @@
-from flask import Flask, render_template, url_for, abort
+from flask import Flask, render_template, url_for, abort, send_from_directory
 from flask_flatpages import FlatPages
 from datetime import datetime
 import os
 import logging
 import yaml
 import markdown
+import shutil
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -204,6 +205,29 @@ def strands():
 def projects():
     return render_template('projects.html', title='Projects')
 
+# Add a function to copy static assets during site generation
+def copy_static_assets():
+    try:
+        # Create _site/static directory if it doesn't exist
+        site_static_dir = os.path.join('_site', 'static')
+        if not os.path.exists(site_static_dir):
+            os.makedirs(site_static_dir)
+        
+        # Copy static assets
+        app_static_dir = os.path.join('app', 'static')
+        if os.path.exists(app_static_dir):
+            for item in os.listdir(app_static_dir):
+                src = os.path.join(app_static_dir, item)
+                dst = os.path.join(site_static_dir, item)
+                if os.path.isdir(src):
+                    if os.path.exists(dst):
+                        shutil.rmtree(dst)
+                    shutil.copytree(src, dst)
+                else:
+                    shutil.copy2(src, dst)
+    except Exception as e:
+        logger.error(f"Error copying static assets: {e}")
+
 @app.context_processor
 def utility_processor():
     def format_date(date):
@@ -218,6 +242,9 @@ def utility_processor():
 if __name__ == '__main__':
     logger.info(f"Posts directory at startup: {app.config['FLATPAGES_ROOT']}")
     logger.info(f"Directory exists at startup: {os.path.exists(app.config['FLATPAGES_ROOT'])}")
+    
+    # Copy static assets when running in development
+    copy_static_assets()
     
     try:
         all_posts = []
