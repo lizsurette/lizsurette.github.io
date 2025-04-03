@@ -1,34 +1,80 @@
 # Liz Blanchard's Personal Website
 
-A Flask-based personal website featuring a blog, projects showcase, and interactive games.
-
-## Setup
-
-1. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Run the development server:
-```bash
-python app.py
-```
-
-The site will be available at http://localhost:5000
+A personal website built with Flask and Frozen-Flask for static site generation.
 
 ## Project Structure
 
-- `app.py` - Main Flask application
-- `app/templates/` - HTML templates
-- `app/static/` - Static files (CSS, images, etc.)
-- `app/posts/` - Markdown blog posts
-- `requirements.txt` - Python dependencies
+```
+.
+├── app/                    # Flask application
+│   ├── posts/             # Markdown blog posts
+│   ├── static/            # Static assets (CSS, JS, images)
+│   └── templates/         # HTML templates
+├── _site/                 # Generated static site
+├── app.py                 # Flask application
+├── freeze.py              # Static site generator
+├── requirements.txt       # Python dependencies
+├── deploy.sh              # Deployment script
+├── push.sh                # Git push script
+└── serve.sh               # Local development server
+```
+
+## Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/lizsurette/lizsurette.github.io.git
+   cd lizsurette.github.io
+   ```
+
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Development
+
+1. Run the Flask development server:
+   ```bash
+   ./serve.sh
+   ```
+
+2. Generate the static site:
+   ```bash
+   python freeze.py
+   ```
+
+3. Test the static site locally:
+   ```bash
+   cd _site
+   python -m http.server 8000
+   ```
+
+## Deployment
+
+1. Push changes to GitHub:
+   ```bash
+   ./push.sh
+   ```
+
+2. Deploy to GitHub Pages:
+   ```bash
+   ./deploy.sh
+   ```
+
+## Features
+
+- Blog posts written in Markdown
+- Static site generation with Frozen-Flask
+- Responsive design
+- Interactive games (Hangman, Snake, Strands)
+- Project showcase
 
 ## Adding Blog Posts
 
@@ -44,15 +90,6 @@ categories: [Category1, Category2]
 
 Your post content here in Markdown format.
 ```
-
-## Features
-
-- Responsive design
-- Blog with category support
-- Project showcase
-- Interactive games (Snake, Hangman, Strands)
-- About page
-- Social media links
 
 ## Deploying to GitHub Pages
 
