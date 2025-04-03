@@ -66,4 +66,19 @@ if __name__ == '__main__':
     copy_static_assets()
     
     # Freeze the site
-    freezer.freeze() 
+    freezer.freeze()
+    
+    # Update static file paths in generated HTML files
+    for root, dirs, files in os.walk('_site'):
+        for file in files:
+            if file.endswith('.html'):
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                
+                # Replace relative static paths with absolute paths
+                content = content.replace('../static/', '/static/')
+                content = content.replace('./static/', '/static/')
+                
+                with open(file_path, 'w') as f:
+                    f.write(content) 
