@@ -12,11 +12,19 @@ def post():
         yield {'path': page.path}
 
 @freezer.register_generator
+def index():
+    yield {}
+
+@freezer.register_generator
 def about():
     yield {}
 
 @freezer.register_generator
 def writings():
+    yield {}
+
+@freezer.register_generator
+def projects():
     yield {}
 
 @freezer.register_generator
