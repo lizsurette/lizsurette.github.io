@@ -11,7 +11,6 @@
 
 body {
   font-family: "Roboto Condensed", Arial, sans-serif;
-  background: url("/static/img/subtle_dots.png");
   line-height: 1.5em;
   font-weight: 300;
   font-size: 16px;
@@ -173,4 +172,191 @@ div.col-sm-3 div.profile-about {
   div.col-sm-3 {
     margin-top: 30px;
   }
+}
+
+.back-link {
+  margin: 15px 0;
+  font-size: 16px;
+}
+
+.back-link a {
+  color: #333;
+  text-decoration: none;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  transition: all 0.3s ease;
+}
+
+.back-link a:hover {
+  background-color: #e8e8e8;
+  color: #000;
+  text-decoration: none;
+}
+
+.top-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.top-navigation a {
+  color: #3fa757;
+  text-decoration: none;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  max-width: 48%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-navigation a:hover {
+  color: #2d7a41;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+.prev-post {
+  margin-right: auto;
+}
+
+.next-post {
+  margin-left: auto;
+  text-align: right;
+}
+
+/* New styles for Flask app */
+.container {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 250px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-right: 20px;
+}
+
+.content {
+  flex: 1;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.author-name {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.social-links {
+  margin-bottom: 20px;
+}
+
+.social-links a {
+  margin-right: 10px;
+}
+
+.main-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.main-nav li {
+  margin-bottom: 10px;
+}
+
+.main-nav a {
+  color: #3fa757;
+  text-decoration: none;
+}
+
+.main-nav a:hover {
+  text-decoration: underline;
+}
+
+/* Writings page styles */
+.posts {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.posts li {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.post-date {
+  color: #999;
+  font-size: 0.9em;
+  margin-right: 10px;
+}
+
+/* Home page styles */
+.recent-posts {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.recent-posts li {
+  margin-bottom: 10px;
+}
+
+.view-all {
+  margin-top: 20px;
+  text-align: right;
+}
+
+/* Projects page styles */
+.project-item {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.project-item h2 {
+  margin-bottom: 10px;
+}
+
+/* Games page styles */
+.game-item {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.game-item h2 {
+  margin-bottom: 10px;
+}
+
+.play-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #3fa757;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.play-button:hover {
+  background-color: #2d7a41;
+  text-decoration: none;
 }

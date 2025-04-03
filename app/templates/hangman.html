@@ -14,7 +14,51 @@
             <div class="game-info">
                 <p>Guess the word before the hangman is complete!</p>
                 <div class="word-display" id="word-display"></div>
-                <div class="hangman-display" id="hangman-display"></div>
+                <div class="hangman-container">
+                    <svg id="hangman" width="300" height="400">
+                        <!-- Base -->
+                        <line x1="50" y1="350" x2="250" y2="350" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Vertical pole -->
+                        <line x1="100" y1="350" x2="100" y2="50" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Horizontal beam -->
+                        <line x1="100" y1="50" x2="200" y2="50" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Support beam -->
+                        <line x1="100" y1="80" x2="150" y2="50" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Rope -->
+                        <line x1="200" y1="50" x2="200" y2="100" stroke="#FFFFFF" stroke-width="2" class="hangman-part" style="display: none;"/>
+                        <!-- Head with better face details -->
+                        <g class="hangman-part" style="display: none;">
+                            <circle cx="200" cy="120" r="20" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+                            <!-- Eyes -->
+                            <circle cx="193" cy="115" r="2" fill="#FFFFFF"/>
+                            <circle cx="207" cy="115" r="2" fill="#FFFFFF"/>
+                            <!-- Mouth (slightly curved line) -->
+                            <path d="M190 125 Q200 130 210 125" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+                        </g>
+                        <!-- Body with better proportions -->
+                        <line x1="200" y1="140" x2="200" y2="220" stroke="#FFFFFF" stroke-width="2" class="hangman-part" style="display: none;"/>
+                        <!-- Left arm with joint -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="160" x2="170" y2="200" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="185" cy="180" r="3" fill="#FFFFFF"/>
+                        </g>
+                        <!-- Right arm with joint -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="160" x2="230" y2="200" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="215" cy="180" r="3" fill="#FFFFFF"/>
+                        </g>
+                        <!-- Left leg with knee -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="220" x2="170" y2="280" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="185" cy="250" r="3" fill="#FFFFFF"/>
+                        </g>
+                        <!-- Right leg with knee -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="220" x2="230" y2="280" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="215" cy="250" r="3" fill="#FFFFFF"/>
+                        </g>
+                    </svg>
+                </div>
                 <div class="keyboard" id="keyboard"></div>
                 <div class="game-status" id="game-status"></div>
                 <button id="new-game" class="play-button">New Game</button>
@@ -56,16 +100,41 @@
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
-.hangman-display {
-    font-family: monospace;
-    white-space: pre;
-    margin: 20px 0;
-    min-height: 100px;
-    color: #ffffff;
-    background-color: #2a2a2a;
-    padding: 15px;
-    border-radius: 6px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+.hangman-container {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+}
+
+#hangman {
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+}
+
+#hangman line, #hangman circle, #hangman path {
+    transition: all 0.3s ease;
+}
+
+.hangman-part {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Add wood texture effect to gallows */
+#hangman line:not(.hangman-part) {
+    stroke: #D2691E;
+    stroke-linecap: round;
+    filter: url(#wood-texture);
 }
 
 .keyboard {
@@ -180,6 +249,14 @@
     box-shadow: 0 0 10px 2px rgba(255, 132, 38, 0.8);
 }
 </style>
+
+<defs>
+    <!-- Wood texture filter -->
+    <filter id="wood-texture">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+    </filter>
+</defs>
 
 <script>
 const words = [
@@ -504,14 +581,58 @@ function updateWordDisplay() {
 }
 
 function updateHangmanDisplay() {
-    const display = document.getElementById('hangman-display');
-    display.textContent = hangmanStages[wrongGuesses];
-    
-    if (wrongGuesses === hangmanStages.length - 1) {
+    const parts = document.getElementsByClassName('hangman-part');
+    // Show parts up to the current number of wrong guesses
+    for (let i = 0; i < parts.length; i++) {
+        if (i < wrongGuesses) {
+            parts[i].style.display = 'block';
+            // Add slight swing animation to the hanging parts
+            if (i > 0) { // Don't animate the rope
+                parts[i].style.transform = `rotate(${Math.sin(Date.now() / 1000) * 2}deg)`;
+            }
+        } else {
+            parts[i].style.display = 'none';
+        }
+    }
+
+    if (wrongGuesses === 7) { // Game over after 7 wrong guesses
+        // Add sad face expression
+        const face = document.querySelector('#hangman g:nth-child(2)');
+        if (face) {
+            const mouth = face.querySelector('path');
+            mouth.setAttribute('d', 'M190 130 Q200 120 210 130');
+        }
+        
+        // Set game over state
         gameOver = true;
         document.getElementById('game-status').textContent = `Game Over! The word was: ${currentWord}`;
+        updateKeyboard(); // Disable all keyboard buttons
     }
 }
+
+function showWinAnimation() {
+    const hangman = document.getElementById('hangman');
+    const parts = document.getElementsByClassName('hangman-part');
+    
+    // Hide all parts with a fade out effect
+    for (let part of parts) {
+        part.style.transition = 'opacity 0.5s ease';
+        part.style.opacity = '0';
+    }
+
+    // Add happy jumping animation to celebrate
+    hangman.style.animation = 'jump 0.5s ease infinite alternate';
+}
+
+// Add CSS animation for the jump
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes jump {
+        from { transform: translateY(0); }
+        to { transform: translateY(-20px); }
+    }
+`;
+document.head.appendChild(style);
 
 function updateKeyboard() {
     const keyboard = document.getElementById('keyboard');
@@ -538,9 +659,16 @@ function guessLetter(letter) {
         guessedLetters.add(letter);
         if (!currentWord.includes(letter)) {
             wrongGuesses++;
+            updateHangmanDisplay();
+            
+            // Check if game is over after updating hangman
+            if (wrongGuesses === 7) { // Game over after 7 wrong guesses
+                gameOver = true;
+                document.getElementById('game-status').textContent = `Game Over! The word was: ${currentWord}`;
+                updateKeyboard(); // Disable all keyboard buttons
+            }
         }
         updateWordDisplay();
-        updateHangmanDisplay();
         updateKeyboard();
     }
 }

@@ -3,4 +3,5 @@ Flask-FlatPages==0.7.3
 Markdown==3.4.4
 Werkzeug==2.0.3
 PyYAML==6.0.1
-importlib-metadata==4.13.0 
+importlib-metadata==4.13.0
+Flask-Frozen==0.15 
