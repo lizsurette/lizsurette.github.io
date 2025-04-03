@@ -1,6 +1,7 @@
 from app import app, pages, copy_static_assets
 from flask_frozen import Freezer
 import os
+import re
 
 # Initialize the freezer
 freezer = Freezer(app)
@@ -49,13 +50,10 @@ def strands():
 
 @freezer.register_generator
 def static():
-    # Register static files
-    static_dir = os.path.join('app', 'static')
-    if os.path.exists(static_dir):
-        for root, dirs, files in os.walk(static_dir):
-            for file in files:
-                rel_path = os.path.relpath(os.path.join(root, file), static_dir)
-                yield {'filename': rel_path}
+    for root, dirs, files in os.walk('app/static'):
+        for file in files:
+            if not file.startswith('.'):
+                yield {'filename': os.path.join(root, file).replace('app/static/', '')}
 
 if __name__ == '__main__':
     # Create _site directory if it doesn't exist
@@ -79,6 +77,11 @@ if __name__ == '__main__':
                 # Replace relative static paths with absolute paths
                 content = content.replace('../static/', '/static/')
                 content = content.replace('./static/', '/static/')
+                
+                # Replace relative game paths with absolute paths
+                content = content.replace('../snake/index.html', '/snake/')
+                content = content.replace('../hangman/index.html', '/hangman/')
+                content = content.replace('../strands/index.html', '/strands/')
                 
                 with open(file_path, 'w') as f:
                     f.write(content) 
