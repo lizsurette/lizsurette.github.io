@@ -174,3 +174,59 @@ div.col-sm-3 div.profile-about {
     margin-top: 30px;
   }
 }
+
+.back-link {
+  margin: 15px 0;
+  font-size: 16px;
+}
+
+.back-link a {
+  color: #333;
+  text-decoration: none;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  transition: all 0.3s ease;
+}
+
+.back-link a:hover {
+  background-color: #e8e8e8;
+  color: #000;
+  text-decoration: none;
+}
+
+.top-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.top-navigation a {
+  color: #3fa757;
+  text-decoration: none;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  max-width: 48%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-navigation a:hover {
+  color: #2d7a41;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+.prev-post {
+  margin-right: auto;
+}
+
+.next-post {
+  margin-left: auto;
+  text-align: right;
+}

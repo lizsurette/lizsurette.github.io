@@ -1,6 +1,38 @@
 ---
 layout: default
 ---
+<div class="back-link">
+  <a href="/writings/">&laquo; Back to Writings</a>
+</div>
+
+<div class="top-navigation">
+  {% assign sorted_posts = site.posts | sort: 'date' | reverse %}
+  {% assign prev_post = nil %}
+  {% assign next_post = nil %}
+  {% assign found_current = false %}
+  
+  {% for post in sorted_posts %}
+    {% if found_current %}
+      {% assign next_post = post %}
+      {% break %}
+    {% endif %}
+    
+    {% if post.url == page.url %}
+      {% assign found_current = true %}
+    {% else %}
+      {% assign prev_post = post %}
+    {% endif %}
+  {% endfor %}
+  
+  {% if prev_post %}
+    <a class="prev-post" href="{{ prev_post.url }}">&laquo; Previous: {{ prev_post.title }}</a>
+  {% endif %}
+  
+  {% if next_post %}
+    <a class="next-post" href="{{ next_post.url }}">Next: {{ next_post.title }} &raquo;</a>
+  {% endif %}
+</div>
+
 <header class="post-header">
   <h1 class="post-title">{{ page.title }}</h1>
 </header>
@@ -46,11 +78,30 @@ layout: default
 {% endif %}
 
 <div class="PageNavigation">
-  {% if page.previous.url %}
-    <a class="prev" href="{{ page.previous.url }}">&laquo; {{ page.previous.title }}</a>
+  {% assign sorted_posts = site.posts | sort: 'date' | reverse %}
+  {% assign prev_post = nil %}
+  {% assign next_post = nil %}
+  {% assign found_current = false %}
+  
+  {% for post in sorted_posts %}
+    {% if found_current %}
+      {% assign next_post = post %}
+      {% break %}
+    {% endif %}
+    
+    {% if post.url == page.url %}
+      {% assign found_current = true %}
+    {% else %}
+      {% assign prev_post = post %}
+    {% endif %}
+  {% endfor %}
+  
+  {% if prev_post %}
+    <a class="prev" href="{{ prev_post.url }}">&laquo; {{ prev_post.title }}</a>
   {% endif %}
-  {% if page.next.url %}
-    <a class="next" href="{{ page.next.url }}">{{ page.next.title }} &raquo;</a>
+  
+  {% if next_post %}
+    <a class="next" href="{{ next_post.url }}">{{ next_post.title }} &raquo;</a>
   {% endif %}
 </div>
 
