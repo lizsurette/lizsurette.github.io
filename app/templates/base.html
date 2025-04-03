@@ -18,6 +18,7 @@
     <script src="{{ url_for('static', filename='js/thickbox-compressed.js') }}"></script>
     <script src="{{ url_for('static', filename='js/super-search.js') }}"></script>
     <script src="{{ url_for('static', filename='js/projects.js') }}"></script>
+    <base href="/">
 </head>
 <body>
     <div class="container">
@@ -35,11 +36,11 @@
             <hr>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('about') }}">About</a></li>
-                    <li><a href="{{ url_for('writings') }}">Writings</a></li>
-                    <li><a href="{{ url_for('projects') }}">Projects</a></li>
-                    <li><a href="{{ url_for('games') }}">Games</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about/">About</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/projects/">Projects</a></li>
+                    <li><a href="/games/">Games</a></li>
                 </ul>
             </nav>
         </div>
