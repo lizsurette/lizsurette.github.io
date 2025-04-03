@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Writings{% endblock %}
+
+{% block content %}
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">{{ title }}</h1>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <div class="search-section">
+            <div class="search" id="js-writings-search">
+                <div class="search-input-wrapper">
+                    <i class="fa fa-search search-icon"></i>
+                    <input type="text" placeholder="Search my writings..." class="search__input form-control" id="js-writings-search__input">
+                </div>
+                <ul class="search__results" id="js-writings-search__results"></ul>
+            </div>
+        </div>
+
+        <ul class="posts" id="posts-list">
+            {% for post in posts %}
+                <li class="post-item" data-title="{{ post.meta.title }}" data-date="{{ format_date(post.meta.date) }}">
+                    <i><span>{{ format_date(post.meta.date) }}</span></i> &raquo; 
+                    <a href="{{ url_for('post', path=post.path) }}">{{ post.meta.title }}</a>
+                </li>
+            {% else %}
+                <li>No posts found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</article>
+
+<style>
+.search-section {
+    margin-bottom: 2em;
+}
+.search-section .search {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.search-icon {
+    position: absolute;
+    left: 10px;
+    color: #999;
+    z-index: 1;
+}
+.search-section .search__input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.search-section .search__input:focus {
+    border-color: #3fa757;
+    box-shadow: 0 0 5px rgba(63, 167, 87, 0.3);
+    outline: none;
+}
+.search-section .search__results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.search-section .search__results.active {
+    display: block;
+}
+.search-section .search__results li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+.search-section .search__results li:hover {
+    background-color: #f9f9f9;
+}
+.search-section .search__results li:last-child {
+    border-bottom: none;
+}
+.search-section .search__results a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+.search-section .search__results a:hover {
+    color: #3fa757;
+    text-decoration: none;
+}
+.search-section .search__results strong {
+    color: #3fa757;
+}
+.search-section .search__results small {
+    color: #999;
+    display: block;
+    margin-top: 3px;
+}
+.posts {
+    list-style-type: none;
+    padding-left: 0;
+}
+.posts li {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+.posts li:last-child {
+    border-bottom: none;
+}
+.posts span {
+    color: #666;
+    font-size: 0.9em;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('js-writings-search__input');
+    const searchResults = document.getElementById('js-writings-search__results');
+    const postsList = document.getElementById('posts-list');
+    const postItems = document.querySelectorAll('.post-item');
+    
+    // Store original posts for resetting
+    const originalPosts = Array.from(postItems).map(item => item.outerHTML);
+    
+    function performSearch(query) {
+        if (query.length < 2) {
+            // Reset to show all posts
+            postsList.innerHTML = originalPosts.join('');
+            searchResults.classList.remove('active');
+            return;
+        }
+
+        const matches = Array.from(postItems).filter(item => {
+            const title = item.getAttribute('data-title').toLowerCase();
+            return title.includes(query.toLowerCase());
+        });
+
+        if (matches.length > 0) {
+            // Show only matching posts
+            postsList.innerHTML = matches.map(item => item.outerHTML).join('');
+            searchResults.classList.remove('active');
+        } else {
+            // Show no results message
+            postsList.innerHTML = '<li>No posts found matching your search.</li>';
+            searchResults.classList.remove('active');
+        }
+    }
+
+    // Debounce the search input
+    let debounceTimer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            performSearch(this.value);
+        }, 300);
+    });
+
+    // Focus search input when clicking on the search icon
+    document.querySelector('.search-icon').addEventListener('click', function() {
+        searchInput.focus();
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.meta.title }}{% endblock %}
+
+{% block content %}
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">{{ page.meta.title }}</h1>
+        <div class="post-meta">
+            <span class="post-date">{{ format_date(page.meta.date) }}</span>
+            {% if page.meta.categories %}
+            <span class="post-categories">
+                Categories:
+                {% for category in page.meta.categories %}
+                <a href="/category/{{ category|lower }}/">{{ category }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </span>
+            {% endif %}
+        </div>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        {{ page.content|safe }}
+    </div>
+    
+    <div class="post-navigation">
+        <div class="back-link">
+            <a href="{{ url_for('writings') }}">&laquo; Back to Writings</a>
+        </div>
+        
+        <div class="post-pagination">
+            {% if prev_post %}
+            <div class="prev-post">
+                <a href="{{ url_for('post', path=prev_post.path) }}">
+                    <span class="nav-label">Previous:</span>
+                    <span class="nav-title">{{ prev_post.meta.title }}</span>
+                </a>
+            </div>
+            {% endif %}
+            
+            {% if next_post %}
+            <div class="next-post">
+                <a href="{{ url_for('post', path=next_post.path) }}">
+                    <span class="nav-label">Next:</span>
+                    <span class="nav-title">{{ next_post.meta.title }}</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</article>
+{% endblock %} 

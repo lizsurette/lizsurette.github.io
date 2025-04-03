@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Strands Game{% endblock %}
+
+{% block content %}
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">{{ title }}</h1>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <div class="game-container">
+            <div class="game-info">
+                <p>Find words by connecting adjacent letters. Words must be at least 3 letters long.</p>
+                <div class="game-stats">
+                    <span>Score: <span id="score">0</span></span>
+                    <span>Words Found: <span id="words-found">0</span></span>
+                </div>
+                <div class="game-board" id="game-board"></div>
+                <div class="selected-word" id="selected-word"></div>
+                <div class="found-words" id="found-words"></div>
+                <button id="new-game" class="play-button">New Game</button>
+            </div>
+        </div>
+    </div>
+</article>
+
+<style>
+.game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.game-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 1rem 0;
+    font-size: 1.2em;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+    margin: 20px auto;
+    max-width: 400px;
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.letter {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1.5em;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.letter.selected {
+    background: #3fa757;
+    color: white;
+    border-color: #2d7a41;
+}
+
+.letter.used {
+    background: #e9e9e9;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.selected-word {
+    margin: 20px 0;
+    font-size: 1.5em;
+    min-height: 1.5em;
+}
+
+.found-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+    min-height: 100px;
+}
+
+.word-tag {
+    background: #f5f5f5;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+.play-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #3fa757;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.play-button:hover {
+    background-color: #2d7a41;
+}
+</style>
+
+<script>
+const BOARD_SIZE = 8;
+const MIN_WORD_LENGTH = 3;
+const WORDS = new Set([
+    'PYTHON', 'JAVA', 'CODE', 'DATA', 'WEB', 'API', 'HTML', 'CSS',
+    'SQL', 'JSON', 'REST', 'GIT', 'CLOUD', 'SERVER', 'CLIENT',
+    'DEBUG', 'TEST', 'BUILD', 'DEPLOY', 'SCALE', 'SECURE',
+    'ALGORITHM', 'DATABASE', 'NETWORK', 'SECURITY', 'INTERNET',
+    'PROGRAM', 'DEVELOP', 'COMPUTE', 'SYSTEM', 'SOFTWARE',
+    'HARDWARE', 'MEMORY', 'STORAGE', 'PROCESS', 'THREAD',
+    'STACK', 'HEAP', 'CACHE', 'BUFFER', 'QUEUE', 'ARRAY',
+    'OBJECT', 'CLASS', 'METHOD', 'FUNCTION', 'VARIABLE',
+    'CONSTANT', 'LOOP', 'IF', 'ELSE', 'WHILE', 'FOR', 'TRY',
+    'CATCH', 'THROW', 'RETURN', 'IMPORT', 'EXPORT', 'MODULE',
+    'PACKAGE', 'LIBRARY', 'FRAMEWORK', 'TOOL', 'UTILITY'
+]);
+
+let board = [];
+let selectedLetters = [];
+let foundWords = new Set();
+let score = 0;
+let gameOver = false;
+
+function createBoard() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    board = [];
+    for (let i = 0; i < BOARD_SIZE; i++) {
+        board[i] = [];
+        for (let j = 0; j < BOARD_SIZE; j++) {
+            board[i][j] = letters[Math.floor(Math.random() * letters.length)];
+        }
+    }
+}
+
+function renderBoard() {
+    const gameBoard = document.getElementById('game-board');
+    gameBoard.innerHTML = '';
+    
+    for (let i = 0; i < BOARD_SIZE; i++) {
+        for (let j = 0; j < BOARD_SIZE; j++) {
+            const letter = document.createElement('div');
+            letter.className = 'letter';
+            letter.textContent = board[i][j];
+            letter.dataset.row = i;
+            letter.dataset.col = j;
+            
+            if (selectedLetters.some(pos => pos.row === i && pos.col === j)) {
+                letter.classList.add('selected');
+            }
+            
+            if (foundWords.has(board[i][j])) {
+                letter.classList.add('used');
+            }
+            
+            letter.addEventListener('click', () => handleLetterClick(i, j));
+            gameBoard.appendChild(letter);
+        }
+    }
+}
+
+function handleLetterClick(row, col) {
+    if (gameOver) return;
+    
+    const letter = board[row][col];
+    const pos = { row, col, letter };
+    
+    if (selectedLetters.length === 0) {
+        selectedLetters.push(pos);
+        updateSelectedWord();
+        renderBoard();
+    } else {
+        const lastPos = selectedLetters[selectedLetters.length - 1];
+        if (isAdjacent(lastPos, pos) && !selectedLetters.some(p => p.row === row && p.col === col)) {
+            selectedLetters.push(pos);
+            updateSelectedWord();
+            renderBoard();
+            
+            const word = getSelectedWord();
+            if (word.length >= MIN_WORD_LENGTH && WORDS.has(word) && !foundWords.has(word)) {
+                foundWords.add(word);
+                score += word.length;
+                updateScore();
+                updateFoundWords();
+            }
+        }
+    }
+}
+
+function isAdjacent(pos1, pos2) {
+    const rowDiff = Math.abs(pos1.row - pos2.row);
+    const colDiff = Math.abs(pos1.col - pos2.col);
+    return rowDiff <= 1 && colDiff <= 1 && !(rowDiff === 0 && colDiff === 0);
+}
+
+function getSelectedWord() {
+    return selectedLetters.map(pos => pos.letter).join('');
+}
+
+function updateSelectedWord() {
+    const word = getSelectedWord();
+    document.getElementById('selected-word').textContent = word;
+}
+
+function updateScore() {
+    document.getElementById('score').textContent = score;
+    document.getElementById('words-found').textContent = foundWords.size;
+}
+
+function updateFoundWords() {
+    const foundWordsDiv = document.getElementById('found-words');
+    foundWordsDiv.innerHTML = '';
+    Array.from(foundWords).sort().forEach(word => {
+        const wordTag = document.createElement('span');
+        wordTag.className = 'word-tag';
+        wordTag.textContent = word;
+        foundWordsDiv.appendChild(wordTag);
+    });
+}
+
+function initGame() {
+    selectedLetters = [];
+    foundWords.clear();
+    score = 0;
+    gameOver = false;
+    createBoard();
+    renderBoard();
+    updateSelectedWord();
+    updateScore();
+    updateFoundWords();
+}
+
+document.getElementById('new-game').addEventListener('click', initGame);
+
+// Initialize the game
+initGame();
+</script>
+{% endblock %} 
