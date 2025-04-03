@@ -5,6 +5,10 @@ import os
 # Initialize the freezer
 freezer = Freezer(app)
 
+# Configure the freezer for GitHub Pages
+freezer.base_url = 'https://lizsurette.github.io/'
+freezer.static_ignore = ['*.pyc', '*.pyo', '*.pyd', '__pycache__', '.git']
+
 # Add all routes to the freezer
 @freezer.register_generator
 def post():
