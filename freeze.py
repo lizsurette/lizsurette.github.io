@@ -12,6 +12,10 @@ def post():
         yield {'path': page.path}
 
 @freezer.register_generator
+def about():
+    yield {}
+
+@freezer.register_generator
 def games():
     yield {}
 
