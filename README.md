@@ -82,7 +82,6 @@ Create new blog posts in the `app/posts/` directory using Markdown format with Y
 
 ```markdown
 ---
-layout: post
 title: Your Post Title
 date: YYYY-MM-DD
 categories: [Category1, Category2]
@@ -91,26 +90,12 @@ categories: [Category1, Category2]
 Your post content here in Markdown format.
 ```
 
-## Deploying to GitHub Pages
-
-This site is configured to automatically deploy to GitHub Pages using GitHub Actions.
-
-### Manual Deployment
-
-To manually generate the static site and test it locally:
-
-```bash
-python test_static.py
-```
-
-This will generate the static site in the `_site` directory and start a local server to test it.
-
-### Automatic Deployment
+## GitHub Pages Deployment
 
 The site is automatically deployed to GitHub Pages when changes are pushed to the main branch. The deployment process:
 
-1. Installs dependencies
+1. Installs Python dependencies
 2. Generates the static site using Flask-Frozen
-3. Deploys the static site to the gh-pages branch
+3. Deploys the static site to GitHub Pages
 
 You can also manually trigger the deployment from the Actions tab in the GitHub repository.
