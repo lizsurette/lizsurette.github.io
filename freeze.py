@@ -79,9 +79,9 @@ if __name__ == '__main__':
                 content = content.replace('./static/', '/static/')
                 
                 # Replace relative game paths with absolute paths
-                content = content.replace('../snake/index.html', '/snake/')
-                content = content.replace('../hangman/index.html', '/hangman/')
-                content = content.replace('../strands/index.html', '/strands/')
+                content = content.replace('href="../snake/"', 'href="/snake/"')
+                content = content.replace('href="../hangman/"', 'href="/hangman/"')
+                content = content.replace('href="../strands/"', 'href="/strands/"')
                 
                 with open(file_path, 'w') as f:
                     f.write(content) 
