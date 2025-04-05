@@ -23,9 +23,6 @@
     <div class="container">
         <div class="sidebar">
             <div class="about">
-                <a href="/">
-                    <img src="/static/img/lb.jpg" alt="Profile Picture" class="profile-image">
-                </a>
                 <h1 class="author-name">Liz Blanchard</h1>
                 <div class="social-links">
                     <a href="https://github.com/lizsurette" target="_blank"><i class="fa fa-github"></i></a>
@@ -36,10 +33,10 @@
             <nav class="main-nav">
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/about/">About</a></li>
                     <li><a href="/writings/">Writings</a></li>
-                    <li><a href="/projects/">Projects</a></li>
                     <li><a href="/games/">Games</a></li>
+                    <li><a href="/projects/">Projects</a></li>
+                    <li><a href="/apps/">Apps</a></li>
                 </ul>
             </nav>
         </div>
@@ -68,7 +65,7 @@
 </blockquote>
 <hr />
 <p>Let's take a quick look at the current (Havana) Horizon Overview page:
-<img alt="Havana Horizon Overview" src="https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/current-horizon-overview-page.png" /></p>
+<img alt="Havana Horizon Overview" src="/static/img/_posts/current-horizon-overview-page.png" /></p>
 <p>Upon login, non-administrator users are taken to the Project Overview page within <a href="http://docs.openstack.org/developer/horizon/">Horizon</a>. Here the user can see a basic set of information about the number of instances, VCPUs, RAM, Floating IPs, and Security Groups that are currently in use in their environment along with the quota that they are allowed. There is also a table that lets the user view the running instances along with a usage summary for the instances shown. The user has the opportunity to filter this table by date range when needed. While this information might cover certain use cases, my colleague <a href="https://plus.google.com/105626042354015503324/posts">Ju Lim</a> and I wanted to take a step back from the current Overview page and think through the type of information that this user of Horizon would want to see when they first log in.</p>
 <p>Now before I go on, this is when <a href="http://en.wikipedia.org/wiki/Persona_(user_experience)">Personas</a> could have <em>REALLY</em>  helped us. Unfortunately, we hadn't gotten far enough along with our Persona work within OpenStack to use them, so we had to rely on what we knew from past projects we've worked on as well as the data we had from the set of users we had talked to about how they currently use OpenStack. In the coming months, I'll share the work that we are starting to do in the Persona space, but for now I'd like to note that we plan to revisit these requirements once we have some great Persona data so that we are sure that these completely meet end users needs.</p>
 <p>After reviewing the current state of the Horizon Project Overview page, Ju and I started to brainstorm on how we might improve this page for end users. The goal of this effort was to take this page to the next level of maturity. The big questions that we needed to answer were:
