@@ -1,15 +1,18 @@
 #!/bin/bash
 
-# Check if the static site exists
-if [ ! -d "_site" ]; then
-    echo "Static site not found. Generating it now..."
-    ./deploy.sh
-fi
+# Kill any existing Python HTTP server processes
+pkill -f "python -m http.server"
+pkill -f "dev_server.py"
 
-# Start a simple HTTP server to test the static site
-echo "Starting HTTP server to test the static site..."
+echo "Starting development server..."
 echo "Visit http://localhost:8000 to view the site"
 echo "Press Ctrl+C to stop the server"
 
-cd _site
-python -m http.server 8000 
+# Make sure we're in the right directory
+cd "$(dirname "$0")"
+
+# Make the dev server executable
+chmod +x dev_server.py
+
+# Start the development server directly (not in background)
+python3 dev_server.py 

@@ -13,15 +13,11 @@ freezer.static_ignore = ['*.pyc', '*.pyo', '*.pyd', '__pycache__', '.git']
 # Add all routes to the freezer
 @freezer.register_generator
 def post():
-    for page in pages:
-        yield {'path': page.path}
+    for post in pages:
+        yield {'path': post.path}
 
 @freezer.register_generator
 def index():
-    yield {}
-
-@freezer.register_generator
-def about():
     yield {}
 
 @freezer.register_generator
@@ -29,11 +25,19 @@ def writings():
     yield {}
 
 @freezer.register_generator
+def games():
+    yield {}
+
+@freezer.register_generator
 def projects():
     yield {}
 
 @freezer.register_generator
-def games():
+def apps():
+    yield {}
+
+@freezer.register_generator
+def grocery_list():
     yield {}
 
 @freezer.register_generator

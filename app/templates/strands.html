@@ -1,541 +1,1315 @@
 {% extends "base.html" %}
 
-{% block title %}Strands Game{% endblock %}
+{% block title %}Strands 2{% endblock %}
 
 {% block content %}
-<article class="post">
-    <header class="post-header">
-        <h1 class="post-title">{{ title }}</h1>
-        <hr />
-    </header>
-
-    <div class="post-content">
-        <div class="game-container">
-            <div class="game-info">
-                <p>Find the theme words and the spangram. Theme words must be at least 3 letters long.</p>
-                <div class="theme-info">
-                    <div class="theme-hint">
-                        <span>Theme: <span id="theme-hint">???</span></span>
-                        <button id="hint-button" class="hint-button">Hint</button>
-                    </div>
-                    <div class="theme-progress">
-                        <span>Theme Words: <span id="theme-words-found">0</span>/<span id="total-theme-words">0</span></span>
-                    </div>
-                </div>
-                <div class="game-stats">
-                    <span>Score: <span id="score">0</span></span>
-                    <span>Words Found: <span id="words-found">0</span></span>
-                </div>
-                <div class="game-board" id="game-board"></div>
-                <div class="selected-word" id="selected-word"></div>
-                <div class="found-words" id="found-words"></div>
-                <button id="new-game" class="play-button">New Game</button>
-            </div>
-        </div>
-    </div>
-</article>
-
 <style>
-/* Dark mode theme for Strands game */
-.game-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    position: relative;
-    background-color: #1a1a1a;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
+    .game-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'nyt-franklin', Arial, sans-serif;
+    }
 
-.game-info {
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    color: #e0e0e0;
-}
+    .game-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-.game-info p {
-    color: #b0b0b0;
-    margin-bottom: 20px;
-}
+    .game-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
 
-.theme-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 1rem 0;
-    padding: 0.5rem 1rem;
-    background-color: #2a2a2a;
-    border-radius: 4px;
-}
+    .score-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
 
-.theme-hint {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
+    .score {
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-.theme-progress {
-    font-weight: bold;
-}
+    .perfect-badge {
+        background-color: #e6f3ff;
+        color: #0066cc;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: bold;
+    }
 
-.hint-button {
-    padding: 5px 10px;
-    background-color: #3fa757;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+    .hidden {
+        display: none;
+    }
 
-.hint-button:hover {
-    background-color: #2d7a41;
-    transform: translateY(-2px);
-}
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #e6e6e6;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        overflow: hidden;
+    }
 
-.game-stats {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin: 1rem 0;
-    font-size: 1.2em;
-}
+    .progress-fill {
+        height: 100%;
+        background-color: #4caf50;
+        transition: width 0.3s ease;
+    }
 
-.game-board {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 2px;
-    margin: 20px auto;
-    max-width: 400px;
-    background: #2a2a2a;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
+    .progress-text {
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
 
-.letter {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #333;
-    border: 1px solid #444;
-    border-radius: 4px;
-    font-size: 1.5em;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.2s ease;
-    color: #e0e0e0;
-}
+    .theme-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-.letter.selected {
-    background: #3fa757;
-    color: white;
-    border-color: #2d7a41;
-    box-shadow: 0 0 5px rgba(63, 167, 87, 0.5);
-}
+    .theme-hint {
+        font-size: 16px;
+        color: #333;
+    }
 
-.letter.used {
-    background: #222;
-    color: #666;
-    cursor: not-allowed;
-}
+    .game-board {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        margin-bottom: 20px;
+    }
 
-.letter.theme {
-    background: #4a4a4a;
-    border-color: #5a5a5a;
-}
+    .game-board table {
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+    }
 
-.letter.spangram {
-    background: #4a4a4a;
-    border-color: #5a5a5a;
-    font-weight: bold;
-}
+    .game-board td {
+        width: 20%;
+        height: 20%;
+        padding: 0;
+        text-align: center;
+        vertical-align: middle;
+    }
 
-.selected-word {
-    margin: 20px 0;
-    font-size: 1.5em;
-    min-height: 1.5em;
-    color: #e0e0e0;
-}
+    .letter {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        background-color: #fff;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin: 4px;
+    }
 
-.found-words {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin: 20px 0;
-    min-height: 100px;
-}
+    .letter.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        transform: scale(0.95);
+    }
 
-.word-tag {
-    background: #333;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.9em;
-    color: #e0e0e0;
-}
+    .letter:hover {
+        border-color: #666;
+    }
 
-.word-tag.theme {
-    background: #3fa757;
-    color: white;
-}
+    .letter.used {
+        background-color: #f0f0f0;
+        border-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
 
-.word-tag.spangram {
-    background: #4a4a4a;
-    color: white;
-    font-weight: bold;
-}
+    .letter.used:hover {
+        border-color: #ccc;
+    }
 
-.play-button {
-    padding: 10px 20px;
-    font-size: 1.2em;
-    background-color: #3fa757;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
+    .letter.used.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        opacity: 1;
+    }
 
-.play-button:hover {
-    background-color: #2d7a41;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-}
+    .letter.found {
+        background-color: #e6f3ff;
+        border-color: #0066cc;
+        color: #0066cc;
+        cursor: not-allowed;
+        opacity: 0.9;
+    }
+
+    .letter.found:hover {
+        border-color: #0066cc;
+    }
+
+    .letter.found.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        color: #000;
+        opacity: 1;
+    }
+
+    .game-controls {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .selected-word {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        min-height: 24px;
+        color: #0066cc;
+    }
+
+    .game-button {
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #0066cc;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        margin: 0 5px;
+    }
+
+    .game-button:hover {
+        background-color: #0052a3;
+    }
+
+    .game-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 20px;
+        font-size: 14px;
+        animation: fadeInOut 2s ease;
+    }
+
+    .found-words {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+    .found-word {
+        padding: 4px 8px;
+        background-color: #f0f0f0;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+    .found-word.theme {
+        background-color: #e6f3ff;
+        color: #0066cc;
+    }
+
+    .found-word.spangram {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translate(-50%, -20px); }
+        10% { opacity: 1; transform: translate(-50%, 0); }
+        90% { opacity: 1; transform: translate(-50%, 0); }
+        100% { opacity: 0; transform: translate(-50%, -20px); }
+    }
+
+    .game-rules {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .game-rules h3 {
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    .game-rules ul {
+        list-style-type: disc;
+        padding-left: 20px;
+    }
+
+    .game-rules li {
+        margin-bottom: 10px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
 </style>
 
-<script>
-const BOARD_SIZE = 8;
-const MIN_WORD_LENGTH = 3;
+<div class="game-container">
+    <div class="game-header">
+        <div class="game-title">Strands 3</div>
+        <div class="score-container">
+            <span class="score">Score 3: <span id="score">0</span></span>
+            <span id="perfect-badge" class="perfect-badge hidden">Perfect!</span>
+        </div>
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div id="progress-text" class="progress-text">0/0 Theme Words</div>
+    </div>
 
-// Game themes with their associated words
-const GAME_THEMES = [
+    <div class="theme-container">
+        <div class="theme-hint">Theme: <span id="theme-hint"></span></div>
+    </div>
+
+    <div id="game-board" class="game-board"></div>
+
+    <div class="game-controls">
+        <div id="selected-word" class="selected-word"></div>
+        <button id="submitWord" class="btn btn-primary">Submit Word</button>
+        <button id="clearSelection" class="btn btn-secondary">Clear Selection</button>
+        <button id="newGame" class="btn btn-success">New Game</button>
+    </div>
+
+    <div id="found-words" class="found-words"></div>
+
+    <div class="game-rules">
+        <h3>How to Play</h3>
+        <ul>
+            <li>Find words by selecting adjacent letters in any direction.</li>
+            <li>Words must be at least 3 letters long.</li>
+            <li>Each letter can only be used once in a word.</li>
+            <li>Theme words are worth double points.</li>
+            <li>The spangram (a word that uses all letters and spans the grid) is worth triple points.</li>
+            <li>Find all theme words and the spangram to achieve a Perfect score!</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+const themes = [
     {
-        theme: "PROGRAMMING",
-        words: ["PYTHON", "JAVA", "CODE", "DATA", "WEB", "API", "HTML", "CSS", "SQL", "JSON", "REST", "GIT", "CLOUD", "SERVER", "CLIENT", "DEBUG", "TEST", "BUILD", "DEPLOY", "SCALE", "SECURE"],
-        spangram: "PROGRAMMING"
+        name: 'Fish',
+        description: 'Aquatic creatures',
+        words: ['TUNA', 'CARP', 'BASS', 'SHARK', 'TROUT', 'SALMON', 'HERRING', 'SARDINE', 'ANCHOVY', 'MACKEREL', 'PERCH', 'PIKE', 'COD', 'SOLE', 'FLOUNDER', 'WHITING', 'HADDOCK', 'HALIBUT', 'SWORDFISH', 'MARLIN'],
+        spangram: 'FISH'
     },
     {
-        theme: "COMPUTER",
-        words: ["CPU", "RAM", "DISK", "SCREEN", "KEYBOARD", "MOUSE", "PRINTER", "SCANNER", "MONITOR", "LAPTOP", "DESKTOP", "TABLET", "PHONE", "WIFI", "BLUETOOTH", "USB", "HDMI", "ETHERNET", "CABLE", "PLUG", "SOCKET"],
-        spangram: "COMPUTER"
+        name: 'Fruit',
+        description: 'Sweet and juicy',
+        words: ['PEAR', 'PLUM', 'GRAPE', 'APPLE', 'MANGO', 'BANANA', 'ORANGE', 'KIWI', 'PAPAYA', 'PINEAPPLE', 'CHERRY', 'PEACH', 'APRICOT', 'FIG', 'DATE', 'PRUNE', 'CITRON', 'LIME', 'LEMON', 'MELON'],
+        spangram: 'FRUIT'
     },
     {
-        theme: "INTERNET",
-        words: ["WEB", "SITE", "PAGE", "LINK", "URL", "DOMAIN", "SERVER", "CLIENT", "BROWSER", "SEARCH", "EMAIL", "CHAT", "BLOG", "POST", "TWEET", "LIKE", "SHARE", "DOWNLOAD", "UPLOAD", "STREAM", "BUFFER"],
-        spangram: "INTERNET"
+        name: 'Vehicles',
+        description: 'Ways to get around',
+        words: ['BIKE', 'BOAT', 'TRAIN', 'PLANE', 'TRUCK', 'BUS', 'CAR', 'SHIP', 'HELICOPTER', 'SCOOTER', 'JET', 'TANK', 'VAN', 'SUV', 'CAB', 'TAXI', 'CART', 'WAGON', 'SEDAN', 'COUPE'],
+        spangram: 'WHEEL'
     },
     {
-        theme: "DATABASE",
-        words: ["TABLE", "ROW", "COLUMN", "QUERY", "INDEX", "KEY", "JOIN", "SELECT", "INSERT", "UPDATE", "DELETE", "SCHEMA", "VIEW", "TRIGGER", "STORE", "CACHE", "BACKUP", "RESTORE", "MIGRATE", "SYNC", "REPLICA"],
-        spangram: "DATABASE"
+        name: 'Animals',
+        description: 'Wild and domestic creatures',
+        words: ['BEAR', 'DEER', 'DUCK', 'GOAT', 'HAWK', 'LION', 'TIGER', 'WOLF', 'FOX', 'RABBIT', 'MOOSE', 'ELK', 'COYOTE', 'LYNX', 'PANTHER', 'JAGUAR', 'CHEETAH', 'ZEBRA', 'GIRAFFE', 'ELEPHANT'],
+        spangram: 'BEAST'
     },
     {
-        theme: "ALGORITHM",
-        words: ["SORT", "SEARCH", "FILTER", "MAP", "REDUCE", "LOOP", "RECURSE", "STACK", "QUEUE", "HEAP", "TREE", "GRAPH", "ARRAY", "LIST", "HASH", "BINARY", "MERGE", "QUICK", "BUBBLE", "INSERT", "SELECT"],
-        spangram: "ALGORITHM"
+        name: 'Weather',
+        description: 'Atmospheric conditions',
+        words: ['RAIN', 'SNOW', 'WIND', 'FOG', 'STORM', 'HAIL', 'SLEET', 'FROST', 'CLOUD', 'SUNNY', 'DROUGHT', 'BLIZZARD', 'HURRICANE', 'TORNADO', 'MONSOON', 'CYCLONE', 'TYPHOON', 'BREEZE', 'GUST', 'SHOWER'],
+        spangram: 'CLOUD'
+    },
+    {
+        name: 'Colors',
+        description: 'Hues and shades',
+        words: ['RED', 'BLUE', 'GREEN', 'PINK', 'GOLD', 'SILVER', 'PURPLE', 'ORANGE', 'BROWN', 'BLACK', 'WHITE', 'GRAY', 'BEIGE', 'TEAL', 'CYAN', 'MAGENTA', 'MAROON', 'NAVY', 'OLIVE', 'LIME'],
+        spangram: 'COLOR'
+    },
+    {
+        name: 'Food',
+        description: 'Delicious dishes',
+        words: ['PIZZA', 'PASTA', 'SALAD', 'BREAD', 'CAKE', 'COOKIE', 'BURGER', 'SANDWICH', 'TACO', 'SUSHI', 'STEAK', 'CHICKEN', 'FISH', 'RICE', 'BEANS', 'SOUP', 'STEW', 'CURRY', 'CHILI', 'PIE'],
+        spangram: 'TASTE'
+    },
+    {
+        name: 'Sports',
+        description: 'Athletic activities',
+        words: ['GOLF', 'TENNIS', 'HOCKEY', 'SOCCER', 'RUGBY', 'CRICKET', 'BASEBALL', 'VOLLEYBALL', 'SKIING', 'SWIMMING', 'BOXING', 'WRESTLING', 'FENCING', 'ARCHERY', 'ROWING', 'CYCLING', 'RUNNING', 'JUMPING', 'THROWING', 'DIVING'],
+        spangram: 'SPORT'
+    },
+    {
+        name: 'Music',
+        description: 'Melodic sounds',
+        words: ['SONG', 'DRUM', 'PIANO', 'GUITAR', 'FLUTE', 'VIOLIN', 'TRUMPET', 'HARP', 'SAXOPHONE', 'CLARINET', 'BASS', 'CELLO', 'HARMONICA', 'ACCORDION', 'XYLOPHONE', 'TROMBONE', 'OBOE', 'BAGPIPE', 'MANDOLIN', 'UKULELE'],
+        spangram: 'MUSIC'
+    },
+    {
+        name: 'Technology',
+        description: 'Digital devices',
+        words: ['PHONE', 'TABLET', 'LAPTOP', 'SCREEN', 'MOUSE', 'KEYBOARD', 'PRINTER', 'CAMERA', 'SPEAKER', 'HEADPHONE', 'MONITOR', 'ROUTER', 'SERVER', 'CHARGER', 'BATTERY', 'CABLE', 'WIFI', 'BLUETOOTH', 'USB', 'HDMI'],
+        spangram: 'PHONE'
     }
 ];
 
-let board = [];
+let currentTheme;
+let board;
 let selectedLetters = [];
+let selectedWord = '';
 let foundWords = new Set();
-let themeWords = new Set();
-let spangram = "";
-let currentTheme = null;
 let score = 0;
-let gameOver = false;
-let hintsUsed = 0;
+let hintsRemaining = 3;
+let hintWords = new Set();
 
-function createBoard() {
-    // Select a random theme
-    currentTheme = GAME_THEMES[Math.floor(Math.random() * GAME_THEMES.length)];
+function initGame() {
+    console.log("Initializing game...");
+    currentTheme = themes[Math.floor(Math.random() * themes.length)];
+    document.getElementById('theme-hint').textContent = currentTheme.description;
+    createBoard();
+    score = 0;
+    foundWords = new Set();
+    updateScore();
+    document.getElementById('perfect-badge').classList.add('hidden');
+    document.getElementById('found-words').innerHTML = '';
     
-    // Initialize board with random letters
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    board = [];
-    for (let i = 0; i < BOARD_SIZE; i++) {
-        board[i] = [];
-        for (let j = 0; j < BOARD_SIZE; j++) {
-            board[i][j] = {
-                letter: letters[Math.floor(Math.random() * letters.length)],
-                isTheme: false,
-                isSpangram: false
-            };
+    // Clear the selected word display
+    const selectedWordElement = document.getElementById('selected-word');
+    if (selectedWordElement) {
+        selectedWordElement.textContent = '';
+    } else {
+        console.error("Selected word element not found during initialization!");
+        // Create the element if it doesn't exist
+        const gameControls = document.querySelector('.game-controls');
+        if (gameControls) {
+            const newSelectedWordElement = document.createElement('div');
+            newSelectedWordElement.id = 'selected-word';
+            newSelectedWordElement.className = 'selected-word';
+            gameControls.insertBefore(newSelectedWordElement, gameControls.firstChild);
+            console.log("Created missing selected-word element");
+        } else {
+            console.error("Game controls element not found!");
         }
     }
     
-    // Place theme words on the board
+    console.log("Game initialized successfully");
+}
+
+function createBoard() {
+    console.log("Creating board...");
+    board = Array(5).fill().map(() => Array(5).fill(''));
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    // Place spangram first with a maximum retry limit
+    let spangramPlaced = false;
+    let retryCount = 0;
+    const maxRetries = 20;
+    
+    while (!spangramPlaced && retryCount < maxRetries) {
+        spangramPlaced = placeSpangram();
+        if (!spangramPlaced) {
+            retryCount++;
+            console.log(`Retry ${retryCount} to place spangram...`);
+            // Clear the board before retrying
+            board = Array(5).fill().map(() => Array(5).fill(''));
+        }
+    }
+    
+    if (!spangramPlaced) {
+        console.warn("Failed to place spangram after maximum retries. Using fallback board.");
+        // Use a fallback board with the spangram pre-placed
+        useFallbackBoard();
+    } else {
+        console.log("Successfully placed spangram on the board");
+    }
+    
+    // Place theme words to ensure all letters are used
     placeThemeWords();
     
-    // Update theme hint
-    document.getElementById('theme-hint').textContent = currentTheme.theme;
-    document.getElementById('total-theme-words').textContent = currentTheme.words.length;
+    // Fill any remaining cells with letters that are part of valid words
+    fillRemainingCells();
+    
+    console.log("Board created:", board);
+    renderBoard();
 }
 
-function placeThemeWords() {
-    // Place the spangram first
-    placeWord(currentTheme.spangram, true);
+function useFallbackBoard() {
+    // Pre-place the spangram in a fixed position
+    const spangram = currentTheme.spangram.toUpperCase();
+    const length = spangram.length;
     
-    // Then place other theme words
-    currentTheme.words.forEach(word => {
-        placeWord(word, false);
-    });
+    console.log(`Using fallback board for spangram: ${spangram} (length: ${length})`);
+    
+    // Clear the board first
+    board = Array(5).fill().map(() => Array(5).fill(''));
+    
+    // Try to place horizontally along the top edge
+    if (length <= 5) {
+        for (let i = 0; i < length; i++) {
+            board[0][i] = spangram[i];
+        }
+        console.log("Placed spangram horizontally along top edge");
+        return;
+    }
+    
+    // If horizontal doesn't work, try vertical along the left edge
+    if (length <= 5) {
+        for (let i = 0; i < length; i++) {
+            board[i][0] = spangram[i];
+        }
+        console.log("Placed spangram vertically along left edge");
+        return;
+    }
+    
+    // If spangram is too long, try to place it diagonally
+    if (length <= 7) {
+        // Try diagonal down-right from top-left
+        for (let i = 0; i < length; i++) {
+            if (i < 5) {
+                board[i][i] = spangram[i];
+            }
+        }
+        console.log("Placed spangram diagonally from top-left");
+        return;
+    }
+    
+    // If all else fails, just place the first 5 letters horizontally
+    for (let i = 0; i < 5; i++) {
+        board[0][i] = spangram[i];
+    }
+    console.log("Placed first 5 letters of spangram horizontally");
 }
 
-function placeWord(word, isSpangram) {
-    const directions = [
-        { row: 0, col: 1 },   // right
-        { row: 1, col: 0 },   // down
-        { row: 1, col: 1 },   // diagonal down-right
-        { row: 1, col: -1 },  // diagonal down-left
-        { row: 0, col: -1 },  // left
-        { row: -1, col: 0 },  // up
-        { row: -1, col: -1 }, // diagonal up-left
-        { row: -1, col: 1 }   // diagonal up-right
-    ];
-    
-    // Try to place the word in a random position and direction
-    const maxAttempts = 100;
-    let attempts = 0;
+function placeSpangram() {
+    const spangram = currentTheme.spangram.toUpperCase();
     let placed = false;
     
-    while (attempts < maxAttempts && !placed) {
-        const startRow = Math.floor(Math.random() * BOARD_SIZE);
-        const startCol = Math.floor(Math.random() * BOARD_SIZE);
-        const direction = directions[Math.floor(Math.random() * directions.length)];
-        
-        // Check if the word fits in this direction
-        let fits = true;
-        for (let i = 0; i < word.length; i++) {
-            const row = startRow + i * direction.row;
-            const col = startCol + i * direction.col;
+    console.log(`Attempting to place spangram: ${spangram} (length: ${spangram.length})`);
+    
+    // Define edge positions for spangram placement (prioritized)
+    const edgePositions = [
+        // Top edge
+        {row: 0, col: 0, dir: {dx: 1, dy: 0}},
+        {row: 0, col: 0, dir: {dx: 0, dy: 1}},
+        {row: 0, col: 0, dir: {dx: 1, dy: 1}},
+        // Bottom edge
+        {row: 4, col: 0, dir: {dx: 1, dy: 0}},
+        {row: 4, col: 0, dir: {dx: 1, dy: -1}},
+        // Left edge
+        {row: 0, col: 0, dir: {dx: 0, dy: 1}},
+        {row: 0, col: 0, dir: {dx: 1, dy: 1}},
+        // Right edge
+        {row: 0, col: 4, dir: {dx: 0, dy: 1}},
+        {row: 0, col: 4, dir: {dx: -1, dy: 1}}
+    ];
+    
+    // Try edge positions first (prioritized for spangram)
+    for (const pos of edgePositions) {
+        if (canPlaceWord(spangram, pos.row, pos.col, pos.dir)) {
+            // Additional validation for spangram
+            const endRow = pos.row + pos.dir.dy * (spangram.length - 1);
+            const endCol = pos.col + pos.dir.dx * (spangram.length - 1);
             
-            if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
-                fits = false;
+            // Ensure spangram touches at least two edges
+            const touchesEdges = (
+                (pos.row === 0 || pos.row === 4 || pos.col === 0 || pos.col === 4) &&
+                (endRow === 0 || endRow === 4 || endCol === 0 || endCol === 4)
+            );
+            
+            if (touchesEdges) {
+                placeWord(spangram, pos.row, pos.col, pos.dir);
+                placed = true;
+                console.log(`Successfully placed spangram at edge (${pos.row}, ${pos.col}) with direction (${pos.dir.dx}, ${pos.dir.dy})`);
                 break;
             }
         }
+    }
+    
+    // If edge placement failed, try other positions
+    if (!placed) {
+        // Define all possible directions
+        const directions = [
+            { dx: 1, dy: 0 },  // horizontal
+            { dx: 0, dy: 1 },  // vertical
+            { dx: 1, dy: 1 },  // diagonal down
+            { dx: 1, dy: -1 }, // diagonal up
+            { dx: -1, dy: 0 }, // horizontal reverse
+            { dx: 0, dy: -1 }, // vertical reverse
+            { dx: -1, dy: -1 }, // diagonal down reverse
+            { dx: -1, dy: 1 }  // diagonal up reverse
+        ];
         
-        if (fits) {
-            // Place the word
-            for (let i = 0; i < word.length; i++) {
-                const row = startRow + i * direction.row;
-                const col = startCol + i * direction.col;
+        // Shuffle directions to try different placements
+        const shuffledDirections = [...directions].sort(() => Math.random() - 0.5);
+        
+        for (const dir of shuffledDirections) {
+            if (placed) break;
+            
+            // Try starting from different positions
+            const startPositions = [];
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    startPositions.push({row, col});
+                }
+            }
+            
+            // Shuffle start positions
+            startPositions.sort(() => Math.random() - 0.5);
+            
+            for (const pos of startPositions) {
+                if (placed) break;
                 
-                board[row][col].letter = word[i];
-                board[row][col].isTheme = true;
-                if (isSpangram) {
-                    board[row][col].isSpangram = true;
-                }
-            }
-            placed = true;
-        }
-        
-        attempts++;
-    }
-}
-
-function renderBoard() {
-    const gameBoard = document.getElementById('game-board');
-    gameBoard.innerHTML = '';
-    
-    for (let i = 0; i < BOARD_SIZE; i++) {
-        for (let j = 0; j < BOARD_SIZE; j++) {
-            const letter = document.createElement('div');
-            letter.className = 'letter';
-            letter.textContent = board[i][j].letter;
-            letter.dataset.row = i;
-            letter.dataset.col = j;
-            
-            if (board[i][j].isTheme) {
-                letter.classList.add('theme');
-            }
-            
-            if (board[i][j].isSpangram) {
-                letter.classList.add('spangram');
-            }
-            
-            if (selectedLetters.some(pos => pos.row === i && pos.col === j)) {
-                letter.classList.add('selected');
-            }
-            
-            if (foundWords.has(board[i][j].letter)) {
-                letter.classList.add('used');
-            }
-            
-            letter.addEventListener('click', () => handleLetterClick(i, j));
-            gameBoard.appendChild(letter);
-        }
-    }
-}
-
-function handleLetterClick(row, col) {
-    if (gameOver) return;
-    
-    const letter = board[row][col].letter;
-    const pos = { row, col, letter };
-    
-    if (selectedLetters.length === 0) {
-        selectedLetters.push(pos);
-        updateSelectedWord();
-        renderBoard();
-    } else {
-        const lastPos = selectedLetters[selectedLetters.length - 1];
-        if (isAdjacent(lastPos, pos) && !selectedLetters.some(p => p.row === row && p.col === col)) {
-            selectedLetters.push(pos);
-            updateSelectedWord();
-            renderBoard();
-            
-            const word = getSelectedWord();
-            if (word.length >= MIN_WORD_LENGTH) {
-                // Check if it's a theme word
-                if (currentTheme.words.includes(word) && !themeWords.has(word)) {
-                    themeWords.add(word);
-                    score += word.length * 2; // Theme words are worth double points
-                    updateScore();
-                    updateFoundWords();
-                    checkWinCondition();
-                } 
-                // Check if it's the spangram
-                else if (word === currentTheme.spangram && !foundWords.has(word)) {
-                    foundWords.add(word);
-                    score += word.length * 3; // Spangram is worth triple points
-                    updateScore();
-                    updateFoundWords();
-                    checkWinCondition();
-                }
-                // Check if it's a valid word (not already found)
-                else if (!foundWords.has(word)) {
-                    foundWords.add(word);
-                    score += word.length;
-                    updateScore();
-                    updateFoundWords();
-                }
-            }
-        }
-    }
-}
-
-function isAdjacent(pos1, pos2) {
-    const rowDiff = Math.abs(pos1.row - pos2.row);
-    const colDiff = Math.abs(pos1.col - pos2.col);
-    return rowDiff <= 1 && colDiff <= 1 && !(rowDiff === 0 && colDiff === 0);
-}
-
-function getSelectedWord() {
-    return selectedLetters.map(pos => pos.letter).join('');
-}
-
-function updateSelectedWord() {
-    const word = getSelectedWord();
-    document.getElementById('selected-word').textContent = word;
-}
-
-function updateScore() {
-    document.getElementById('score').textContent = score;
-    document.getElementById('words-found').textContent = foundWords.size;
-    document.getElementById('theme-words-found').textContent = themeWords.size;
-}
-
-function updateFoundWords() {
-    const foundWordsDiv = document.getElementById('found-words');
-    foundWordsDiv.innerHTML = '';
-    
-    // First display theme words
-    Array.from(themeWords).sort().forEach(word => {
-        const wordTag = document.createElement('span');
-        wordTag.className = 'word-tag theme';
-        wordTag.textContent = word;
-        foundWordsDiv.appendChild(wordTag);
-    });
-    
-    // Then display the spangram if found
-    if (foundWords.has(currentTheme.spangram)) {
-        const spangramTag = document.createElement('span');
-        spangramTag.className = 'word-tag spangram';
-        spangramTag.textContent = currentTheme.spangram;
-        foundWordsDiv.appendChild(spangramTag);
-    }
-    
-    // Then display other found words
-    Array.from(foundWords)
-        .filter(word => !themeWords.has(word) && word !== currentTheme.spangram)
-        .sort()
-        .forEach(word => {
-            const wordTag = document.createElement('span');
-            wordTag.className = 'word-tag';
-            wordTag.textContent = word;
-            foundWordsDiv.appendChild(wordTag);
-        });
-}
-
-function checkWinCondition() {
-    if (themeWords.size === currentTheme.words.length && foundWords.has(currentTheme.spangram)) {
-        gameOver = true;
-        document.getElementById('game-status').textContent = 'Congratulations! You found all theme words and the spangram!';
-    }
-}
-
-function showHint() {
-    if (hintsUsed < 3) {
-        hintsUsed++;
-        
-        // Find a theme word that hasn't been found yet
-        const unfoundThemeWords = currentTheme.words.filter(word => !themeWords.has(word));
-        
-        if (unfoundThemeWords.length > 0) {
-            const hintWord = unfoundThemeWords[Math.floor(Math.random() * unfoundThemeWords.length)];
-            
-            // Find the position of the hint word on the board
-            for (let i = 0; i < BOARD_SIZE; i++) {
-                for (let j = 0; j < BOARD_SIZE; j++) {
-                    if (board[i][j].letter === hintWord[0] && board[i][j].isTheme) {
-                        // Highlight the first letter of the hint word
-                        const letterElement = document.querySelector(`.letter[data-row="${i}"][data-col="${j}"]`);
-                        if (letterElement) {
-                            letterElement.style.animation = 'pulse 1s infinite';
-                        }
-                        return;
+                if (canPlaceWord(spangram, pos.row, pos.col, dir)) {
+                    // Additional validation for spangram
+                    const endRow = pos.row + dir.dy * (spangram.length - 1);
+                    const endCol = pos.col + dir.dx * (spangram.length - 1);
+                    
+                    // Ensure spangram touches at least two edges
+                    const touchesEdges = (
+                        (pos.row === 0 || pos.row === 4 || pos.col === 0 || pos.col === 4) &&
+                        (endRow === 0 || endRow === 4 || endCol === 0 || endCol === 4)
+                    );
+                    
+                    if (touchesEdges) {
+                        placeWord(spangram, pos.row, pos.col, dir);
+                        placed = true;
+                        console.log(`Successfully placed spangram at (${pos.row}, ${pos.col}) with direction (${dir.dx}, ${dir.dy})`);
+                        break;
                     }
                 }
             }
         }
     }
+    
+    return placed;
 }
 
-// Add CSS animation for the hint pulse
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(63, 167, 87, 0.7); }
-        70% { box-shadow: 0 0 0 10px rgba(63, 167, 87, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(63, 167, 87, 0); }
+function canPlaceWord(word, startRow, startCol, dir) {
+    const length = word.length;
+    const endRow = startRow + dir.dy * (length - 1);
+    const endCol = startCol + dir.dx * (length - 1);
+    
+    // Check if word fits within grid
+    if (endRow < 0 || endRow >= 5 || endCol < 0 || endCol >= 5) {
+        return false;
     }
-`;
-document.head.appendChild(style);
-
-function initGame() {
-    selectedLetters = [];
-    foundWords.clear();
-    themeWords.clear();
-    score = 0;
-    gameOver = false;
-    hintsUsed = 0;
-    createBoard();
-    renderBoard();
-    updateSelectedWord();
-    updateScore();
-    updateFoundWords();
+    
+    // For spangram, ensure it spans from edge to edge
+    if (word === currentTheme.spangram.toUpperCase()) {
+        // Check if the word touches at least one edge
+        const touchesEdge = (
+            startCol === 0 || startCol === 4 ||
+            startRow === 0 || startRow === 4 ||
+            endCol === 0 || endCol === 4 ||
+            endRow === 0 || endRow === 4
+        );
+        
+        // Also check if it spans across the grid (at least 4 letters)
+        const spansGrid = length >= 4;
+        
+        if (!touchesEdge || !spansGrid) return false;
+    }
+    
+    // Check if cells are empty or match the word
+    for (let i = 0; i < length; i++) {
+        const row = startRow + dir.dy * i;
+        const col = startCol + dir.dx * i;
+        if (board[row][col] && board[row][col] !== word[i]) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
-document.getElementById('new-game').addEventListener('click', initGame);
-document.getElementById('hint-button').addEventListener('click', showHint);
+function placeWord(word, startRow, startCol, dir) {
+    for (let i = 0; i < word.length; i++) {
+        const row = startRow + dir.dy * i;
+        const col = startCol + dir.dx * i;
+        board[row][col] = word[i];
+    }
+}
 
-// Initialize the game
+function renderBoard() {
+    console.log("Rendering board...");
+    const gameBoard = document.getElementById('game-board');
+    if (!gameBoard) {
+        console.error("Game board element not found!");
+        return;
+    }
+    
+    // Clear the board completely
+    gameBoard.innerHTML = '';
+    
+    // Create a table for better structure
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.height = '100%';
+    table.style.borderCollapse = 'collapse';
+    
+    for (let i = 0; i < 5; i++) {
+        const row = document.createElement('tr');
+        for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            cell.style.width = '20%';
+            cell.style.height = '20%';
+            cell.style.padding = '0';
+            cell.style.textAlign = 'center';
+            cell.style.verticalAlign = 'middle';
+            
+            const letter = document.createElement('div');
+            letter.className = 'letter';
+            letter.textContent = board[i][j];
+            letter.dataset.row = i;
+            letter.dataset.col = j;
+            
+            // Add selected class if letter is in current selection
+            if (selectedLetters.some(p => p.row === i && p.col === j)) {
+                letter.classList.add('selected');
+            }
+            
+            // Add found class if letter is part of a found word
+            if (isLetterInFoundWord(i, j)) {
+                letter.classList.add('found');
+            }
+            
+            // Add click event listener
+            letter.addEventListener('click', function() {
+                console.log(`Letter clicked at (${i}, ${j}): ${board[i][j]}`);
+                handleLetterClick(i, j);
+            });
+            
+            cell.appendChild(letter);
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+    
+    gameBoard.appendChild(table);
+    console.log("Board rendered successfully");
+}
+
+// Helper function to check if a letter is part of a found word
+function isLetterInFoundWord(row, col) {
+    // Check if this letter is part of any found word
+    for (const word of foundWords) {
+        const positions = findWordPositions(word);
+        if (positions.some(p => p.row === row && p.col === col)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+function handleLetterClick(row, col) {
+    console.log(`Letter clicked at (${row}, ${col}): ${board[row][col]}`);
+    
+    // Check if the letter is already selected
+    const letterIndex = selectedLetters.findIndex(p => p.row === row && p.col === col);
+    
+    // If the letter is already selected, unselect it and all letters after it
+    if (letterIndex !== -1) {
+        console.log(`Letter already selected at index ${letterIndex}, unselecting it and all after`);
+        selectedLetters = selectedLetters.slice(0, letterIndex);
+        selectedWord = selectedLetters.map(p => board[p.row][p.col]).join('');
+        updateSelectedWordDisplay();
+        renderBoard();
+        return;
+    }
+    
+    // Check if the new letter is adjacent to the last selected letter
+    if (selectedLetters.length > 0) {
+        const last = selectedLetters[selectedLetters.length - 1];
+        const dx = Math.abs(col - last.col);
+        const dy = Math.abs(row - last.row);
+        
+        // A letter is adjacent if it's within 1 step in any direction (including diagonally)
+        if (dx > 1 || dy > 1) {
+            console.log(`Letter not adjacent: dx=${dx}, dy=${dy}`);
+            showMessage("Letters must be adjacent!");
+            return;
+        }
+    }
+    
+    // Add the letter to the selection
+    console.log(`Adding letter to selection: ${board[row][col]}`);
+    selectedLetters.push({ row, col });
+    selectedWord = selectedLetters.map(p => board[p.row][p.col]).join('');
+    updateSelectedWordDisplay();
+    
+    // Check if the current selection forms a valid word
+    if (selectedWord.length >= 3) {
+        const word = selectedWord.toUpperCase();
+        console.log(`Checking if "${word}" is a valid word`);
+        
+        if (isValidWord(word) && !foundWords.has(word)) {
+            console.log(`Valid word found: ${word}`);
+            // Automatically submit the word
+            let points = calculateWordPoints(word);
+            let wordType = '';
+            
+            if (word === currentTheme.spangram) {
+                wordType = 'spangram';
+            } else if (currentTheme.words.includes(word)) {
+                wordType = 'theme';
+            }
+            
+            score += points;
+            foundWords.add(word);
+            updateScore();
+            addFoundWord(word, wordType);
+            checkProgress();
+            
+            // Show a success message
+            showMessage(`Found: ${word}! +${points} points`);
+            
+            // Clear the selection and update the board
+            selectedLetters = [];
+            selectedWord = '';
+            updateSelectedWordDisplay();
+            
+            // Force a re-render of the board
+            renderBoard();
+            
+            return;
+        }
+    }
+    
+    // Update the board to show the new selection
+    renderBoard();
+}
+
+// Helper function to update the selected word display
+function updateSelectedWordDisplay() {
+    const selectedWordElement = document.getElementById('selected-word');
+    if (selectedWordElement) {
+        selectedWordElement.textContent = selectedWord;
+    } else {
+        console.error("Selected word element not found!");
+        // Try to create it if it doesn't exist
+        const gameControls = document.querySelector('.game-controls');
+        if (gameControls) {
+            const newSelectedWordElement = document.createElement('div');
+            newSelectedWordElement.id = 'selected-word';
+            newSelectedWordElement.className = 'selected-word';
+            newSelectedWordElement.textContent = selectedWord;
+            gameControls.insertBefore(newSelectedWordElement, gameControls.firstChild);
+            console.log("Created missing selected-word element");
+        } else {
+            console.error("Game controls element not found!");
+        }
+    }
+}
+
+function handleWordSubmit() {
+    const word = selectedWord.toUpperCase();
+    if (word.length < 3) {
+        showMessage("Words must be at least 3 letters long!");
+        return;
+    }
+    
+    if (foundWords.has(word)) {
+        showMessage("Word already found!");
+        return;
+    }
+    
+    if (isValidWord(word)) {
+        let points = calculateWordPoints(word);
+        let wordType = '';
+        
+        if (word === currentTheme.spangram) {
+            wordType = 'spangram';
+            showMessage("Spangram found! +" + points + " points");
+        } else if (currentTheme.words.includes(word)) {
+            wordType = 'theme';
+            showMessage("Theme word found! +" + points + " points");
+        } else {
+            showMessage("Word found! +" + points + " points");
+        }
+        
+        score += points;
+        foundWords.add(word);
+        updateScore();
+        addFoundWord(word, wordType);
+        checkProgress();
+    } else {
+        showMessage("Not a valid word!");
+    }
+    
+    clearSelection();
+}
+
+function calculateWordPoints(word) {
+    let points = word.length; // Base points = word length
+    
+    // Bonus points for longer words
+    if (word.length >= 6) {
+        points += Math.floor(word.length / 2); // Extra point for every 2 letters in words 6+ letters
+    }
+    
+    // Theme word bonus (2x)
+    if (currentTheme.words.includes(word)) {
+        points *= 2;
+    }
+    
+    // Spangram bonus (3x)
+    if (word === currentTheme.spangram) {
+        points *= 3;
+    }
+    
+    return points;
+}
+
+function isValidWord(word) {
+    // Check if it's a theme word or spangram
+    if (currentTheme.words.includes(word) || word === currentTheme.spangram) {
+        return true;
+    }
+    
+    // Check if the word can be formed on the board
+    const positions = findWordPositions(word);
+    return positions.length > 0;
+}
+
+function showMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'game-message';
+    messageDiv.textContent = message;
+    document.querySelector('.game-controls').prepend(messageDiv);
+    
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 2000);
+}
+
+function checkProgress() {
+    const themeWordsFound = Array.from(foundWords).filter(word => 
+        currentTheme.words.includes(word)
+    ).length;
+    
+    const spangramFound = foundWords.has(currentTheme.spangram);
+    const progress = (themeWordsFound / currentTheme.words.length) * 100;
+    
+    document.getElementById('progress-fill').style.width = `${progress}%`;
+    document.getElementById('progress-text').textContent = 
+        `${themeWordsFound}/${currentTheme.words.length} Theme Words`;
+    
+    if (themeWordsFound === currentTheme.words.length && spangramFound) {
+        document.getElementById('perfect-badge').classList.remove('hidden');
+        showMessage("Perfect! You found all the words!");
+        
+        // Calculate final score bonus for perfect completion
+        const perfectBonus = Math.floor(score * 0.1); // 10% bonus
+        score += perfectBonus;
+        updateScore();
+        showMessage(`Perfect bonus: +${perfectBonus} points!`);
+    }
+}
+
+function addFoundWord(word, type) {
+    const foundWordsDiv = document.getElementById('found-words');
+    const wordElement = document.createElement('span');
+    wordElement.className = `found-word ${type || ''}`;
+    wordElement.textContent = word;
+    foundWordsDiv.appendChild(wordElement);
+}
+
+function clearSelection() {
+    selectedLetters = [];
+    selectedWord = '';
+    updateSelectedWordDisplay();
+    renderBoard();
+}
+
+function showHint() {
+    const remainingThemeWords = currentTheme.words.filter(word => !foundWords.has(word));
+    const spangramNotFound = !foundWords.has(currentTheme.spangram);
+    
+    if (remainingThemeWords.length === 0 && !spangramNotFound) {
+        showMessage("No more hints available!");
+        return;
+    }
+    
+    // Prioritize spangram hint if not found
+    if (spangramNotFound && Math.random() < 0.3) {
+        showMessage(`Try finding a ${currentTheme.spangram.length}-letter word that spans the grid!`);
+    } else if (remainingThemeWords.length > 0) {
+        const hintWord = remainingThemeWords[Math.floor(Math.random() * remainingThemeWords.length)];
+        showMessage(`Try finding a ${hintWord.length}-letter theme word!`);
+    }
+}
+
+function newGame() {
+    initGame();
+}
+
+function findWordPositions(word) {
+    const positions = [];
+    const directions = [
+        { dx: 1, dy: 0 },  // horizontal
+        { dx: 0, dy: 1 },  // vertical
+        { dx: 1, dy: 1 },  // diagonal down
+        { dx: 1, dy: -1 }  // diagonal up
+    ];
+    
+    // Check each cell in the board
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            // If this cell matches the first letter of the word
+            if (board[i][j] === word[0]) {
+                // Try each direction
+                for (const dir of directions) {
+                    let found = true;
+                    const wordPositions = [];
+                    
+                    // Check if the word can be formed in this direction
+                    for (let k = 0; k < word.length; k++) {
+                        const row = i + dir.dy * k;
+                        const col = j + dir.dx * k;
+                        
+                        // Check if we're still within the board and the letter matches
+                        if (row < 0 || row >= 5 || col < 0 || col >= 5 || board[row][col] !== word[k]) {
+                            found = false;
+                            break;
+                        }
+                        
+                        // Add this position to the list
+                        wordPositions.push({ row, col });
+                    }
+                    
+                    // If we found the word, add all positions to the result
+                    if (found) {
+                        positions.push(...wordPositions);
+                    }
+                }
+            }
+        }
+    }
+    
+    return positions;
+}
+
+function placeThemeWords() {
+    // Sort theme words by length (longest first) to optimize placement
+    const sortedWords = [...currentTheme.words].sort((a, b) => b.length - a.length);
+    
+    // Track which words have been placed to avoid duplicates
+    const placedWords = new Set();
+    
+    // Track letter usage to ensure good distribution
+    const letterUsage = new Map();
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            if (board[i][j]) {
+                const letter = board[i][j];
+                letterUsage.set(letter, (letterUsage.get(letter) || 0) + 1);
+            }
+        }
+    }
+    
+    for (const word of sortedWords) {
+        const wordUpper = word.toUpperCase();
+        
+        // Skip if this word has already been placed
+        if (placedWords.has(wordUpper)) {
+            console.log(`Skipping duplicate word: ${wordUpper}`);
+            continue;
+        }
+        
+        let placed = false;
+        let attempts = 0;
+        const maxAttempts = 100; // Increased attempts for better placement chances
+        
+        while (!placed && attempts < maxAttempts) {
+            // Try different starting positions and directions
+            const row = Math.floor(Math.random() * 5);
+            const col = Math.floor(Math.random() * 5);
+            
+            // Define directions with weights to prefer certain placements
+            const directions = [
+                { dx: 1, dy: 0, weight: 1 },   // horizontal
+                { dx: 0, dy: 1, weight: 1 },   // vertical
+                { dx: 1, dy: 1, weight: 0.8 }, // diagonal down
+                { dx: 1, dy: -1, weight: 0.8 }, // diagonal up
+                { dx: -1, dy: 0, weight: 0.6 }, // horizontal reverse
+                { dx: 0, dy: -1, weight: 0.6 }, // vertical reverse
+                { dx: -1, dy: -1, weight: 0.4 }, // diagonal down reverse
+                { dx: -1, dy: 1, weight: 0.4 }  // diagonal up reverse
+            ];
+            
+            // Create weighted array of directions
+            const weightedDirections = [];
+            for (const dir of directions) {
+                for (let i = 0; i < dir.weight * 10; i++) {
+                    weightedDirections.push(dir);
+                }
+            }
+            
+            // Shuffle weighted directions
+            const shuffledDirections = weightedDirections.sort(() => Math.random() - 0.5);
+            
+            for (const dir of shuffledDirections) {
+                if (canPlaceWord(wordUpper, row, col, dir)) {
+                    // Check if this placement would create too many overlapping letters
+                    const overlappingLetters = countOverlappingLetters(wordUpper, row, col, dir);
+                    const maxOverlap = Math.min(3, wordUpper.length - 1); // Allow some overlap but not too much
+                    
+                    if (overlappingLetters <= maxOverlap) {
+                        placeWord(wordUpper, row, col, dir);
+                        placed = true;
+                        placedWords.add(wordUpper);
+                        
+                        // Update letter usage
+                        for (let i = 0; i < wordUpper.length; i++) {
+                            const letter = wordUpper[i];
+                            letterUsage.set(letter, (letterUsage.get(letter) || 0) + 1);
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            
+            attempts++;
+        }
+        
+        if (!placed) {
+            console.warn(`Could not place theme word: ${word} after ${maxAttempts} attempts`);
+        }
+    }
+}
+
+// Helper function to count overlapping letters when placing a word
+function countOverlappingLetters(word, startRow, startCol, dir) {
+    let count = 0;
+    for (let i = 0; i < word.length; i++) {
+        const row = startRow + dir.dy * i;
+        const col = startCol + dir.dx * i;
+        if (board[row][col] === word[i]) {
+            count++;
+        }
+    }
+    return count;
+}
+
+function fillRemainingCells() {
+    // If there are empty cells, try to fill them with theme words
+    const emptyCells = [];
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            if (!board[i][j]) {
+                emptyCells.push([i, j]);
+            }
+        }
+    }
+    
+    if (emptyCells.length > 0) {
+        // Get all valid words from the current theme and spangram
+        const validWords = [...currentTheme.words, currentTheme.spangram];
+        
+        // Track which words have been placed to avoid duplicates
+        const placedWords = new Set();
+        
+        // Define directions for word placement
+        const directions = [
+            { dx: 1, dy: 0 },  // horizontal
+            { dx: 0, dy: 1 },  // vertical
+            { dx: 1, dy: 1 },  // diagonal down
+            { dx: 1, dy: -1 }, // diagonal up
+            { dx: -1, dy: 0 }, // horizontal reverse
+            { dx: 0, dy: -1 }, // vertical reverse
+            { dx: -1, dy: -1 }, // diagonal down reverse
+            { dx: -1, dy: 1 }  // diagonal up reverse
+        ];
+        
+        // Try to place theme words in empty cells
+        for (const cell of emptyCells) {
+            let placed = false;
+            
+            // Try each valid word
+            for (const word of validWords) {
+                // Skip if this word has already been placed
+                if (placedWords.has(word)) {
+                    continue;
+                }
+                
+                // Try each direction
+                for (const dir of directions) {
+                    if (canPlaceWord(word, cell[0], cell[1], dir)) {
+                        placeWord(word, cell[0], cell[1], dir);
+                        placed = true;
+                        placedWords.add(word);
+                        break;
+                    }
+                }
+                if (placed) break;
+            }
+            
+            // If we couldn't place a word, we need to regenerate the board
+            if (!placed) {
+                console.log("Could not place a valid word, regenerating board...");
+                return false; // Signal that board generation failed
+            }
+        }
+    }
+    
+    return true; // Board generation successful
+}
+
+function generateBoard() {
+    // Clear the grid
+    board = Array(5).fill().map(() => Array(5).fill(''));
+    
+    // Keep trying to generate a valid board
+    let attempts = 0;
+    const maxAttempts = 100; // Limit attempts to prevent infinite loops
+    
+    while (attempts < maxAttempts) {
+        attempts++;
+        
+        // Clear the grid for this attempt
+        board = Array(5).fill().map(() => Array(5).fill(''));
+        
+        // ALWAYS place the spangram first
+        if (!placeSpangram()) {
+            console.log("Failed to place spangram, trying again...");
+            continue;
+        }
+        
+        // Try to place theme words
+        placeThemeWords();
+        
+        // Try to fill remaining cells with theme words
+        if (!fillRemainingCells()) {
+            console.log("Failed to fill remaining cells, trying again...");
+            continue;
+        }
+        
+        // Check if any words are repeated in the board
+        if (hasRepeatedWords()) {
+            console.log("Board has repeated words, trying again...");
+            continue;
+        }
+        
+        // If we got here, we have a valid board
+        console.log("Successfully generated board after", attempts, "attempts");
+        return true;
+    }
+    
+    console.error("Failed to generate a valid board after", maxAttempts, "attempts");
+    return false;
+}
+
+// New function to check for repeated words in the board
+function hasRepeatedWords() {
+    const foundWords = new Set();
+    
+    // Check horizontal words
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            // Skip empty cells
+            if (!board[i][j]) continue;
+            
+            // Try to form words in different directions
+            const directions = [
+                { dx: 1, dy: 0 },  // horizontal
+                { dx: 0, dy: 1 },  // vertical
+                { dx: 1, dy: 1 },  // diagonal down
+                { dx: 1, dy: -1 }  // diagonal up
+            ];
+            
+            for (const dir of directions) {
+                let word = '';
+                let row = i;
+                let col = j;
+                
+                // Build the word in this direction
+                while (row >= 0 && row < 5 && col >= 0 && col < 5 && board[row][col]) {
+                    word += board[row][col];
+                    row += dir.dy;
+                    col += dir.dx;
+                    
+                    // If we have a word of at least 3 letters, check if it's valid
+                    if (word.length >= 3) {
+                        if (isValidWord(word) && foundWords.has(word)) {
+                            console.log(`Found repeated word: ${word}`);
+                            return true;
+                        }
+                        foundWords.add(word);
+                    }
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+
+function updateScore() {
+    const scoreElement = document.getElementById('score');
+    scoreElement.textContent = score;
+    
+    // Update found words display
+    const foundWordsElement = document.getElementById('found-words');
+    foundWordsElement.innerHTML = '';
+    
+    // Sort found words by type and length
+    const sortedWords = Array.from(foundWords).sort((a, b) => {
+        // Sort by type first (spangram, theme, other)
+        const getTypeOrder = (word) => {
+            if (word === currentTheme.spangram) return 0;
+            if (currentTheme.words.includes(word)) return 1;
+            return 2;
+        };
+        
+        const typeOrderA = getTypeOrder(a);
+        const typeOrderB = getTypeOrder(b);
+        
+        if (typeOrderA !== typeOrderB) {
+            return typeOrderA - typeOrderB;
+        }
+        
+        // Then sort by length (longest first)
+        return b.length - a.length;
+    });
+    
+    // Add each found word to the display
+    for (const word of sortedWords) {
+        let wordType = '';
+        if (word === currentTheme.spangram) {
+            wordType = 'spangram';
+        } else if (currentTheme.words.includes(word)) {
+            wordType = 'theme';
+        }
+        
+        const wordElement = document.createElement('span');
+        wordElement.className = `found-word ${wordType}`;
+        wordElement.textContent = word;
+        foundWordsElement.appendChild(wordElement);
+    }
+}
+
+// Event Listeners
+document.getElementById('submitWord').addEventListener('click', handleWordSubmit);
+document.getElementById('clearSelection').addEventListener('click', clearSelection);
+document.getElementById('newGame').addEventListener('click', newGame);
+
+// Start the game
 initGame();
 </script>
 {% endblock %} 

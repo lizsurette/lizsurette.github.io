@@ -3,13 +3,14 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div id="home">
-  <h1>Liz Blanchard</h1>
-  <hr />
-
-  <div class="welcome">
-    <p>Welcome to my website! Here you'll find my thoughts, projects, and writings.</p>
-    <p><a href="{{ url_for('writings') }}">View my writings &raquo;</a></p>
-  </div>
-</div><!-- end #home -->
+<div class="home-layout">
+    <div class="home-image"></div>
+    <div class="home-text">
+        <h2>Liz Blanchard</h2>
+        <p class="tagline">Software Engineer | Problem Solver | Tech Enthusiast</p>
+        <p>Welcome to my corner of the internet. I'm a software engineer with a passion for creating elegant solutions to complex problems. With experience in cloud computing, virtualization, and user experience design, I enjoy exploring the intersection of technology and human interaction.</p>
+        <p>This site showcases my thoughts, projects, and experiences in the tech world. Feel free to explore my writings, games, and other projects.</p>
+        <a href="{{ url_for('writings') }}" class="view-posts">View My Posts</a>
+    </div>
+</div>
 {% endblock %} 
