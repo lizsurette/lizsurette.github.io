@@ -7,6 +7,8 @@ import yaml
 import markdown
 import shutil
 import re
+from dataclasses import dataclass
+from typing import List, Dict, Optional, Any, Tuple
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -14,6 +16,31 @@ logger = logging.getLogger(__name__)
 
 # Get the absolute path to the app directory
 app_dir = os.path.abspath(os.path.dirname(__file__))
+
+# Custom exceptions
+class PostError(Exception):
+    """Base exception for post-related errors."""
+    pass
+
+class PostNotFoundError(PostError):
+    """Raised when a post cannot be found."""
+    pass
+
+class PostMetadataError(PostError):
+    """Raised when there's an error with post metadata."""
+    pass
+
+class PostContentError(PostError):
+    """Raised when there's an error with post content."""
+    pass
+
+class YAMLParsingError(PostError):
+    """Raised when there's an error parsing YAML front matter."""
+    pass
+
+class MarkdownRenderingError(PostError):
+    """Raised when there's an error rendering markdown content."""
+    pass
 
 app = Flask(__name__, 
             template_folder=os.path.join(app_dir, 'app', 'templates'),
@@ -31,41 +58,192 @@ app.config['FLATPAGES_EXTENSION_CONFIGS'] = {
     }
 }
 
-def extract_yaml_and_content(content):
-    """Extract YAML front matter and content from a markdown file using regex."""
-    metadata = {}
-    post_content = content
+@dataclass
+class Post:
+    """Represents a blog post with its metadata and content."""
+    path: str
+    title: str
+    date: datetime
+    categories: List[str]
+    content: str = ""
+    html_content: str = ""
     
-    # Use regex to find the first YAML front matter block
-    # This pattern looks for the first --- block and captures everything between the first and second ---
-    pattern = r'^\s*---\s*\n(.*?)\n\s*---\s*\n'
-    match = re.match(pattern, content, re.DOTALL)
+    @property
+    def meta(self) -> Dict[str, Any]:
+        """Return metadata in the format expected by templates."""
+        return {
+            'title': self.title,
+            'date': self.date,
+            'categories': self.categories
+        }
     
-    if match:
-        yaml_content = match.group(1).strip()
+    @classmethod
+    def from_file(cls, file_path: str) -> Optional['Post']:
+        """Create a Post object from a markdown file."""
         try:
-            # Parse the YAML content
-            metadata = yaml.safe_load(yaml_content)
-            if metadata is None:
-                metadata = {}
+            # Extract the path (filename without extension)
+            path = os.path.splitext(os.path.basename(file_path))[0]
             
-            # Get the rest of the content after the first YAML block
+            # Check if file exists
+            if not os.path.exists(file_path):
+                logger.error(f"Post file not found: {file_path}")
+                raise PostNotFoundError(f"Post file not found: {file_path}")
+            
+            # Read the file content
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except IOError as e:
+                logger.error(f"Error reading file {file_path}: {e}")
+                raise PostContentError(f"Error reading file {file_path}: {e}")
+            
+            # Extract YAML front matter and content
+            yaml_pattern = r'^\s*---\s*\n(.*?)\n\s*---\s*\n'
+            match = re.match(yaml_pattern, content, re.DOTALL)
+            
+            if not match:
+                logger.warning(f"No YAML front matter found in {path}")
+                raise PostMetadataError(f"No YAML front matter found in {path}")
+            
+            yaml_content = match.group(1).strip()
             post_content = content[match.end():].strip()
             
+            # Parse the YAML content
+            try:
+                metadata = yaml.safe_load(yaml_content)
+                if metadata is None:
+                    metadata = {}
+            except yaml.YAMLError as e:
+                logger.error(f"Error parsing YAML in {path}: {e}")
+                raise YAMLParsingError(f"Error parsing YAML in {path}: {e}")
+            
+            # Extract required fields
+            title = metadata.get('title', '')
+            date_str = metadata.get('date', '')
+            categories = metadata.get('categories', [])
+            
+            # Validate required fields
+            if not title:
+                logger.warning(f"Missing title in {path}")
+                raise PostMetadataError(f"Missing title in {path}")
+            
+            if not date_str:
+                logger.warning(f"Missing date in {path}")
+                raise PostMetadataError(f"Missing date in {path}")
+            
+            # Clean up title
+            if isinstance(title, str):
+                title = title.strip().strip('"\'')
+            
+            # Parse date
+            try:
+                if isinstance(date_str, str):
+                    date = datetime.strptime(date_str, '%Y-%m-%d')
+                else:
+                    date = date_str
+            except ValueError:
+                logger.warning(f"Invalid date format in {path}: {date_str}")
+                raise PostMetadataError(f"Invalid date format in {path}: {date_str}")
+            
+            # Create post object
+            post = cls(
+                path=path,
+                title=title,
+                date=date,
+                categories=categories,
+                content=post_content
+            )
+            
+            # Render markdown content
+            try:
+                post.html_content = render_markdown(post_content)
+            except Exception as e:
+                logger.error(f"Error rendering markdown in {path}: {e}")
+                raise MarkdownRenderingError(f"Error rendering markdown in {path}: {e}")
+            
+            return post
+        except PostError:
+            # Re-raise our custom exceptions
+            raise
         except Exception as e:
-            logger.error(f"YAML parsing error: {e}")
-            metadata = {}
-    
-    return metadata, post_content
+            logger.error(f"Unexpected error creating post from file {file_path}: {e}")
+            raise PostError(f"Unexpected error creating post from file {file_path}: {e}")
 
-def parse_yaml(content):
-    """Parse YAML front matter."""
-    try:
-        metadata, content = extract_yaml_and_content(content)
-        return metadata, content
-    except Exception as e:
-        logger.error(f"Error parsing YAML: {e}")
-        return {}, content
+class PostRepository:
+    """Repository for managing blog posts."""
+    
+    def __init__(self, posts_dir: str):
+        self.posts_dir = posts_dir
+    
+    def get_all_posts(self) -> List[Post]:
+        """Get all posts from the posts directory."""
+        posts = []
+        
+        try:
+            # Get all markdown files in the posts directory
+            for filename in os.listdir(self.posts_dir):
+                if filename.endswith('.markdown'):
+                    file_path = os.path.join(self.posts_dir, filename)
+                    
+                    try:
+                        # Create post from file
+                        post = Post.from_file(file_path)
+                        if post:
+                            posts.append(post)
+                    except PostError as e:
+                        # Log the error but continue processing other posts
+                        logger.warning(f"Skipping post {filename}: {e}")
+        except Exception as e:
+            logger.error(f"Error getting posts: {e}")
+        
+        # Sort posts by date
+        posts.sort(key=lambda x: x.date, reverse=True)
+        return posts
+    
+    def get_post_by_path(self, path: str) -> Optional[Post]:
+        """Get a post by its path."""
+        file_path = os.path.join(self.posts_dir, f"{path}.markdown")
+        
+        try:
+            return Post.from_file(file_path)
+        except PostNotFoundError:
+            logger.error(f"Post file not found: {file_path}")
+            return None
+        except PostError as e:
+            logger.error(f"Error getting post {path}: {e}")
+            return None
+    
+    def get_next_post(self, current_path: str) -> Optional[Post]:
+        """Get the next post in chronological order."""
+        posts = self.get_all_posts()
+        
+        # Find current post index
+        current_index = -1
+        for i, post in enumerate(posts):
+            if post.path == current_path:
+                current_index = i
+                break
+        
+        # Get next post
+        if current_index > 0:
+            return posts[current_index - 1]
+        return None
+    
+    def get_prev_post(self, current_path: str) -> Optional[Post]:
+        """Get the previous post in chronological order."""
+        posts = self.get_all_posts()
+        
+        # Find current post index
+        current_index = -1
+        for i, post in enumerate(posts):
+            if post.path == current_path:
+                current_index = i
+                break
+        
+        # Get previous post
+        if current_index < len(posts) - 1:
+            return posts[current_index + 1]
+        return None
 
 def render_markdown(text):
     """Render markdown text to HTML."""
@@ -85,255 +263,67 @@ def render_markdown(text):
         )
     except Exception as e:
         logger.error(f"Error rendering markdown: {e}")
-        return text
+        raise MarkdownRenderingError(f"Error rendering markdown: {e}")
 
-# Configure FlatPages with custom YAML parser and HTML renderer
+# Create a PostRepository instance
+post_repository = PostRepository(os.path.join(app_dir, 'app', 'posts'))
+
+# Configure FlatPages with custom HTML renderer
 app.config['FLATPAGES_HTML_RENDERER'] = render_markdown
-app.config['FLATPAGES_YAML_PARSER'] = parse_yaml
 pages = FlatPages(app)
-
-def get_safe_post_meta(post):
-    """Safely get post metadata"""
-    try:
-        # Get the raw content of the post
-        raw_content = post.body
-        
-        # Extract YAML front matter using a more robust method
-        metadata = {}
-        
-        # Find the first YAML block
-        yaml_pattern = r'^\s*---\s*\n(.*?)\n\s*---\s*\n'
-        match = re.match(yaml_pattern, raw_content, re.DOTALL)
-        
-        if match:
-            yaml_content = match.group(1).strip()
-            try:
-                # Parse the YAML content
-                metadata = yaml.safe_load(yaml_content)
-                if metadata is None:
-                    metadata = {}
-            except Exception as e:
-                logger.error(f"YAML parsing error in {post.path}: {e}")
-                metadata = {}
-        
-        # Get and clean the title
-        title = metadata.get('title', '')
-        if isinstance(title, str):
-            # Remove any extra quotes and whitespace
-            title = title.strip().strip('"\'')
-        
-        # Get other metadata
-        path = getattr(post, 'path', '')
-        date = metadata.get('date')
-        categories = metadata.get('categories', [])
-        
-        # Ensure we have valid data
-        if not title or not date:
-            logger.warning(f"Missing required metadata for post {path}")
-            return None
-            
-        return {
-            'path': path,
-            'title': title,
-            'date': date,
-            'categories': categories
-        }
-    except Exception as e:
-        logger.error(f"Error getting post meta: {e}")
-        return None
-
-def get_posts():
-    """Get all posts with metadata"""
-    try:
-        posts = []
-        for post in pages:
-            try:
-                meta = get_safe_post_meta(post)
-                if meta and meta['title'] and meta['date']:  # Only include posts with title and date
-                    posts.append({
-                        'path': post.path,
-                        'title': meta['title'],
-                        'date': meta['date'],
-                        'categories': meta['categories']
-                    })
-            except Exception as e:
-                logger.error(f"Error processing post: {e}")
-        
-        # Sort posts by date
-        posts.sort(key=lambda x: x['date'], reverse=True)
-        return posts
-    except Exception as e:
-        logger.error(f"Error getting posts: {e}")
-        return []
-
-def get_posts_directly():
-    """Get all posts by reading markdown files directly from the filesystem"""
-    try:
-        posts = []
-        posts_dir = os.path.join(app_dir, 'app', 'posts')
-        
-        # Get all markdown files in the posts directory
-        for filename in os.listdir(posts_dir):
-            if filename.endswith('.markdown'):
-                file_path = os.path.join(posts_dir, filename)
-                
-                try:
-                    # Read the file content
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    
-                    # Extract the path (filename without extension)
-                    path = os.path.splitext(filename)[0]
-                    
-                    # Extract YAML front matter using regex
-                    yaml_pattern = r'^\s*---\s*\n(.*?)\n\s*---\s*\n'
-                    match = re.match(yaml_pattern, content, re.DOTALL)
-                    
-                    if match:
-                        yaml_content = match.group(1).strip()
-                        try:
-                            # Parse the YAML content
-                            metadata = yaml.safe_load(yaml_content)
-                            
-                            # Extract required fields
-                            title = metadata.get('title', '')
-                            date_str = metadata.get('date', '')
-                            categories = metadata.get('categories', [])
-                            
-                            # Clean up title
-                            if isinstance(title, str):
-                                title = title.strip().strip('"\'')
-                            
-                            # Parse date
-                            try:
-                                if isinstance(date_str, str):
-                                    date = datetime.strptime(date_str, '%Y-%m-%d')
-                                else:
-                                    date = date_str
-                            except ValueError:
-                                logger.warning(f"Invalid date format in {path}: {date_str}")
-                                continue
-                            
-                            # Add to posts list if we have the required fields
-                            if title and date:
-                                # Create a post object that matches the template's expectations
-                                post_obj = {
-                                    'meta': {
-                                        'title': title,
-                                        'date': date,
-                                        'categories': categories
-                                    },
-                                    'path': path
-                                }
-                                posts.append(post_obj)
-                        except Exception as e:
-                            logger.error(f"Error parsing YAML in {path}: {e}")
-                except Exception as e:
-                    logger.error(f"Error reading file {filename}: {e}")
-        
-        # Sort posts by date
-        posts.sort(key=lambda x: x['meta']['date'], reverse=True)
-        return posts
-    except Exception as e:
-        logger.error(f"Error getting posts directly: {e}")
-        return []
 
 @app.route('/')
 def index():
-    posts = get_posts_directly()
-    return render_template('index.html', title='Home', posts=posts)
+    try:
+        posts = post_repository.get_all_posts()
+        return render_template('index.html', title='Home', posts=posts)
+    except Exception as e:
+        logger.error(f"Error in index route: {e}")
+        return render_template('error.html', title='Error', error="An error occurred while loading the home page.")
 
 @app.route('/writings/')
 def writings():
-    posts = get_posts_directly()
-    return render_template('writings.html', title='Writings', posts=posts)
+    try:
+        posts = post_repository.get_all_posts()
+        return render_template('writings.html', title='Writings', posts=posts)
+    except Exception as e:
+        logger.error(f"Error in writings route: {e}")
+        return render_template('error.html', title='Error', error="An error occurred while loading the writings page.")
 
 @app.route('/posts/<path:path>/')
 def post(path):
     try:
         logger.debug(f"Attempting to get post: {path}")
         
-        # Get the post file path
-        post_file = os.path.join(app_dir, 'app', 'posts', f"{path}.markdown")
+        # Get the post from the repository
+        post_obj = post_repository.get_post_by_path(path)
         
-        if not os.path.exists(post_file):
-            logger.error(f"Post file not found: {post_file}")
-            return abort(404)
-        
-        # Read the file content
-        with open(post_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Extract YAML front matter and content
-        yaml_pattern = r'^\s*---\s*\n(.*?)\n\s*---\s*\n'
-        match = re.match(yaml_pattern, content, re.DOTALL)
-        
-        if not match:
-            logger.error(f"No YAML front matter found in {path}")
-            return abort(404)
-        
-        yaml_content = match.group(1).strip()
-        post_content = content[match.end():].strip()
-        
-        # Parse the YAML content
-        try:
-            metadata = yaml.safe_load(yaml_content)
-        except Exception as e:
-            logger.error(f"Error parsing YAML in {path}: {e}")
-            return abort(500)
-        
-        # Extract required fields
-        title = metadata.get('title', '')
-        date_str = metadata.get('date', '')
-        categories = metadata.get('categories', [])
-        
-        # Clean up title
-        if isinstance(title, str):
-            title = title.strip().strip('"\'')
-        
-        # Parse date
-        try:
-            if isinstance(date_str, str):
-                date = datetime.strptime(date_str, '%Y-%m-%d')
-            else:
-                date = date_str
-        except ValueError:
-            logger.warning(f"Invalid date format in {path}: {date_str}")
-            date = None
-        
-        # Get all posts for navigation
-        all_posts = get_posts_directly()
-        
-        # Find current post index
-        current_index = -1
-        for i, p in enumerate(all_posts):
-            if p['path'] == path:
-                current_index = i
-                break
+        if not post_obj:
+            logger.error(f"Post not found: {path}")
+            return render_template('error.html', title='Post Not Found', error=f"The post '{path}' could not be found.")
         
         # Get next and previous posts
-        next_post = all_posts[current_index - 1] if current_index > 0 else None
-        prev_post = all_posts[current_index + 1] if current_index < len(all_posts) - 1 else None
+        next_post = post_repository.get_next_post(path)
+        prev_post = post_repository.get_prev_post(path)
         
         # Create a post object that matches the template's expectations
-        post_obj = {
-            'meta': {
-                'title': title,
-                'date': date,
-                'categories': categories
-            },
-            'content': render_markdown(post_content),
-            'path': path
+        post_data = {
+            'meta': post_obj.meta,
+            'content': post_obj.html_content,
+            'path': post_obj.path
         }
         
         return render_template('post.html', 
-                             post=post_obj,
+                             post=post_data,
                              next_post=next_post,
                              prev_post=prev_post)
+    except PostError as e:
+        logger.error(f"Post error in post route: {e}")
+        return render_template('error.html', title='Post Error', error=str(e))
     except Exception as e:
         logger.error(f"Error in post route: {e}")
         logger.error(f"Post path: {path}")
-        return abort(404)
+        return render_template('error.html', title='Error', error="An error occurred while loading the post.")
 
 @app.route('/games/')
 def games():
@@ -361,7 +351,23 @@ def hangman():
 
 @app.route('/strands/')
 def strands():
-    return render_template('strands.html', title='Strands Game')
+    return render_template('strands.html')
+
+@app.route('/maze/')
+def maze():
+    return render_template('maze.html')
+
+@app.route('/bubble/')
+def bubble():
+    return render_template('bubble.html')
+
+@app.route('/factory/')
+def factory():
+    return render_template('factory.html')
+
+@app.route('/survival/')
+def survival():
+    return render_template('survival.html')
 
 # Add a function to copy static assets during site generation
 def copy_static_assets():
@@ -405,21 +411,10 @@ if __name__ == '__main__':
     copy_static_assets()
     
     try:
-        all_posts = []
-        for post in pages:
-            try:
-                meta = get_safe_post_meta(post)
-                if meta['title'] and meta['date']:  # Only include posts with title and date
-                    all_posts.append({
-                        'path': post.path,
-                        'meta': meta
-                    })
-            except Exception as e:
-                logger.error(f"Error processing post at startup: {e}")
-        
+        all_posts = post_repository.get_all_posts()
         logger.info(f"Number of valid posts at startup: {len(all_posts)}")
         for post in all_posts:
-            logger.info(f"Post at startup: {post}")
+            logger.info(f"Post at startup: {post.path} - {post.title} - {post.date}")
     except Exception as e:
         logger.error(f"Error loading posts at startup: {e}")
     

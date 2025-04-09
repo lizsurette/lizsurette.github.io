@@ -10,7 +10,13 @@
         <p class="tagline">Software Engineer | Problem Solver | Tech Enthusiast</p>
         <p>Welcome to my corner of the internet. I'm a software engineer with a passion for creating elegant solutions to complex problems. With experience in cloud computing, virtualization, and user experience design, I enjoy exploring the intersection of technology and human interaction.</p>
         <p>This site showcases my thoughts, projects, and experiences in the tech world. Feel free to explore my writings, games, and other projects.</p>
-        <a href="{{ url_for('writings') }}" class="view-posts">View My Posts</a>
+        <div class="bottom-links">
+            <a href="{{ url_for('writings') }}" class="view-posts">View My Posts</a>
+            <div class="social-links">
+                <a href="https://github.com/lizsurette" target="_blank"><i class="fa fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/liz-blanchard/" target="_blank"><i class="fa fa-linkedin"></i></a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %} 

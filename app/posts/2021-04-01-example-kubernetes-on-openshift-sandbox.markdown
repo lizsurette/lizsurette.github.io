@@ -44,19 +44,19 @@ If you are following the quick start, you can continue on to get an understandin
 In the bottom left, there is an icon that represents the build status. Hovering over it will give you a quick textual status and clicking it will drill into the log for the build that has run. Typically, you'd really only need to navigate in this far if something seems like it's gone wrong with the build.<br>
 <img src="https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/build-status.png" alt="Build Status" width="250"/>
 <br><br>
-![Build Logs](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/build-logs.png)
+![Build Logs](/static/img/_posts/build-logs.png)
 <br><br>
 
 In the bottom right, there is an icon that represents the source code location. Hovering over it will give you a quick textual hint that you can access the code and clicking it will drill into the source code for editing. In the case of this sample running on the OpenShift Developer Sandbox, it opens up [Red Hat CodeReady Workspaces](https://developers.redhat.com/products/codeready-workspaces/overview) which is an OpenShift-native developer workspace server and IDE.<br>
 <img src="https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/source-code.png" alt="Source Code" width="250"/>
 <br><br>
-![CodeReady Workspaces](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/crw.png)
+![CodeReady Workspaces](/static/img/_posts/crw.png)
 <br><br>
 
 Finally, in the top right, there is an icon that represents the URL to your running application. Hovering over it will guide you towards opening the URL and clicking it will open the application in a new tab. In this case we get to see the sample application output running which gives even more guidance around developing with OpenShift.<br>
 <img src="https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/open-url.png" alt="Open URL" width="250"/>
 <br><br>
-![Application](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/application.png)
+![Application](/static/img/_posts/application.png)
 <br><br><br>
 
 That's it for the quick tour of creating an example application making use of the OpenShift Developer Sandbox. If you fall into the category of any type of Developer, I'd encourage you to give it a shot and I'd love to hear any feedback you have. Feel free to [send me an email](https://lizsurette.github.io/about/)! It's always great to hear how we might be able to make improvements on user experience.

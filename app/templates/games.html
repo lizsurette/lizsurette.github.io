@@ -32,6 +32,33 @@
                     <p>Find words by connecting adjacent letters in this word-finding puzzle game.</p>
                 </a>
             </div>
+            <div class="game-card">
+                <a href="/maze/">
+                    <img src="../static/projects/maze-game.svg" alt="Maze Game">
+                    <h3>Maze Runner</h3>
+                    <p>Navigate through randomly generated mazes using arrow keys to reach the goal.</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <a href="/bubble/">
+                    <img src="../static/projects/bubble-game.svg" alt="Bubble Shooter">
+                    <h3>Bubble Shooter</h3>
+                    <p>Match and pop colorful bubbles in this classic arcade-style game. Clear the board to win!</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <a href="/factory/">
+                    <img src="../static/projects/factory-game.svg" alt="Factory Builder">
+                    <h3>Factory Builder</h3>
+                    <p>Build and manage your own factory! Place machines, workers, and conveyors to create efficient production lines.</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <img src="{{ url_for('static', filename='projects/survival-game.svg') }}" alt="Survival Game">
+                <h3>Survival</h3>
+                <p>A wilderness survival game inspired by The Long Dark. Collect resources, manage your health, and survive the harsh environment.</p>
+                <a href="{{ url_for('survival') }}" class="play-button">Play Now</a>
+            </div>
         </div>
     </div>
 </article>
@@ -72,6 +99,11 @@
 }
 
 .game-card h2 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.game-card h3 {
     margin: 0 0 0.5rem 0;
     color: #333;
 }

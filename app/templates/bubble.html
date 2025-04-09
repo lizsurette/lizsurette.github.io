@@ -1,0 +1,717 @@
+{% extends "base.html" %}
+
+{% block title %}Bubble Shooter{% endblock %}
+
+{% block content %}
+<style>
+    .game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background: linear-gradient(to bottom, #1a1a3a, #0d0d1f);
+        min-height: 100vh;
+    }
+
+    .game-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .game-header {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .score {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        font-weight: bold;
+    }
+
+    .upcoming-bubbles {
+        position: absolute;
+        bottom: 40px;
+        left: 55%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+    }
+
+    .upcoming-bubbles-label {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        margin-right: 5px;
+    }
+
+    #upcomingBubbles {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .upcoming-bubble {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+                    inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+                    0 0 10px rgba(255, 255, 255, 0.2);
+        transition: transform 0.2s;
+    }
+
+    .upcoming-bubble:hover {
+        transform: scale(1.1);
+    }
+
+    #gameCanvas {
+        position: relative;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0, 0, 255, 0.2);
+        background: linear-gradient(to bottom, #000033, #000066);
+    }
+
+    .controls {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background: linear-gradient(to bottom, #4CAF50, #45a049);
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    button:hover {
+        background: linear-gradient(to bottom, #45a049, #409444);
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    }
+
+    .instructions {
+        margin-top: 20px;
+        max-width: 600px;
+        text-align: center;
+        line-height: 1.6;
+        color: #ffffff;
+        background: rgba(0, 0, 0, 0.4);
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .instructions p {
+        margin: 10px 0;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        font-size: 16px;
+    }
+
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0) 100%);
+        box-shadow: 
+            inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+            inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+            0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .bubble-red {
+        background-color: #ff3333;
+        background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 51, 51, 0.8) 60%, rgba(204, 0, 0, 1) 100%);
+    }
+
+    .bubble-blue {
+        background-color: #3333ff;
+        background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(51, 51, 255, 0.8) 60%, rgba(0, 0, 204, 1) 100%);
+    }
+
+    .bubble-green {
+        background-color: #ff33fc;
+        background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 51, 252, 0.8) 60%, rgba(204, 0, 204, 1) 100%);
+    }
+
+    .bubble-yellow {
+        background-color: #33ff33;
+        background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(51, 255, 51, 0.8) 60%, rgba(0, 204, 0, 1) 100%);
+    }
+
+    .score-container {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px 20px;
+        border-radius: 20px;
+        color: #ffffff;
+        font-size: 24px;
+        margin: 20px 0;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .game-over {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        color: #ffffff;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    }
+
+    .game-over h2 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        color: #ffffff;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .game-over button {
+        background: linear-gradient(to bottom, #4CAF50, #45a049);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    }
+
+    .game-over button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+    }
+</style>
+
+<div class="game-container">
+    <div class="game-main">
+        <div class="game-header">
+            <div class="score">Score: <span id="scoreValue">0</span></div>
+        </div>
+        <div style="position: relative;">
+            <canvas id="gameCanvas" width="480" height="640"></canvas>
+            <div class="upcoming-bubbles">
+                <span class="upcoming-bubbles-label">Next:</span>
+                <div id="upcomingBubbles"></div>
+            </div>
+        </div>
+        <div class="controls">
+            <button onclick="newGame()">New Game</button>
+        </div>
+        <div class="instructions">
+            <p>Aim with your mouse and click to shoot bubbles. Match 3 or more of the same color to pop them!</p>
+            <p>Clear all bubbles to win. Watch out for bubbles reaching the bottom!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+class BubbleShooter {
+    constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.score = 0;
+        this.colors = ['#FF6B6B', '#4ECDC4', '#FF33FC', '#33ff33'];
+        this.bubbleRadius = 20;
+        this.gridRows = 8;
+        this.gridCols = 12;
+        this.bubbleGrid = [];
+        this.upcomingBubbles = [];
+        this.shooter = {
+            x: this.canvas.width / 2,
+            y: this.canvas.height - 40,
+            angle: -Math.PI / 2,
+            currentBubble: null
+        };
+        this.projectile = null;
+        this.gameOver = false;
+        this.stuckCounter = 0;
+
+        // Initialize upcoming bubbles queue
+        for (let i = 0; i < 3; i++) {
+            this.upcomingBubbles.push(this.colors[Math.floor(Math.random() * this.colors.length)]);
+        }
+
+        this.initializeGame();
+        this.setupEventListeners();
+        this.updateUpcomingBubblesDisplay();
+        this.gameLoop();
+    }
+
+    updateUpcomingBubblesDisplay() {
+        const container = document.getElementById('upcomingBubbles');
+        container.innerHTML = '';
+        
+        this.upcomingBubbles.forEach(color => {
+            const bubble = document.createElement('div');
+            bubble.className = 'upcoming-bubble';
+            bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, ${color} 60%, ${this.shadeColor(color, -30)} 100%)`;
+            container.appendChild(bubble);
+        });
+    }
+
+    shootBubble() {
+        this.projectile = {
+            x: this.shooter.x,
+            y: this.shooter.y,
+            color: this.shooter.currentBubble,
+            dx: Math.cos(this.shooter.angle) * 10,
+            dy: Math.sin(this.shooter.angle) * 10
+        };
+
+        // Update shooter's current bubble with the next in queue
+        this.shooter.currentBubble = this.upcomingBubbles.shift();
+        
+        // Add a new bubble to the queue
+        this.upcomingBubbles.push(this.colors[Math.floor(Math.random() * this.colors.length)]);
+        
+        // Update the display
+        this.updateUpcomingBubblesDisplay();
+    }
+
+    initializeGame() {
+        // Initialize bubble grid
+        for (let row = 0; row < this.gridRows; row++) {
+            this.bubbleGrid[row] = [];
+            for (let col = 0; col < this.gridCols; col++) {
+                if (row < 4) { // Start with 4 rows of bubbles
+                    this.bubbleGrid[row][col] = {
+                        x: col * (this.bubbleRadius * 2) + this.bubbleRadius + (row % 2 ? this.bubbleRadius : 0),
+                        y: row * (this.bubbleRadius * 1.8) + this.bubbleRadius,
+                        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                        active: true
+                    };
+                } else {
+                    this.bubbleGrid[row][col] = null;
+                }
+            }
+        }
+        
+        // Initialize shooter's bubble from the upcoming queue
+        this.shooter.currentBubble = this.upcomingBubbles[0];
+    }
+
+    setupEventListeners() {
+        this.canvas.addEventListener('mousemove', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Calculate angle between shooter and mouse
+            const dx = x - this.shooter.x;
+            const dy = y - this.shooter.y;
+            this.shooter.angle = Math.atan2(dy, dx);
+            
+            // Limit shooting angle
+            if (this.shooter.angle > -0.1) this.shooter.angle = -0.1;
+            if (this.shooter.angle < -Math.PI + 0.1) this.shooter.angle = -Math.PI + 0.1;
+        });
+
+        this.canvas.addEventListener('click', () => {
+            if (!this.projectile && !this.gameOver) {
+                this.shootBubble();
+            }
+        });
+    }
+
+    updateProjectile() {
+        if (!this.projectile) return;
+
+        // Store previous position for trajectory check
+        const prevX = this.projectile.x;
+        const prevY = this.projectile.y;
+
+        // Update position
+        this.projectile.x += this.projectile.dx;
+        this.projectile.y += this.projectile.dy;
+
+        // Check wall collisions
+        if (this.projectile.x <= this.bubbleRadius || 
+            this.projectile.x >= this.canvas.width - this.bubbleRadius) {
+            this.projectile.dx *= -1;
+            // Move back to prevent sticking to wall
+            this.projectile.x = this.projectile.x <= this.bubbleRadius ? 
+                this.bubbleRadius : this.canvas.width - this.bubbleRadius;
+        }
+
+        // Check ceiling collision
+        if (this.projectile.y <= this.bubbleRadius) {
+            // Snap to top row
+            const col = Math.round((this.projectile.x - this.bubbleRadius) / (this.bubbleRadius * 2));
+            if (col >= 0 && col < this.gridCols && !this.bubbleGrid[0][col]) {
+                this.bubbleGrid[0][col] = {
+                    x: col * (this.bubbleRadius * 2) + this.bubbleRadius,
+                    y: this.bubbleRadius,
+                    color: this.projectile.color,
+                    active: true
+                };
+                this.checkMatches(0, col);
+                this.projectile = null;
+                this.stuckCounter = 0;
+                return;
+            }
+        }
+
+        // Check collision with existing bubbles
+        let collision = false;
+        let closestRow = -1;
+        let closestCol = -1;
+        let minDistance = Infinity;
+
+        for (let row = 0; row < this.gridRows; row++) {
+            for (let col = 0; col < this.gridCols; col++) {
+                const bubble = this.bubbleGrid[row][col];
+                if (bubble && bubble.active) {
+                    const dx = this.projectile.x - bubble.x;
+                    const dy = this.projectile.y - bubble.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Check for direct collision
+                    if (distance < this.bubbleRadius * 2) {
+                        collision = true;
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            closestRow = row;
+                            closestCol = col;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (collision) {
+            // Find the best adjacent position to snap to
+            const positions = this.getAdjacentPositions(closestRow, closestCol);
+            let bestPosition = null;
+            let bestDistance = Infinity;
+
+            for (const pos of positions) {
+                if (pos.row >= 0 && pos.row < this.gridRows && 
+                    pos.col >= 0 && pos.col < this.gridCols && 
+                    !this.bubbleGrid[pos.row][pos.col]) {
+                    const x = pos.col * (this.bubbleRadius * 2) + this.bubbleRadius + (pos.row % 2 ? this.bubbleRadius : 0);
+                    const y = pos.row * (this.bubbleRadius * 1.8) + this.bubbleRadius;
+                    const dx = this.projectile.x - x;
+                    const dy = this.projectile.y - y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < bestDistance) {
+                        bestDistance = distance;
+                        bestPosition = { row: pos.row, col: pos.col, x, y };
+                    }
+                }
+            }
+
+            if (bestPosition) {
+                this.bubbleGrid[bestPosition.row][bestPosition.col] = {
+                    x: bestPosition.x,
+                    y: bestPosition.y,
+                    color: this.projectile.color,
+                    active: true
+                };
+                this.checkMatches(bestPosition.row, bestPosition.col);
+                this.projectile = null;
+                this.stuckCounter = 0;
+                return;
+            }
+        }
+
+        // Check if projectile is moving too slowly
+        const speed = Math.sqrt(
+            this.projectile.dx * this.projectile.dx + 
+            this.projectile.dy * this.projectile.dy
+        );
+        
+        if (speed < 0.5) {
+            this.stuckCounter++;
+            if (this.stuckCounter > 10) {
+                this.projectile = null;
+                this.stuckCounter = 0;
+            }
+        } else {
+            this.stuckCounter = 0;
+        }
+    }
+
+    getAdjacentPositions(row, col) {
+        const positions = [];
+        const isEvenRow = row % 2 === 0;
+        
+        // Define adjacent positions based on whether the row is even or odd
+        const adjacentOffsets = isEvenRow ? [
+            [-1, -1], [-1, 0],  // Above left, Above right
+            [0, -1], [0, 1],    // Left, Right
+            [1, -1], [1, 0]     // Below left, Below right
+        ] : [
+            [-1, 0], [-1, 1],   // Above left, Above right
+            [0, -1], [0, 1],    // Left, Right
+            [1, 0], [1, 1]      // Below left, Below right
+        ];
+
+        for (const [rowOffset, colOffset] of adjacentOffsets) {
+            positions.push({
+                row: row + rowOffset,
+                col: col + colOffset
+            });
+        }
+
+        return positions;
+    }
+
+    checkMatches(row, col) {
+        const matches = this.findMatches(row, col);
+        if (matches.length >= 3) {
+            matches.forEach(match => {
+                this.bubbleGrid[match.row][match.col].active = false;
+            });
+            this.score += matches.length * 10;
+            document.getElementById('scoreValue').textContent = this.score;
+        }
+    }
+
+    findMatches(row, col, matches = [], visited = new Set()) {
+        const key = `${row},${col}`;
+        if (visited.has(key)) return matches;
+        visited.add(key);
+
+        const currentBubble = this.bubbleGrid[row][col];
+        if (!currentBubble || !currentBubble.active) return matches;
+
+        matches.push({ row, col });
+
+        // Check adjacent positions
+        const directions = [
+            [-1, -1], [-1, 0], [-1, 1],
+            [0, -1], [0, 1],
+            [1, -1], [1, 0], [1, 1]
+        ];
+
+        for (const [dr, dc] of directions) {
+            const newRow = row + dr;
+            const newCol = col + dc;
+
+            if (newRow >= 0 && newRow < this.gridRows &&
+                newCol >= 0 && newCol < this.gridCols) {
+                const neighbor = this.bubbleGrid[newRow][newCol];
+                if (neighbor && neighbor.active && 
+                    neighbor.color === currentBubble.color) {
+                    this.findMatches(newRow, newCol, matches, visited);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    checkGameOver() {
+        // Check if any bubble reached bottom row
+        for (let col = 0; col < this.gridCols; col++) {
+            if (this.bubbleGrid[this.gridRows - 1][col]?.active) {
+                this.gameOver = true;
+                return;
+            }
+        }
+
+        // Check if all bubbles are cleared
+        let activeBubbles = false;
+        for (let row = 0; row < this.gridRows; row++) {
+            for (let col = 0; col < this.gridCols; col++) {
+                if (this.bubbleGrid[row][col]?.active) {
+                    activeBubbles = true;
+                    break;
+                }
+            }
+        }
+        if (!activeBubbles) {
+            this.score += 1000; // Bonus for clearing all bubbles
+            document.getElementById('scoreValue').textContent = this.score;
+            this.gameOver = true;
+        }
+    }
+
+    draw() {
+        // Clear canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw bubble grid
+        for (let row = 0; row < this.gridRows; row++) {
+            for (let col = 0; col < this.gridCols; col++) {
+                const bubble = this.bubbleGrid[row][col];
+                if (bubble && bubble.active) {
+                    this.drawBubble(bubble.x, bubble.y, bubble.color, this.bubbleRadius);
+                }
+            }
+        }
+
+        // Draw projectile
+        if (this.projectile) {
+            this.drawBubble(this.projectile.x, this.projectile.y, this.projectile.color, this.bubbleRadius);
+        }
+
+        // Draw shooter
+        this.ctx.save();
+        this.ctx.translate(this.shooter.x, this.shooter.y);
+        this.ctx.rotate(this.shooter.angle);
+        
+        // Draw shooter body - make it longer and wider
+        this.ctx.fillStyle = '#333';
+        this.ctx.fillRect(0, -8, 50, 16);
+        
+        // Add gradient for shooter body
+        const shooterGradient = this.ctx.createLinearGradient(0, -8, 0, 8);
+        shooterGradient.addColorStop(0, '#4a4a4a');
+        shooterGradient.addColorStop(0.5, '#333');
+        shooterGradient.addColorStop(1, '#1a1a1a');
+        this.ctx.fillStyle = shooterGradient;
+        this.ctx.fillRect(0, -8, 50, 16);
+        
+        // Add aiming line
+        this.ctx.beginPath();
+        this.ctx.moveTo(50, 0);
+        this.ctx.lineTo(120, 0);
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([5, 5]);
+        this.ctx.stroke();
+        
+        // Add arrow at the end of aiming line
+        this.ctx.setLineDash([]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(120, 0);
+        this.ctx.lineTo(110, -5);
+        this.ctx.lineTo(110, 5);
+        this.ctx.closePath();
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        this.ctx.fill();
+        
+        // Draw current bubble in shooter
+        this.drawBubble(0, 0, this.shooter.currentBubble, this.bubbleRadius);
+        
+        this.ctx.restore();
+
+        // Draw game over message
+        if (this.gameOver) {
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.ctx.font = '48px Arial';
+            this.ctx.fillStyle = '#fff';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('Game Over!', this.canvas.width / 2, this.canvas.height / 2);
+            
+            this.ctx.font = '24px Arial';
+            this.ctx.fillText(`Final Score: ${this.score}`, this.canvas.width / 2, this.canvas.height / 2 + 40);
+        }
+    }
+
+    gameLoop() {
+        if (!this.gameOver) {
+            this.updateProjectile();
+            
+            // Safety check: if we have a projectile but it's not moving, reset it
+            if (this.projectile && 
+                Math.abs(this.projectile.dx) < 0.1 && 
+                Math.abs(this.projectile.dy) < 0.1) {
+                this.stuckCounter++;
+                if (this.stuckCounter > 20) {
+                    console.log("Game stuck, resetting projectile");
+                    this.projectile = null;
+                    this.shooter.currentBubble = this.colors[Math.floor(Math.random() * this.colors.length)];
+                    this.stuckCounter = 0;
+                }
+            } else {
+                this.stuckCounter = 0;
+            }
+        }
+        this.draw();
+        requestAnimationFrame(() => this.gameLoop());
+    }
+
+    drawBubble(x, y, color, radius) {
+        this.ctx.save();
+        
+        // Create gradient for 3D effect
+        const gradient = this.ctx.createRadialGradient(
+            x - radius * 0.3, // Highlight position X
+            y - radius * 0.3, // Highlight position Y
+            radius * 0.1,     // Highlight start
+            x,                // Center X
+            y,                // Center Y
+            radius           // Bubble radius
+        );
+        
+        // Add color stops for the gradient
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');  // Bright highlight
+        gradient.addColorStop(0.3, color);                      // Main color
+        gradient.addColorStop(1, this.shadeColor(color, -30));      // Darker edge
+        
+        // Draw the main bubble
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+        this.ctx.fillStyle = gradient;
+        this.ctx.fill();
+        
+        // Add shine effect
+        this.ctx.beginPath();
+        this.ctx.arc(x - radius * 0.3, y - radius * 0.3, radius * 0.3, 0, Math.PI * 2);
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        this.ctx.fill();
+        
+        // Add subtle outer glow
+        this.ctx.shadowColor = color;
+        this.ctx.shadowBlur = 10;
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+        
+        this.ctx.restore();
+    }
+
+    // Helper function to shade colors
+    shadeColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) + amt;
+        const G = (num >> 8 & 0x00FF) + amt;
+        const B = (num & 0x0000FF) + amt;
+        
+        return '#' + (0x1000000 +
+            (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+            (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+            (B < 255 ? (B < 1 ? 0 : B) : 255)
+        ).toString(16).slice(1);
+    }
+}
+
+let game;
+
+function newGame() {
+    game = new BubbleShooter();
+}
+
+// Start the game when the page loads
+window.onload = newGame;
+</script>
+{% endblock %} 
