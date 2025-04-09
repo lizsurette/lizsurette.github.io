@@ -6,6 +6,7 @@ from config import config
 from app.services.markdown_service import MarkdownService
 from app.repositories.post_repository import PostRepository
 from app.models.exceptions import PostError, PostNotFoundError, PostMetadataError
+from app.services.config_service import ConfigService
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -36,11 +37,11 @@ def create_app(config_name='default'):
     from app.utils.logger import setup_logger
     setup_logger(app)
     
+    # Create config service
+    config_service = ConfigService(app.config)
+    
     # Create markdown service
-    markdown_service = MarkdownService(
-        extensions=app.config['FLATPAGES_MARKDOWN_EXTENSIONS'],
-        extension_configs=app.config['FLATPAGES_EXTENSION_CONFIGS']
-    )
+    markdown_service = MarkdownService(config_service)
     
     # Configure FlatPages with custom HTML renderer
     app.config['FLATPAGES_HTML_RENDERER'] = markdown_service.render
