@@ -107,3 +107,38 @@ def create_app(config_name='default'):
         app.logger.error(f"Error loading posts at startup: {e}")
     
     return app
+
+def copy_static_assets():
+    """
+    Copy static assets to the build directory.
+    This function is used by freeze.py to ensure all static assets are included in the build.
+    """
+    import shutil
+    import os
+    
+    # Get the absolute path to the static directory
+    static_dir = os.path.join(app_dir, 'static')
+    build_dir = os.path.join(os.path.dirname(app_dir), 'build', 'static')
+    
+    # Create the build directory if it doesn't exist
+    os.makedirs(build_dir, exist_ok=True)
+    
+    # Copy all static files
+    for root, dirs, files in os.walk(static_dir):
+        for file in files:
+            src_path = os.path.join(root, file)
+            rel_path = os.path.relpath(src_path, static_dir)
+            dst_path = os.path.join(build_dir, rel_path)
+            
+            # Create the destination directory if it doesn't exist
+            os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+            
+            # Copy the file
+            shutil.copy2(src_path, dst_path)
+
+# Create the app instance
+app = create_app()
+
+# Export the app instance, pages, and copy_static_assets function
+# Export the app instance and pages
+__all__ = ['app', 'pages']
