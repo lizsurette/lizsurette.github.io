@@ -61,3 +61,6 @@ instance/
 
 # Logs
 *.log 
+
+logs/
+*.log 
