@@ -48,6 +48,7 @@ def create_app(config_name='default'):
     pages = FlatPages(app)
     
     # Create post repository
+    global post_repository
     post_repository = PostRepository(
         posts_dir=app.config['FLATPAGES_ROOT'],
         render_markdown_func=markdown_service.render
@@ -140,6 +141,8 @@ def copy_static_assets():
 # Create the app instance
 app = create_app()
 
+# Create post repository instance
+post_repository = None
+
 # Export the app instance, pages, and copy_static_assets function
-# Export the app instance and pages
-__all__ = ['app', 'pages']
+__all__ = ['app', 'pages', 'copy_static_assets', 'post_repository']
