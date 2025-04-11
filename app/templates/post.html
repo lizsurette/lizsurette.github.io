@@ -32,7 +32,7 @@
         <div class="post-pagination">
             {% if prev_post %}
             <div class="prev-post">
-                <a href="{{ url_for('post', path=prev_post.path) }}">
+                <a href="{{ url_for('post.post_view', path=prev_post.path) }}">
                     <span class="nav-label">Previous:</span>
                     <span class="nav-title">{{ prev_post.meta.title }}</span>
                 </a>
@@ -41,7 +41,7 @@
             
             {% if next_post %}
             <div class="next-post">
-                <a href="{{ url_for('post', path=next_post.path) }}">
+                <a href="{{ url_for('post.post_view', path=next_post.path) }}">
                     <span class="nav-label">Next:</span>
                     <span class="nav-title">{{ next_post.meta.title }}</span>
                 </a>

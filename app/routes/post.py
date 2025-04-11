@@ -5,7 +5,7 @@ from app.models.exceptions import PostError
 post = Blueprint('post', __name__)
 
 @post.route('/posts/<path:path>/')
-def post(path):
+def post_view(path):
     """
     Render a blog post.
     
