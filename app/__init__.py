@@ -13,6 +13,11 @@ logger = logging.getLogger(__name__)
 # Get the absolute path to the app directory
 app_dir = os.path.abspath(os.path.dirname(__file__))
 
+# Global variables to avoid circular imports
+app = None
+pages = None
+post_repository = None
+
 def create_app(config_name='default'):
     """
     Create and configure the Flask application.
@@ -27,8 +32,8 @@ def create_app(config_name='default'):
     from app.repositories.post_repository import PostRepository
     from app.services.config_service import ConfigService
     from app.utils.logger import setup_logger
-    from app.routes.main import main as main_blueprint
-    from app.routes.post import post as post_blueprint
+    
+    global app, pages, post_repository
     
     app = Flask(__name__, 
                 template_folder=os.path.join(app_dir, 'templates'),
@@ -57,31 +62,9 @@ def create_app(config_name='default'):
         render_markdown_func=markdown_service._render_markdown
     )
     
-    # Register blueprints
-    app.register_blueprint(main_blueprint)
-    app.register_blueprint(post_blueprint)
-    
-    # Register error handlers
-    @app.errorhandler(PostNotFoundError)
-    def handle_post_not_found(error):
-        app.logger.error(f"Post not found: {error}")
-        return render_template('error.html', 
-                              title='Post Not Found', 
-                              error=str(error)), 404
-    
-    @app.errorhandler(PostMetadataError)
-    def handle_post_metadata_error(error):
-        app.logger.error(f"Post metadata error: {error}")
-        return render_template('error.html', 
-                              title='Post Error', 
-                              error=str(error)), 400
-    
-    @app.errorhandler(PostError)
-    def handle_post_error(error):
-        app.logger.error(f"Post error: {error}")
-        return render_template('error.html', 
-                              title='Post Error', 
-                              error=str(error)), 500
+    # Register blueprints and error handlers
+    register_blueprints(app)
+    register_error_handlers(app)
     
     # Add context processor for date formatting
     @app.context_processor
@@ -109,6 +92,37 @@ def create_app(config_name='default'):
         app.logger.error(f"Error loading posts at startup: {e}")
     
     return app
+
+def register_blueprints(app):
+    """Register Flask blueprints."""
+    from app.routes.main import main as main_blueprint
+    from app.routes.post import post as post_blueprint
+    
+    app.register_blueprint(main_blueprint)
+    app.register_blueprint(post_blueprint)
+
+def register_error_handlers(app):
+    """Register error handlers."""
+    @app.errorhandler(PostNotFoundError)
+    def handle_post_not_found(error):
+        app.logger.error(f"Post not found: {error}")
+        return render_template('error.html', 
+                              title='Post Not Found', 
+                              error=str(error)), 404
+    
+    @app.errorhandler(PostMetadataError)
+    def handle_post_metadata_error(error):
+        app.logger.error(f"Post metadata error: {error}")
+        return render_template('error.html', 
+                              title='Post Error', 
+                              error=str(error)), 400
+    
+    @app.errorhandler(PostError)
+    def handle_post_error(error):
+        app.logger.error(f"Post error: {error}")
+        return render_template('error.html', 
+                              title='Post Error', 
+                              error=str(error)), 500
 
 # Create the app instance
 app = create_app()
