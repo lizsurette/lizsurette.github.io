@@ -53,6 +53,10 @@ def create_app(config_name='default'):
         render_markdown_func=markdown_service._render_markdown
     )
     
+    # Make post_repository available to other modules
+    from app.repositories.post_repository import PostRepository
+    post_repository = post_repository
+    
     # Register blueprints
     from app.routes.main import main as main_blueprint
     app.register_blueprint(main_blueprint)
@@ -112,5 +116,5 @@ def create_app(config_name='default'):
 # Create the app instance
 app = create_app()
 
-# Export the app instance and pages
-__all__ = ['app', 'pages']
+# Export the app instance, pages, and post_repository
+__all__ = ['app', 'pages', 'post_repository']

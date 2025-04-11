@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template
-from app.repositories.post_repository import post_repository
+from flask import Blueprint, render_template, abort
+from app import post_repository
 from app.models.exceptions import PostError
 
 # Create the post blueprint
