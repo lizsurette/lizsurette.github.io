@@ -1,4 +1,4 @@
-from app import app, pages, copy_static_assets
+from app import app, copy_static_assets
 from flask_frozen import Freezer
 import os
 import re
@@ -13,7 +13,7 @@ freezer.static_ignore = ['*.pyc', '*.pyo', '*.pyd', '__pycache__', '.git']
 # Add all routes to the freezer
 @freezer.register_generator
 def post():
-    for post in pages:
+    for post in app.pages:
         yield {'path': post.path}
 
 @freezer.register_generator

@@ -45,7 +45,7 @@ def create_app(config_name='default'):
     
     # Configure FlatPages with custom HTML renderer
     app.config['FLATPAGES_HTML_RENDERER'] = markdown_service.render
-    pages = FlatPages(app)
+    app.pages = FlatPages(app)
     
     # Create post repository
     app.post_repository = PostRepository(
@@ -140,5 +140,5 @@ def copy_static_assets():
 # Create the app instance
 app = create_app()
 
-# Export the app instance, pages, and copy_static_assets function
-__all__ = ['app', 'pages', 'copy_static_assets']
+# Export the app instance and copy_static_assets function
+__all__ = ['app', 'copy_static_assets']
