@@ -1,6 +1,4 @@
 from flask import Blueprint, render_template, current_app
-from app.repositories.post_repository import PostRepository
-from app import post_repository
 
 # Create the main blueprint
 main = Blueprint('main', __name__)
@@ -14,11 +12,7 @@ def index():
         str: The rendered home page
     """
     try:
-        if post_repository is None:
-            current_app.logger.error("Post repository not initialized")
-            return render_template('error.html', title='Error', error="Site is still initializing. Please try again in a moment.")
-            
-        posts = post_repository.get_all_posts()
+        posts = current_app.post_repository.get_all_posts()
         return render_template('index.html', title='Home', posts=posts)
     except Exception as e:
         current_app.logger.error(f"Error in index route: {e}")
@@ -33,11 +27,7 @@ def writings():
         str: The rendered writings page
     """
     try:
-        if post_repository is None:
-            current_app.logger.error("Post repository not initialized")
-            return render_template('error.html', title='Error', error="Site is still initializing. Please try again in a moment.")
-            
-        posts = post_repository.get_all_posts()
+        posts = current_app.post_repository.get_all_posts()
         return render_template('writings.html', title='Writings', posts=posts)
     except Exception as e:
         current_app.logger.error(f"Error in writings route: {e}")

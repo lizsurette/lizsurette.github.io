@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template
-from app.repositories.post_repository import post_repository
+from flask import Blueprint, render_template, current_app
 from app.models.exceptions import PostError
 
 # Create the post blueprint
@@ -17,8 +16,10 @@ def post_detail(path):
         str: The rendered post page
     """
     try:
-        from flask import current_app
         current_app.logger.debug(f"Attempting to get post: {path}")
+        
+        # Get the post repository from app context
+        post_repository = current_app.post_repository
         
         # Get the post from the repository
         post_obj = post_repository.get_post_by_path(path)
@@ -43,11 +44,9 @@ def post_detail(path):
                              next_post=next_post,
                              prev_post=prev_post)
     except PostError as e:
-        from flask import current_app
         current_app.logger.error(f"Post error in post route: {e}")
         return render_template('error.html', title='Post Error', error=str(e))
     except Exception as e:
-        from flask import current_app
         current_app.logger.error(f"Error in post route: {e}")
         current_app.logger.error(f"Post path: {path}")
         return render_template('error.html', title='Error', error="An error occurred while loading the post.") 

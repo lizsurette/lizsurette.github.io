@@ -48,8 +48,7 @@ def create_app(config_name='default'):
     pages = FlatPages(app)
     
     # Create post repository
-    global post_repository
-    post_repository = PostRepository(
+    app.post_repository = PostRepository(
         posts_dir=app.config['FLATPAGES_ROOT'],
         render_markdown_func=markdown_service.render
     )
@@ -101,7 +100,7 @@ def create_app(config_name='default'):
     app.logger.info(f"Directory exists at startup: {os.path.exists(app.config['FLATPAGES_ROOT'])}")
     
     try:
-        all_posts = post_repository.get_all_posts()
+        all_posts = app.post_repository.get_all_posts()
         app.logger.info(f"Number of valid posts at startup: {len(all_posts)}")
         for post in all_posts:
             app.logger.info(f"Post at startup: {post.path} - {post.title} - {post.date}")
@@ -141,8 +140,5 @@ def copy_static_assets():
 # Create the app instance
 app = create_app()
 
-# Create post repository instance
-post_repository = None
-
 # Export the app instance, pages, and copy_static_assets function
-__all__ = ['app', 'pages', 'copy_static_assets', 'post_repository']
+__all__ = ['app', 'pages', 'copy_static_assets']
