@@ -52,8 +52,8 @@ def grocery_list():
     yield {}
 
 @freezer.register_generator
-def main_snake():
-    yield {'endpoint': 'main.snake'}
+def snake():
+    yield {}
 
 @freezer.register_generator
 def hangman():
