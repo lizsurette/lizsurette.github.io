@@ -71,8 +71,8 @@ def static():
                 yield {'filename': os.path.join(root, file).replace('app/static/', '')}
 
 @freezer.register_generator
-def main_survival():
-    yield {'endpoint': 'main.survival'}
+def survival():
+    yield {}
 
 if __name__ == '__main__':
     # Create _site directory if it doesn't exist
