@@ -21,22 +21,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install Pygments  # Required for code highlighting
-
-      - name: Create required directories
-        run: |
-          mkdir -p logs
-          mkdir -p app/posts
-          mkdir -p build
 
       - name: Generate static site
-        run: |
-          python freeze.py
-          touch build/.nojekyll  # Prevent GitHub from processing the site with Jekyll
+        run: python freeze.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          force_orphan: true  # Create a new orphan branch for each deployment 
+          publish_dir: ./build 

@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template
+from app.repositories.post_repository import post_repository
 
 # Create the main blueprint
 main = Blueprint('main', __name__)
@@ -12,9 +13,10 @@ def index():
         str: The rendered home page
     """
     try:
-        posts = current_app.post_repository.get_all_posts()
+        posts = post_repository.get_all_posts()
         return render_template('index.html', title='Home', posts=posts)
     except Exception as e:
+        from flask import current_app
         current_app.logger.error(f"Error in index route: {e}")
         return render_template('error.html', title='Error', error="An error occurred while loading the home page.")
 
@@ -27,9 +29,10 @@ def writings():
         str: The rendered writings page
     """
     try:
-        posts = current_app.post_repository.get_all_posts()
+        posts = post_repository.get_all_posts()
         return render_template('writings.html', title='Writings', posts=posts)
     except Exception as e:
+        from flask import current_app
         current_app.logger.error(f"Error in writings route: {e}")
         return render_template('error.html', title='Error', error="An error occurred while loading the writings page.")
 

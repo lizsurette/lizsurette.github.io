@@ -5,38 +5,27 @@
 {% block content %}
 <article class="post">
     <header class="post-header">
-        <div class="title-container">
-            <h1 class="post-title steampunk-title">Hangman</h1>
-            <div class="word-display" id="word-display"></div>
-        </div>
-        <hr class="gear-divider" />
+        <h1 class="post-title">{{ title }}</h1>
+        <hr />
     </header>
 
     <div class="post-content">
         <div class="game-container">
             <div class="game-info">
+                <p>Guess the word before the hangman is complete!</p>
+                <div class="word-display" id="word-display"></div>
                 <div class="hangman-container">
                     <svg id="hangman" width="300" height="400">
-                        <!-- Base with gear decorations -->
-                        <defs>
-                            <pattern id="gear-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                                <path d="M20,0 A20,20 0 0,1 40,20 A20,20 0 0,1 20,40 A20,20 0 0,1 0,20 A20,20 0 0,1 20,0 Z" fill="#8B4513"/>
-                                <circle cx="20" cy="20" r="5" fill="#654321"/>
-                            </pattern>
-                        </defs>
                         <!-- Base -->
-                        <line x1="50" y1="350" x2="250" y2="350" stroke="#8B4513" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="50" y1="350" x2="250" y2="350" stroke="#8B4513" stroke-width="3"/>
                         <!-- Vertical pole -->
-                        <line x1="100" y1="350" x2="100" y2="50" stroke="#8B4513" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="100" y1="350" x2="100" y2="50" stroke="#8B4513" stroke-width="3"/>
                         <!-- Horizontal beam -->
-                        <line x1="100" y1="50" x2="200" y2="50" stroke="#8B4513" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="100" y1="50" x2="200" y2="50" stroke="#8B4513" stroke-width="3"/>
                         <!-- Support beam -->
-                        <line x1="100" y1="80" x2="150" y2="50" stroke="#8B4513" stroke-width="5" stroke-linecap="round"/>
-                        <!-- Decorative gears -->
-                        <circle cx="100" cy="50" r="15" fill="url(#gear-pattern)" class="rotating-gear"/>
-                        <circle cx="200" cy="50" r="15" fill="url(#gear-pattern)" class="rotating-gear reverse"/>
+                        <line x1="100" y1="80" x2="150" y2="50" stroke="#8B4513" stroke-width="3"/>
                         <!-- Rope -->
-                        <line x1="200" y1="50" x2="200" y2="100" stroke="#B8860B" stroke-width="3" class="hangman-part" style="display: none;"/>
+                        <line x1="200" y1="50" x2="200" y2="100" stroke="#FFFFFF" stroke-width="2" class="hangman-part" style="display: none;"/>
                         <!-- Head with better face details -->
                         <g class="hangman-part" style="display: none;">
                             <circle cx="200" cy="120" r="20" stroke="#FFFFFF" stroke-width="2" fill="none"/>
@@ -79,80 +68,45 @@
 </article>
 
 <style>
-/* Steampunk theme for Hangman game */
+/* Dark mode theme for Hangman game */
 .game-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
     position: relative;
-    background-color: #2a2520;
+    background-color: #1a1a1a;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
-    border: 4px solid #8B4513;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.title-container {
-    position: relative;
+.game-info {
     text-align: center;
-    margin-bottom: 30px;
-}
-
-.steampunk-title {
-    font-family: 'Georgia', serif;
-    color: #B8860B;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    font-size: 3em;
     margin-bottom: 20px;
     position: relative;
+    color: #e0e0e0;
 }
 
-.steampunk-title::before,
-.steampunk-title::after {
-    content: '';
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,0 A50,50 0 0,1 100,50 A50,50 0 0,1 50,100 A50,50 0 0,1 0,50 A50,50 0 0,1 50,0 Z" fill="%23B8860B"/><circle cx="50" cy="50" r="10" fill="%23654321"/></svg>');
-    background-size: contain;
-}
-
-.steampunk-title::before {
-    left: -50px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.steampunk-title::after {
-    right: -50px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.gear-divider {
-    border: none;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, #B8860B, transparent);
-    margin: 20px auto;
-    position: relative;
+.game-info p {
+    color: #b0b0b0;
+    margin-bottom: 20px;
 }
 
 .word-display {
-    font-size: 2.5em;
+    font-size: 2em;
     letter-spacing: 0.5em;
     margin: 20px 0;
     min-height: 1.5em;
-    color: #DEB887;
-    text-shadow: 0 0 5px rgba(222, 184, 135, 0.5);
-    font-family: 'Courier New', monospace;
+    color: #ffffff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .hangman-container {
-    background-color: #1a1612;
+    background-color: #1a1a1a;
     border-radius: 10px;
     padding: 20px;
     margin: 20px auto;
-    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
-    border: 2px solid #8B4513;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
 }
 
 #hangman {
@@ -184,122 +138,62 @@
 }
 
 .keyboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
-    gap: 8px;
-    margin: 20px auto;
-    max-width: 600px;
-    padding: 15px;
-    background: #1a1612;
-    border: 2px solid #8B4513;
-    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0;
 }
 
 .keyboard button {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     font-size: 1.2em;
-    border: 2px solid #B8860B;
-    background: linear-gradient(145deg, #2a2520, #1a1612);
-    color: #DEB887;
-    border-radius: 8px;
+    border: 1px solid #444;
+    background: #333;
+    color: #e0e0e0;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-shadow: 0 0 2px rgba(222, 184, 135, 0.5);
-    position: relative;
-    overflow: hidden;
-}
-
-.keyboard button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(222, 184, 135, 0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
 }
 
 .keyboard button:hover {
+    background: #444;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
-}
-
-.keyboard button:hover::before {
-    transform: translateX(100%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .keyboard button.used {
-    background: #1a1612;
-    color: #654321;
-    border-color: #654321;
+    background: #222;
+    color: #666;
     cursor: not-allowed;
-}
-
-.play-button {
-    padding: 12px 24px;
-    font-size: 1.3em;
-    background: linear-gradient(145deg, #B8860B, #8B4513);
-    color: #FFF8DC;
-    border: 2px solid #DEB887;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    position: relative;
-    overflow: hidden;
-}
-
-.play-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(139, 69, 19, 0.4);
-}
-
-.play-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-}
-
-.play-button:hover::before {
-    transform: translateX(100%);
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-@keyframes rotate-reverse {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
-}
-
-.rotating-gear {
-    animation: rotate 10s linear infinite;
-    transform-origin: center;
-}
-
-.rotating-gear.reverse {
-    animation: rotate-reverse 10s linear infinite;
+    border-color: #333;
 }
 
 .game-status {
     margin: 20px 0;
-    font-size: 1.4em;
+    font-size: 1.2em;
     min-height: 1.5em;
-    color: #DEB887;
+    color: #ffffff;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.play-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #3fa757;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.play-button:hover {
+    background-color: #2d7a41;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Fireworks styles based on the Medium article */

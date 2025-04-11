@@ -29,15 +29,14 @@ class AppConfig:
 class ConfigService:
     """Service for managing application configuration."""
     
-    def __init__(self, config=None, config_path: str = "config.yml"):
+    def __init__(self, config_path: str = "config.yml"):
         """Initialize the configuration service.
         
         Args:
-            config: Flask app config or dictionary containing configuration
-            config_path: Path to config file (used if config is None)
+            config_path: Path to config file
         """
         self.config_path = Path(config_path)
-        self.config = config if config is not None else self._load_config()
+        self.config = self._load_config()
         
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from file.
@@ -179,13 +178,13 @@ class ConfigService:
         
     @property
     def markdown_extensions(self) -> list:
-        """Get markdown extensions from config."""
-        return self.config.get('FLATPAGES_MARKDOWN_EXTENSIONS', [])
+        """Get markdown extensions."""
+        return self.get('markdown.extensions', [])
         
     @property
     def markdown_extension_configs(self) -> dict:
-        """Get markdown extension configs from config."""
-        return self.config.get('FLATPAGES_EXTENSION_CONFIGS', {})
+        """Get markdown extension configurations."""
+        return self.get('markdown.extension_configs', {})
         
     @property
     def static_cache_timeout(self) -> int:

@@ -141,14 +141,3 @@ class MarkdownService:
             excerpt = excerpt[:length] + '...'
             
         return excerpt 
-
-    def render(self, content):
-        """Render markdown content to HTML.
-        
-        Args:
-            content: Markdown content string
-            
-        Returns:
-            Rendered HTML content
-        """
-        return self.md.convert(content) 

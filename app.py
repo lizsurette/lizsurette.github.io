@@ -58,6 +58,18 @@ app.config['FLATPAGES_EXTENSION_CONFIGS'] = {
     }
 }
 
+def render_markdown(text):
+    """Render markdown text to HTML."""
+    extensions = [
+        'markdown.extensions.codehilite',
+        'markdown.extensions.fenced_code',
+        'markdown.extensions.tables',
+        'markdown.extensions.attr_list',
+        'markdown.extensions.def_list',
+        'markdown.extensions.abbr'
+    ]
+    return markdown.markdown(text, extensions=extensions)
+
 @dataclass
 class Post:
     """Represents a blog post with its metadata and content."""
@@ -244,26 +256,6 @@ class PostRepository:
         if current_index < len(posts) - 1:
             return posts[current_index + 1]
         return None
-
-def render_markdown(text):
-    """Render markdown text to HTML."""
-    try:
-        # Process image URLs before rendering markdown
-        # Convert GitHub URLs to local static URLs
-        github_pattern = r'https://github\.com/lizsurette/lizsurette\.github\.io/raw/main/static/img/_posts/([^)]+)'
-        text = re.sub(github_pattern, r'/static/img/_posts/\1', text)
-        
-        # Also handle img tags with src attributes
-        img_pattern = r'<img src="https://github\.com/lizsurette/lizsurette\.github\.io/raw/main/static/img/_posts/([^"]+)"'
-        text = re.sub(img_pattern, r'<img src="/static/img/_posts/\1"', text)
-        
-        return markdown.markdown(
-            text,
-            extensions=['codehilite', 'fenced_code', 'tables', 'attr_list', 'def_list', 'abbr']
-        )
-    except Exception as e:
-        logger.error(f"Error rendering markdown: {e}")
-        raise MarkdownRenderingError(f"Error rendering markdown: {e}")
 
 # Create a PostRepository instance
 post_repository = PostRepository(os.path.join(app_dir, 'app', 'posts'))
