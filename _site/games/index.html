@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/syntax.css">
+    <link rel="stylesheet" href="../static/css/thickbox.css">
+    <link rel="stylesheet" href="../static/css/projects.css">
+    <link rel="stylesheet" href="../static/css/super-search.css">
+    <link rel="stylesheet" href="../static/css/fonts.css">
+    <link rel="shortcut icon" href="../static/img/favicon.ico">
+    <script src="../static/js/jquery-1.11.0.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/thickbox-compressed.js"></script>
+    <script src="../static/js/super-search.js"></script>
+    <script src="../static/js/projects.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games/">Games</a></li>
+                    <li><a href="/projects/">Projects</a></li>
+                    <li><a href="/apps/">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">Games</h1>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <div class="games-grid">
+            <div class="game-card">
+                <a href="../snake/">
+                    <img src="../static/projects/snake-game.svg" alt="Snake Game">
+                    <h2>Snake Game</h2>
+                    <p>Classic snake game where you control a snake to eat food and grow longer.</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <a href="../hangman/">
+                    <img src="../static/projects/hangman-game.svg" alt="Hangman Game">
+                    <h2>Hangman Game</h2>
+                    <p>Guess the word before the hangman is complete!</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <a href="../strands/">
+                    <img src="../static/projects/strands-game.svg" alt="Strands Game">
+                    <h2>Strands Game</h2>
+                    <p>Find words by connecting adjacent letters in this word-finding puzzle game.</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <a href="/maze/">
+                    <img src="../static/projects/maze-game.svg" alt="Maze Game">
+                    <h3>Maze Runner</h3>
+                    <p>Navigate through randomly generated mazes using arrow keys to reach the goal.</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <a href="/bubble/">
+                    <img src="../static/projects/bubble-game.svg" alt="Bubble Shooter">
+                    <h3>Bubble Shooter</h3>
+                    <p>Match and pop colorful bubbles in this classic arcade-style game. Clear the board to win!</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <a href="/factory/">
+                    <img src="../static/projects/factory-game.svg" alt="Factory Builder">
+                    <h3>Factory Builder</h3>
+                    <p>Build and manage your own factory! Place machines, workers, and conveyors to create efficient production lines.</p>
+                </a>
+            </div>
+            <div class="game-card">
+                <img src="../static/projects/survival-game.svg" alt="Survival Game">
+                <h3>Survival</h3>
+                <p>A wilderness survival game inspired by The Long Dark. Collect resources, manage your health, and survive the harsh environment.</p>
+                <a href="/survival/" class="play-button">Play Now</a>
+            </div>
+        </div>
+    </div>
+</article>
+
+<style>
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.game-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    padding: 1rem;
+}
+
+.game-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.game-card h2 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.game-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.game-card p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+</style>
+
+        </div>
+    </div>
+</body>
+</html> 
