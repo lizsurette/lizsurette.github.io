@@ -4,7 +4,6 @@ from flask import Flask, render_template
 from flask_flatpages import FlatPages
 from config import config
 from app.services.markdown_service import MarkdownService
-from app.repositories.post_repository import PostRepository
 from app.models.exceptions import PostError, PostNotFoundError, PostMetadataError
 
 # Set up logging
@@ -24,6 +23,13 @@ def create_app(config_name='default'):
     Returns:
         Flask: The configured Flask application
     """
+    # Import necessary modules
+    from app.repositories.post_repository import PostRepository
+    from app.services.config_service import ConfigService
+    from app.utils.logger import setup_logger
+    from app.routes.main import main as main_blueprint
+    from app.routes.post import post as post_blueprint
+    
     app = Flask(__name__, 
                 template_folder=os.path.join(app_dir, 'templates'),
                 static_folder=os.path.join(app_dir, 'static'),
@@ -33,11 +39,9 @@ def create_app(config_name='default'):
     app.config.from_object(config[config_name])
     
     # Set up logging
-    from app.utils.logger import setup_logger
     setup_logger(app)
     
     # Create config service
-    from app.services.config_service import ConfigService
     config_service = ConfigService()
     
     # Create markdown service
@@ -53,15 +57,8 @@ def create_app(config_name='default'):
         render_markdown_func=markdown_service._render_markdown
     )
     
-    # Make post_repository available to other modules
-    from app.repositories.post_repository import PostRepository
-    post_repository = post_repository
-    
     # Register blueprints
-    from app.routes.main import main as main_blueprint
     app.register_blueprint(main_blueprint)
-    
-    from app.routes.post import post as post_blueprint
     app.register_blueprint(post_blueprint)
     
     # Register error handlers
