@@ -5,7 +5,7 @@ from app.models.exceptions import PostError
 post = Blueprint('post', __name__)
 
 @post.route('/posts/<path:path>/')
-def post_view(path):
+def post(path):
     """
     Render a blog post.
     
@@ -17,12 +17,12 @@ def post_view(path):
     """
     try:
         from app import post_repository
-        post = post_repository.get_post_by_path(path)
+        post_obj = post_repository.get_post_by_path(path)
         
-        if not post:
+        if not post_obj:
             abort(404)
             
-        return render_template('post.html', post=post)
+        return render_template('post.html', post=post_obj)
     except PostError as e:
         current_app.logger.error(f"Error in post route: {e}")
         return render_template('error.html', title='Error', error=str(e)), 400
