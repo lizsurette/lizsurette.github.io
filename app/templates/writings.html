@@ -24,7 +24,7 @@
             {% for post in posts %}
                 <li class="post-item" data-title="{{ post.meta.title }}" data-date="{{ format_date(post.meta.date) }}">
                     <i><span>{{ format_date(post.meta.date) }}</span></i> &raquo; 
-                    <a href="{{ url_for('post.post_view', path=post.path) }}">{{ post.meta.title }}</a>
+                    <a href="{{ url_for('post.view', path=post.path) }}">{{ post.meta.title }}</a>
                 </li>
             {% else %}
                 <li>No posts found.</li>

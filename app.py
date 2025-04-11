@@ -42,6 +42,18 @@ class MarkdownRenderingError(PostError):
     """Raised when there's an error rendering markdown content."""
     pass
 
+def render_markdown(text):
+    """Render markdown text to HTML."""
+    extensions = [
+        'markdown.extensions.codehilite',
+        'markdown.extensions.fenced_code',
+        'markdown.extensions.tables',
+        'markdown.extensions.attr_list',
+        'markdown.extensions.def_list',
+        'markdown.extensions.abbr'
+    ]
+    return markdown.markdown(text, extensions=extensions)
+
 app = Flask(__name__, 
             template_folder=os.path.join(app_dir, 'app', 'templates'),
             static_folder=os.path.join(app_dir, 'app', 'static'),
@@ -57,18 +69,10 @@ app.config['FLATPAGES_EXTENSION_CONFIGS'] = {
         'linenums': True
     }
 }
+app.config['FLATPAGES_HTML_RENDERER'] = render_markdown
 
-def render_markdown(text):
-    """Render markdown text to HTML."""
-    extensions = [
-        'markdown.extensions.codehilite',
-        'markdown.extensions.fenced_code',
-        'markdown.extensions.tables',
-        'markdown.extensions.attr_list',
-        'markdown.extensions.def_list',
-        'markdown.extensions.abbr'
-    ]
-    return markdown.markdown(text, extensions=extensions)
+# Initialize FlatPages
+pages = FlatPages(app)
 
 @dataclass
 class Post:
@@ -259,10 +263,6 @@ class PostRepository:
 
 # Create a PostRepository instance
 post_repository = PostRepository(os.path.join(app_dir, 'app', 'posts'))
-
-# Configure FlatPages with custom HTML renderer
-app.config['FLATPAGES_HTML_RENDERER'] = render_markdown
-pages = FlatPages(app)
 
 @app.route('/')
 def index():

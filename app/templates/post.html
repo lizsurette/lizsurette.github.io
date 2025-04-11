@@ -26,25 +26,19 @@
     
     <div class="post-navigation">
         <div class="back-link">
-            <a href="{{ url_for('writings') }}">&laquo; Back to Writings</a>
+            <a href="{{ url_for('main.writings') }}">&laquo; Back to Writings</a>
         </div>
         
         <div class="post-pagination">
             {% if prev_post %}
             <div class="prev-post">
-                <a href="{{ url_for('post.post_view', path=prev_post.path) }}">
-                    <span class="nav-label">Previous:</span>
-                    <span class="nav-title">{{ prev_post.meta.title }}</span>
-                </a>
+                <a href="{{ url_for('post.view', path=prev_post.path) }}">&larr; {{ prev_post.meta.title }}</a>
             </div>
             {% endif %}
             
             {% if next_post %}
             <div class="next-post">
-                <a href="{{ url_for('post.post_view', path=next_post.path) }}">
-                    <span class="nav-label">Next:</span>
-                    <span class="nav-title">{{ next_post.meta.title }}</span>
-                </a>
+                <a href="{{ url_for('post.view', path=next_post.path) }}">{{ next_post.meta.title }} &rarr;</a>
             </div>
             {% endif %}
         </div>

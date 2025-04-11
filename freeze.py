@@ -21,58 +21,76 @@ freezer = Freezer(app)
 freezer.base_url = 'https://lizsurette.github.io/'
 freezer.static_ignore = ['*.pyc', '*.pyo', '*.pyd', '__pycache__', '.git']
 
-# Add all routes to the freezer
-@freezer.register_generator
-def post():
-    for post in pages:
-        yield {'path': post.path}
+def post_urls():
+    """Generate URLs for blog posts."""
+    from app import post_repository
+    for post in post_repository.get_all_posts():
+        yield 'post.view', {'path': post.path}
 
-@freezer.register_generator
-def index():
-    yield {}
+def index_urls():
+    """Generate URL for index page."""
+    yield 'main.index', {}
 
-@freezer.register_generator
-def writings():
-    yield {}
+def writings_urls():
+    """Generate URL for writings page."""
+    yield 'main.writings', {}
 
-@freezer.register_generator
-def games():
-    yield {}
+def games_urls():
+    """Generate URL for games page."""
+    yield 'main.games', {}
 
-@freezer.register_generator
-def projects():
-    yield {}
+def projects_urls():
+    """Generate URL for projects page."""
+    yield 'main.projects', {}
 
-@freezer.register_generator
-def apps():
-    yield {}
+def apps_urls():
+    """Generate URL for apps page."""
+    yield 'main.apps', {}
 
-@freezer.register_generator
-def grocery_list():
-    yield {}
+def grocery_list_urls():
+    """Generate URL for grocery list page."""
+    yield 'main.grocery_list', {}
 
-@freezer.register_generator
-def snake():
-    yield {}
+def snake_urls():
+    """Generate URL for snake game page."""
+    yield 'main.snake', {}
 
-@freezer.register_generator
-def hangman():
-    yield {}
+def hangman_urls():
+    """Generate URL for hangman game page."""
+    yield 'main.hangman', {}
 
-@freezer.register_generator
-def strands():
-    yield {}
+def strands_urls():
+    """Generate URL for strands game page."""
+    yield 'main.strands', {}
 
-@freezer.register_generator
-def static():
+def survival_urls():
+    """Generate URL for survival game page."""
+    yield 'main.survival', {}
+
+def static_urls():
+    """Generate URLs for static files."""
     for root, dirs, files in os.walk('app/static'):
         for file in files:
             if not file.startswith('.'):
-                yield {'filename': os.path.join(root, file).replace('app/static/', '')}
+                # Remove 'app/static/' prefix from the path
+                rel_path = os.path.relpath(os.path.join(root, file), 'app/static')
+                yield 'static', {'filename': rel_path}
 
-@freezer.register_generator
-def survival():
-    yield {}
+# Add URL generators
+freezer.url_generators.extend([
+    post_urls,
+    index_urls,
+    writings_urls,
+    games_urls,
+    projects_urls,
+    apps_urls,
+    grocery_list_urls,
+    snake_urls,
+    hangman_urls,
+    strands_urls,
+    survival_urls,
+    static_urls
+])
 
 if __name__ == '__main__':
     # Create _site directory if it doesn't exist
