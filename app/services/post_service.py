@@ -73,7 +73,11 @@ class PostService:
             return None
             
         try:
-            date = datetime.strptime(date_str, "%Y-%m-%d")
+            # Handle both string and datetime objects
+            if isinstance(date_str, str):
+                date = datetime.strptime(date_str, "%Y-%m-%d")
+            else:
+                date = date_str
         except ValueError:
             return None
             
