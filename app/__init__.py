@@ -50,7 +50,7 @@ def create_app(config_name='default'):
     # Create post repository
     post_repository = PostRepository(
         posts_dir=app.config['FLATPAGES_ROOT'],
-        render_markdown_func=markdown_service.render
+        render_markdown_func=markdown_service._render_markdown
     )
     
     # Register blueprints
