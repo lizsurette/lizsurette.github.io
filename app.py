@@ -74,6 +74,12 @@ app.config['FLATPAGES_HTML_RENDERER'] = render_markdown
 # Initialize FlatPages
 pages = FlatPages(app)
 
+# Register blueprints
+from app.routes.main import main as main_blueprint
+from app.routes.post import post as post_blueprint
+app.register_blueprint(main_blueprint)
+app.register_blueprint(post_blueprint)
+
 @dataclass
 class Post:
     """Represents a blog post with its metadata and content."""
@@ -264,103 +270,6 @@ class PostRepository:
 # Create a PostRepository instance
 post_repository = PostRepository(os.path.join(app_dir, 'app', 'posts'))
 
-@app.route('/')
-def index():
-    try:
-        posts = post_repository.get_all_posts()
-        return render_template('index.html', title='Home', posts=posts)
-    except Exception as e:
-        logger.error(f"Error in index route: {e}")
-        return render_template('error.html', title='Error', error="An error occurred while loading the home page.")
-
-@app.route('/writings/')
-def writings():
-    try:
-        posts = post_repository.get_all_posts()
-        return render_template('writings.html', title='Writings', posts=posts)
-    except Exception as e:
-        logger.error(f"Error in writings route: {e}")
-        return render_template('error.html', title='Error', error="An error occurred while loading the writings page.")
-
-@app.route('/posts/<path:path>/')
-def post(path):
-    try:
-        logger.debug(f"Attempting to get post: {path}")
-        
-        # Get the post from the repository
-        post_obj = post_repository.get_post_by_path(path)
-        
-        if not post_obj:
-            logger.error(f"Post not found: {path}")
-            return render_template('error.html', title='Post Not Found', error=f"The post '{path}' could not be found.")
-        
-        # Get next and previous posts
-        next_post = post_repository.get_next_post(path)
-        prev_post = post_repository.get_prev_post(path)
-        
-        # Create a post object that matches the template's expectations
-        post_data = {
-            'meta': post_obj.meta,
-            'content': post_obj.html_content,
-            'path': post_obj.path
-        }
-        
-        return render_template('post.html', 
-                             post=post_data,
-                             next_post=next_post,
-                             prev_post=prev_post)
-    except PostError as e:
-        logger.error(f"Post error in post route: {e}")
-        return render_template('error.html', title='Post Error', error=str(e))
-    except Exception as e:
-        logger.error(f"Error in post route: {e}")
-        logger.error(f"Post path: {path}")
-        return render_template('error.html', title='Error', error="An error occurred while loading the post.")
-
-@app.route('/games/')
-def games():
-    return render_template('games.html', title='Games')
-
-@app.route('/projects/')
-def projects():
-    return render_template('projects.html', title='Projects')
-
-@app.route('/apps/')
-def apps():
-    return render_template('apps.html', title='AI Generated Apps')
-
-@app.route('/grocery-list/')
-def grocery_list():
-    return render_template('grocery-list.html', title='Smart Grocery List')
-
-@app.route('/snake/')
-def snake():
-    return render_template('snake.html', title='Snake Game')
-
-@app.route('/hangman/')
-def hangman():
-    return render_template('hangman.html', title='Hangman Game')
-
-@app.route('/strands/')
-def strands():
-    return render_template('strands.html')
-
-@app.route('/maze/')
-def maze():
-    return render_template('maze.html')
-
-@app.route('/bubble/')
-def bubble():
-    return render_template('bubble.html')
-
-@app.route('/factory/')
-def factory():
-    return render_template('factory.html')
-
-@app.route('/survival/')
-def survival():
-    return render_template('survival.html')
-
 # Add a function to copy static assets during site generation
 def copy_static_assets():
     try:
@@ -370,19 +279,23 @@ def copy_static_assets():
             os.makedirs(site_static_dir)
         
         # Copy static assets
-        app_static_dir = os.path.join('app', 'static')
-        if os.path.exists(app_static_dir):
-            for item in os.listdir(app_static_dir):
-                src = os.path.join(app_static_dir, item)
-                dst = os.path.join(site_static_dir, item)
-                if os.path.isdir(src):
-                    if os.path.exists(dst):
-                        shutil.rmtree(dst)
-                    shutil.copytree(src, dst)
-                else:
-                    shutil.copy2(src, dst)
+        static_dir = os.path.join('app', 'static')
+        for root, dirs, files in os.walk(static_dir):
+            for file in files:
+                src_path = os.path.join(root, file)
+                rel_path = os.path.relpath(src_path, static_dir)
+                dst_path = os.path.join(site_static_dir, rel_path)
+                
+                # Create destination directory if it doesn't exist
+                os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+                
+                # Copy the file
+                shutil.copy2(src_path, dst_path)
+                
+        logger.info("Static assets copied successfully")
     except Exception as e:
         logger.error(f"Error copying static assets: {e}")
+        raise
 
 @app.context_processor
 def utility_processor():

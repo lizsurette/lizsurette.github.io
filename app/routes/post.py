@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, current_app
 from app.models.exceptions import PostError
 
 # Create the post blueprint
-post = Blueprint('post', __name__)
+post = Blueprint('post', __name__, url_prefix='/posts')
 
 @post.route('/<path:path>/')
 def view(path):
