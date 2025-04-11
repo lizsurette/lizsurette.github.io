@@ -17,7 +17,7 @@ class Config:
     }
     
     # Static files configuration
-    STATIC_FOLDER = os.path.join(APP_DIR, 'app', 'static')
+    STATIC_FOLDER = os.path.join(APP_DIR, 'static')
     STATIC_URL_PATH = '/static'
     
     # Logging configuration
@@ -28,10 +28,23 @@ class Config:
     # Site generation configuration
     SITE_DIR = os.path.join(APP_DIR, '_site')
     
+    # Flask configuration
+    SEND_FILE_MAX_AGE_DEFAULT = 0
+    TEMPLATES_AUTO_RELOAD = True
+    
+    # Frozen-Flask configuration
+    FREEZER_DESTINATION = os.path.join(APP_DIR, '_site')
+    FREEZER_RELATIVE_URLS = False
+    FREEZER_REMOVE_EXTRA_FILES = True
+    FREEZER_DEFAULT_MIMETYPE = 'text/html'
+    FREEZER_IGNORE_MIMETYPE_WARNINGS = True
+    
     @staticmethod
     def init_app(app):
         """Initialize application."""
-        pass
+        # Create necessary directories
+        os.makedirs(os.path.join(app.config['APP_DIR'], '_site'), exist_ok=True)
+        os.makedirs(os.path.join(app.config['APP_DIR'], 'logs'), exist_ok=True)
 
 class DevelopmentConfig(Config):
     """Development configuration."""

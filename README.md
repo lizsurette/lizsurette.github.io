@@ -58,14 +58,28 @@ A personal website built with Flask and Frozen-Flask for static site generation.
 
 ## Deployment
 
-1. Push changes to GitHub:
-   ```bash
-   ./push.sh
-   ```
+The site is deployed using GitHub Pages. The deployment process:
 
-2. Deploy to GitHub Pages:
+1. Activates the Python virtual environment
+2. Generates the static site using our custom static site generator
+3. Pushes the changes to GitHub
+4. GitHub Pages serves the static files from the `_site` directory
+
+To deploy the site:
+
+1. Run the deployment script:
    ```bash
    ./deploy.sh
+   ```
+
+2. The script will:
+   - Generate the static site
+   - Test it locally
+   - Provide instructions for pushing to GitHub
+
+3. After reviewing the changes, push to GitHub:
+   ```bash
+   ./push.sh
    ```
 
 ## Features
