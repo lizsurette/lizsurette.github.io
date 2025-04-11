@@ -107,3 +107,9 @@ def create_app(config_name='default'):
         app.logger.error(f"Error loading posts at startup: {e}")
     
     return app
+
+# Create the app instance
+app = create_app()
+
+# Export the app instance and pages
+__all__ = ['app', 'pages']

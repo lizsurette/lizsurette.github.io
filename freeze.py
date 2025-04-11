@@ -1,7 +1,18 @@
-from app import app, pages, copy_static_assets
+from app import app, pages
 from flask_frozen import Freezer
 import os
 import re
+import shutil
+
+def copy_static_assets():
+    """Copy static assets to the _site directory."""
+    static_dir = os.path.join('app', 'static')
+    site_static_dir = os.path.join('_site', 'static')
+    
+    if os.path.exists(site_static_dir):
+        shutil.rmtree(site_static_dir)
+    
+    shutil.copytree(static_dir, site_static_dir)
 
 # Initialize the freezer
 freezer = Freezer(app)
