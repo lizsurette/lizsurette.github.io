@@ -103,4 +103,14 @@ def strands():
     Returns:
         str: The rendered strands game page
     """
-    return render_template('strands.html', title='Strands Game') 
+    return render_template('strands.html', title='Strands Game')
+
+@main.route('/survival/')
+def survival():
+    """
+    Render the survival game page.
+    
+    Returns:
+        str: The rendered survival game page
+    """
+    return render_template('survival.html', title='Survival Game') 

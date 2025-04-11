@@ -70,6 +70,10 @@ def static():
             if not file.startswith('.'):
                 yield {'filename': os.path.join(root, file).replace('app/static/', '')}
 
+@freezer.register_generator
+def main_survival():
+    yield {'endpoint': 'main.survival'}
+
 if __name__ == '__main__':
     # Create _site directory if it doesn't exist
     if not os.path.exists('_site'):
