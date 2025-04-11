@@ -36,14 +36,15 @@ def create_app(config_name='default'):
     from app.utils.logger import setup_logger
     setup_logger(app)
     
+    # Create config service
+    from app.services.config_service import ConfigService
+    config_service = ConfigService()
+    
     # Create markdown service
-    markdown_service = MarkdownService(
-        extensions=app.config['FLATPAGES_MARKDOWN_EXTENSIONS'],
-        extension_configs=app.config['FLATPAGES_EXTENSION_CONFIGS']
-    )
+    markdown_service = MarkdownService(config_service)
     
     # Configure FlatPages with custom HTML renderer
-    app.config['FLATPAGES_HTML_RENDERER'] = markdown_service.render
+    app.config['FLATPAGES_HTML_RENDERER'] = markdown_service._render_markdown
     pages = FlatPages(app)
     
     # Create post repository
