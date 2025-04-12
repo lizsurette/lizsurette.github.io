@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Running an Example Node.js Kubernetes based Application with the new Developer Sandbox for Red Hat OpenShift"
+title:  "Running an Example Node.js Kubernetes Application with the Developer Sandbox for Red Hat OpenShift"
 date:   2021-04-01
 categories: [open hybrid cloud, kubernetes, openshift, nodejs]
 ---
