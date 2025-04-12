@@ -14,7 +14,7 @@ def index():
     try:
         from app import post_repository
         posts = post_repository.get_all_posts()
-        return render_template('index.html', title='Home', posts=posts)
+        return render_template('index.html', title='About Me', posts=posts)
     except Exception as e:
         current_app.logger.error(f"Error in index route: {e}")
         return render_template('error.html', title='Error', error="An error occurred while loading the home page.")

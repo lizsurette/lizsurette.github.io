@@ -28,11 +28,11 @@
             <hr>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="{{ url_for('main.index') }}">Home</a></li>
-                    <li><a href="{{ url_for('main.writings') }}">Writings</a></li>
-                    <li><a href="{{ url_for('main.games') }}">Games</a></li>
-                    <li><a href="{{ url_for('main.projects') }}">Projects</a></li>
-                    <li><a href="{{ url_for('main.apps') }}">Apps</a></li>
+                    <li><a href="{{ url_for('main.index') }}" {% if request.endpoint == 'main.index' %}class="active"{% endif %}>About Me</a></li>
+                    <li><a href="{{ url_for('main.writings') }}" {% if request.endpoint == 'main.writings' %}class="active"{% endif %}>Writings</a></li>
+                    <li><a href="{{ url_for('main.games') }}" {% if request.endpoint == 'main.games' %}class="active"{% endif %}>Games</a></li>
+                    <li><a href="{{ url_for('main.projects') }}" {% if request.endpoint == 'main.projects' %}class="active"{% endif %}>Projects</a></li>
+                    <li><a href="{{ url_for('main.apps') }}" {% if request.endpoint == 'main.apps' %}class="active"{% endif %}>Apps</a></li>
                 </ul>
             </nav>
         </div>

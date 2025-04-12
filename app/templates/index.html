@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<header class="page-header">
+    <h1>{{ title }}</h1>
+</header>
 <div class="home-layout">
     <div class="home-image"></div>
     <div class="home-text">
