@@ -74,7 +74,10 @@ def generate_static_files():
             ('snake', 'Snake Game'),
             ('hangman', 'Hangman Game'),
             ('strands', 'Strands Game'),
-            ('survival', 'Survival Game')
+            ('survival', 'Survival Game'),
+            ('factory', 'Factory Builder'),
+            ('bubble', 'Bubble Shooter'),
+            ('maze', 'Maze Runner')
         ]
         
         for game_slug, game_title in game_pages:
