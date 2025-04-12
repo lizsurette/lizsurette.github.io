@@ -60,13 +60,31 @@ def generate_static_files():
             f.write(writings_html)
         logger.info("Saved _site/writings/index.html")
 
-        # Generate games page
-        logger.info("Generating games page")
+        # Generate games page and individual game pages
+        logger.info("Generating games pages")
+        # Main games page
         games_html = render_template('games.html', title='Games')
         os.makedirs('_site/games', exist_ok=True)
         with open('_site/games/index.html', 'w', encoding='utf-8') as f:
             f.write(games_html)
         logger.info("Saved _site/games/index.html")
+
+        # Individual game pages
+        game_pages = [
+            ('snake', 'Snake Game'),
+            ('hangman', 'Hangman Game'),
+            ('strands', 'Strands Game'),
+            ('survival', 'Survival Game')
+        ]
+        
+        for game_slug, game_title in game_pages:
+            logger.info(f"Generating {game_title} page")
+            game_html = render_template(f'{game_slug}.html', title=game_title)
+            game_dir = os.path.join('_site', game_slug)
+            os.makedirs(game_dir, exist_ok=True)
+            with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
+                f.write(game_html)
+            logger.info(f"Saved _site/{game_slug}/index.html")
 
         # Generate projects page
         logger.info("Generating projects page")
