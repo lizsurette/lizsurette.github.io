@@ -65,6 +65,11 @@ class PostRepository:
         Returns:
             Optional[Post]: The Post object if found, None otherwise
         """
+        # Remove any trailing slashes and .markdown extension
+        path = path.rstrip('/')
+        if path.endswith('.markdown'):
+            path = path[:-9]  # Remove .markdown extension
+            
         file_path = os.path.join(self.posts_dir, f"{path}.markdown")
         
         try:

@@ -101,11 +101,11 @@ def generate_static_files():
         for post in posts:
             logger.info(f"Generating post: {post.slug}")
             post_html = render_template('post.html', post=post)
-            post_dir = os.path.join('_site/post', post.slug)
+            post_dir = os.path.join('_site', 'posts', post.slug)
             os.makedirs(post_dir, exist_ok=True)
             with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
                 f.write(post_html)
-            logger.info(f"Saved _site/post/{post.slug}/index.html")
+            logger.info(f"Saved _site/posts/{post.slug}/index.html")
 
 def save_response(response, path):
     """Save the response content to a file."""
@@ -143,7 +143,7 @@ def update_static_paths(file_path):
     content = content.replace('href="/apps/"', 'href="../apps/"')
 
     # Update post links
-    content = content.replace('href="/posts/', 'href="../post/')
+    content = content.replace('href="/posts/', 'href="../posts/')
 
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(content)
@@ -167,7 +167,7 @@ def update_index_paths(file_path):
     content = content.replace('href="/apps/"', 'href="apps/"')
 
     # Update post links
-    content = content.replace('href="/posts/', 'href="post/')
+    content = content.replace('href="/posts/', 'href="posts/')
 
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(content)
@@ -287,11 +287,11 @@ if __name__ == '__main__':
         for post in posts:
             logger.info(f"Generating post: {post.slug}")
             post_html = render_template('post.html', post=post)
-            post_dir = os.path.join('_site/post', post.slug)
+            post_dir = os.path.join('_site', 'posts', post.slug)
             os.makedirs(post_dir, exist_ok=True)
             with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
                 f.write(post_html)
-            logger.info(f"Saved _site/post/{post.slug}/index.html")
+            logger.info(f"Saved _site/posts/{post.slug}/index.html")
 
     # Update static paths
     for root, _, files in os.walk('_site'):

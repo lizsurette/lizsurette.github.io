@@ -21,8 +21,15 @@ def view(path):
         
         if not post_obj:
             abort(404)
+        
+        # Get previous and next posts for navigation
+        prev_post = post_repository.get_prev_post(path)
+        next_post = post_repository.get_next_post(path)
             
-        return render_template('post.html', post=post_obj)
+        return render_template('post.html', 
+                             post=post_obj,
+                             prev_post=prev_post,
+                             next_post=next_post)
     except PostError as e:
         current_app.logger.error(f"Error in post route: {e}")
         return render_template('error.html', title='Error', error=str(e)), 400

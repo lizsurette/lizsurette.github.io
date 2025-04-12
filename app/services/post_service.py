@@ -20,12 +20,20 @@ class Post:
     @property
     def url(self) -> str:
         """Get the URL for this post."""
-        return f"/writings/{self.slug}"
+        return f"/posts/{self.slug}"
     
     @property
     def formatted_date(self) -> str:
         """Get the formatted date string."""
         return self.date.strftime("%B %d, %Y")
+
+    @property
+    def meta(self) -> Dict[str, Any]:
+        """Get post metadata."""
+        return {
+            'title': self.title,
+            'date': self.date
+        }
 
 class PostService:
     """Service for managing blog posts."""

@@ -76,7 +76,8 @@ class ConfigService:
                 'extensions': [
                     'markdown.extensions.fenced_code',
                     'markdown.extensions.tables',
-                    'markdown.extensions.codehilite'
+                    'markdown.extensions.codehilite',
+                    'markdown.extensions.nl2br'
                 ],
                 'extension_configs': {
                     'markdown.extensions.codehilite': {

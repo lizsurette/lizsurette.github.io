@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="category">
+    <header class="category-header">
+        <h1>{{ title }}</h1>
+        <hr />
+    </header>
+
+    <div class="category-posts">
+        {% if posts %}
+            {% for post in posts %}
+            <article class="post-preview">
+                <h2 class="post-title">
+                    <a href="{{ url_for('main.post', post_path=post.path) }}">{{ post.title }}</a>
+                </h2>
+                <div class="post-meta">
+                    <span class="post-date">{{ format_date(post.date) }}</span>
+                </div>
+                <div class="post-excerpt">
+                    {{ post.content[:200] }}...
+                </div>
+                <a href="{{ url_for('main.post', post_path=post.path) }}" class="read-more">Read more &raquo;</a>
+            </article>
+            {% endfor %}
+        {% else %}
+            <p>No posts found in this category.</p>
+        {% endif %}
+    </div>
+    
+    <div class="category-navigation">
+        <a href="{{ url_for('main.writings') }}">&laquo; Back to Writings</a>
+    </div>
+</div>
+{% endblock %} 
