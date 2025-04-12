@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strands 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/navigation.css">
+    <link rel="stylesheet" href="../static/css/syntax.css">
+    <link rel="stylesheet" href="../static/css/thickbox.css">
+    <link rel="stylesheet" href="../static/css/projects.css">
+    <link rel="stylesheet" href="../static/css/super-search.css">
+    <link rel="stylesheet" href="../static/css/fonts.css">
+    <link rel="shortcut icon" href="../static/img/favicon.ico">
+    <script src="../static/js/jquery-1.11.0.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/thickbox-compressed.js"></script>
+    <script src="../static/js/super-search.js"></script>
+    <script src="../static/js/projects.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../" class="active">About Me</a></li>
+                    <li><a href="../writings/" >Writings</a></li>
+                    <li><a href="../games/" >Games</a></li>
+                    <li><a href="../projects/" >Projects</a></li>
+                    <li><a href="../apps/" >Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<style>
+    .game-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'nyt-franklin', Arial, sans-serif;
+    }
+
+    .game-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .game-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .score-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .score {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .perfect-badge {
+        background-color: #e6f3ff;
+        color: #0066cc;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #e6e6e6;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background-color: #4caf50;
+        transition: width 0.3s ease;
+    }
+
+    .progress-text {
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .theme-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .theme-hint {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .game-board {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        margin-bottom: 20px;
+    }
+
+    .game-board table {
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+    }
+
+    .game-board td {
+        width: 20%;
+        height: 20%;
+        padding: 0;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .letter {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        background-color: #fff;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin: 4px;
+    }
+
+    .letter.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        transform: scale(0.95);
+    }
+
+    .letter:hover {
+        border-color: #666;
+    }
+
+    .letter.used {
+        background-color: #f0f0f0;
+        border-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .letter.used:hover {
+        border-color: #ccc;
+    }
+
+    .letter.used.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        opacity: 1;
+    }
+
+    .letter.found {
+        background-color: #e6f3ff;
+        border-color: #0066cc;
+        color: #0066cc;
+        cursor: not-allowed;
+        opacity: 0.9;
+    }
+
+    .letter.found:hover {
+        border-color: #0066cc;
+    }
+
+    .letter.found.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        color: #000;
+        opacity: 1;
+    }
+
+    .game-controls {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .selected-word {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        min-height: 24px;
+        color: #0066cc;
+    }
+
+    .game-button {
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #0066cc;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        margin: 0 5px;
+    }
+
+    .game-button:hover {
+        background-color: #0052a3;
+    }
+
+    .game-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 20px;
+        font-size: 14px;
+        animation: fadeInOut 2s ease;
+    }
+
+    .found-words {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+    .found-word {
+        padding: 4px 8px;
+        background-color: #f0f0f0;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+    .found-word.theme {
+        background-color: #e6f3ff;
+        color: #0066cc;
+    }
+
+    .found-word.spangram {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translate(-50%, -20px); }
+        10% { opacity: 1; transform: translate(-50%, 0); }
+        90% { opacity: 1; transform: translate(-50%, 0); }
+        100% { opacity: 0; transform: translate(-50%, -20px); }
+    }
+
+    .game-rules {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .game-rules h3 {
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    .game-rules ul {
+        list-style-type: disc;
+        padding-left: 20px;
+    }
+
+    .game-rules li {
+        margin-bottom: 10px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+</style>
+
+<div class="game-container">
+    <div class="game-header">
+        <div class="game-title">Strands: Renaissance Art</div>
+        <div class="score-container">
+            <span class="score">Score 3: <span id="score">0</span></span>
+            <span id="perfect-badge" class="perfect-badge hidden">Perfect!</span>
+        </div>
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div id="progress-text" class="progress-text">0/0 Theme Words</div>
+    </div>
+
+    <div class="theme-container">
+        <div class="theme-hint">Theme: <span id="theme-hint"></span></div>
+    </div>
+
+    <div id="game-board" class="game-board"></div>
+
+    <div class="game-controls">
+        <div id="selected-word" class="selected-word"></div>
+        <button id="submitWord" class="btn btn-primary">Submit Word</button>
+        <button id="clearSelection" class="btn btn-secondary">Clear Selection</button>
+        <button id="newGame" class="btn btn-success">New Game</button>
+    </div>
+
+    <div id="found-words" class="found-words"></div>
+
+    <div class="game-rules">
+        <h3>How to Play</h3>
+        <ul>
+            <li>Find words by selecting adjacent letters in any direction.</li>
+            <li>Words must be at least 3 letters long.</li>
+            <li>Each letter can only be used once in a word.</li>
+            <li>Theme words are worth double points.</li>
+            <li>The spangram (a word that uses all letters and spans the grid) is worth triple points.</li>
+            <li>Find all theme words and the spangram to achieve a Perfect score!</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+const themes = [
+    {
+        name: 'Fish',
+        description: 'Aquatic creatures',
+        words: ['TUNA', 'CARP', 'BASS', 'SHARK', 'TROUT', 'SALMON', 'HERRING', 'SARDINE', 'ANCHOVY', 'MACKEREL', 'PERCH', 'PIKE', 'COD', 'SOLE', 'FLOUNDER', 'WHITING', 'HADDOCK', 'HALIBUT', 'SWORDFISH', 'MARLIN'],
+        spangram: 'FISH'
+    },
+    {
+        name: 'Fruit',
+        description: 'Sweet and juicy',
+        words: ['PEAR', 'PLUM', 'GRAPE', 'APPLE', 'MANGO', 'BANANA', 'ORANGE', 'KIWI', 'PAPAYA', 'PINEAPPLE', 'CHERRY', 'PEACH', 'APRICOT', 'FIG', 'DATE', 'PRUNE', 'CITRON', 'LIME', 'LEMON', 'MELON'],
+        spangram: 'FRUIT'
+    },
+    {
+        name: 'Vehicles',
+        description: 'Ways to get around',
+        words: ['BIKE', 'BOAT', 'TRAIN', 'PLANE', 'TRUCK', 'BUS', 'CAR', 'SHIP', 'HELICOPTER', 'SCOOTER', 'JET', 'TANK', 'VAN', 'SUV', 'CAB', 'TAXI', 'CART', 'WAGON', 'SEDAN', 'COUPE'],
+        spangram: 'WHEEL'
+    },
+    {
+        name: 'Animals',
+        description: 'Wild and domestic creatures',
+        words: ['BEAR', 'DEER', 'DUCK', 'GOAT', 'HAWK', 'LION', 'TIGER', 'WOLF', 'FOX', 'RABBIT', 'MOOSE', 'ELK', 'COYOTE', 'LYNX', 'PANTHER', 'JAGUAR', 'CHEETAH', 'ZEBRA', 'GIRAFFE', 'ELEPHANT'],
+        spangram: 'BEAST'
+    },
+    {
+        name: 'Weather',
+        description: 'Atmospheric conditions',
+        words: ['RAIN', 'SNOW', 'WIND', 'FOG', 'STORM', 'HAIL', 'SLEET', 'FROST', 'CLOUD', 'SUNNY', 'DROUGHT', 'BLIZZARD', 'HURRICANE', 'TORNADO', 'MONSOON', 'CYCLONE', 'TYPHOON', 'BREEZE', 'GUST', 'SHOWER'],
+        spangram: 'CLOUD'
+    },
+    {
+        name: 'Colors',
+        description: 'Hues and shades',
+        words: ['RED', 'BLUE', 'GREEN', 'PINK', 'GOLD', 'SILVER', 'PURPLE', 'ORANGE', 'BROWN', 'BLACK', 'WHITE', 'GRAY', 'BEIGE', 'TEAL', 'CYAN', 'MAGENTA', 'MAROON', 'NAVY', 'OLIVE', 'LIME'],
+        spangram: 'COLOR'
+    },
+    {
+        name: 'Food',
+        description: 'Delicious dishes',
+        words: ['PIZZA', 'PASTA', 'SALAD', 'BREAD', 'CAKE', 'COOKIE', 'BURGER', 'SANDWICH', 'TACO', 'SUSHI', 'STEAK', 'CHICKEN', 'FISH', 'RICE', 'BEANS', 'SOUP', 'STEW', 'CURRY', 'CHILI', 'PIE'],
+        spangram: 'TASTE'
+    },
+    {
+        name: 'Sports',
+        description: 'Athletic activities',
+        words: ['GOLF', 'TENNIS', 'HOCKEY', 'SOCCER', 'RUGBY', 'CRICKET', 'BASEBALL', 'VOLLEYBALL', 'SKIING', 'SWIMMING', 'BOXING', 'WRESTLING', 'FENCING', 'ARCHERY', 'ROWING', 'CYCLING', 'RUNNING', 'JUMPING', 'THROWING', 'DIVING'],
+        spangram: 'SPORT'
+    },
+    {
+        name: 'Music',
+        description: 'Melodic sounds',
+        words: ['SONG', 'DRUM', 'PIANO', 'GUITAR', 'FLUTE', 'VIOLIN', 'TRUMPET', 'HARP', 'SAXOPHONE', 'CLARINET', 'BASS', 'CELLO', 'HARMONICA', 'ACCORDION', 'XYLOPHONE', 'TROMBONE', 'OBOE', 'BAGPIPE', 'MANDOLIN', 'UKULELE'],
+        spangram: 'MUSIC'
+    },
+    {
+        name: 'Technology',
+        description: 'Digital devices',
+        words: ['PHONE', 'TABLET', 'LAPTOP', 'SCREEN', 'MOUSE', 'KEYBOARD', 'PRINTER', 'CAMERA', 'SPEAKER', 'HEADPHONE', 'MONITOR', 'ROUTER', 'SERVER', 'CHARGER', 'BATTERY', 'CABLE', 'WIFI', 'BLUETOOTH', 'USB', 'HDMI'],
+        spangram: 'PHONE'
+    }
+];
+
+const RENAISSANCE_ART_PUZZLE = {
+    theme: "Renaissance Art",
+    themeWords: [
+        "FRESCO",
+        "SCULPTURE",
+        "DAVID",
+        "SISTINE",
+        "MEDICI",
+        "CHIAROSCURO",
+        "PERSPECTIVE",
+        "TEMPESTA",
+        "SPANGRAM"
+    ],
+    spangram: "RENAISSANCE",
+    difficulty: "HARD",
+    description: "Find words related to Renaissance art, focusing on paintings and sculptures (no portraits)."
+};
+
+const ANCIENT_EGYPTIAN_MYTHOLOGY_PUZZLE = {
+    theme: "Ancient Egyptian Mythology",
+    themeWords: [
+        "OSIRIS",
+        "HORUS",
+        "ANUBIS",
+        "THOTH",
+        "RA",
+        "ISIS",
+        "NEPHTHYS",
+        "SETH",
+        "MAAT",
+        "AMUN"
+    ],
+    spangram: "EGYPTIAN",
+    difficulty: "HARD",
+    description: "Find words related to Ancient Egyptian mythology, focusing on gods and goddesses."
+};
+
+const SPACE_EXPLORATION_PUZZLE = {
+    theme: "Space Exploration",
+    themeWords: [
+        "ROCKET",
+        "SATURN",
+        "MARS",
+        "APOLLO",
+        "GALAXY",
+        "NEBULA",
+        "PLUTO",
+        "COMET",
+        "ORBIT",
+        "STAR"
+    ],
+    spangram: "SPACE",
+    difficulty: "HARD",
+    description: "Find words related to space exploration, focusing on celestial bodies and space missions."
+};
+
+// NYT Strands Puzzle JSON format
+const NYT_STRANDS_PUZZLE = {
+    theme: "Space Exploration",
+    items: [
+        {
+            id: "item_1",
+            name: "ROCKET",
+            image_url: "https://example.com/images/rocket.jpg",
+            description: "A vehicle designed to propel itself by ejecting matter from its engines, used for space travel.",
+            connections: ["item_4", "item_9"]
+        },
+        {
+            id: "item_2",
+            name: "SATURN",
+            image_url: "https://example.com/images/saturn.jpg",
+            description: "The sixth planet from the Sun, known for its prominent ring system.",
+            connections: ["item_7", "item_10"]
+        },
+        {
+            id: "item_3",
+            name: "MARS",
+            image_url: "https://example.com/images/mars.jpg",
+            description: "The fourth planet from the Sun, often called the 'Red Planet' due to its reddish appearance.",
+            connections: ["item_4", "item_9"]
+        },
+        {
+            id: "item_4",
+            name: "APOLLO",
+            image_url: "https://example.com/images/apollo.jpg",
+            description: "NASA's program that landed the first humans on the Moon, using Saturn V rockets.",
+            connections: ["item_1", "item_3", "item_9"]
+        },
+        {
+            id: "item_5",
+            name: "GALAXY",
+            image_url: "https://example.com/images/galaxy.jpg",
+            description: "A vast system of stars, gas, and dust held together by gravity, like our Milky Way.",
+            connections: ["item_6", "item_10"]
+        },
+        {
+            id: "item_6",
+            name: "NEBULA",
+            image_url: "https://example.com/images/nebula.jpg",
+            description: "A cloud of gas and dust in space, often the birthplace of stars.",
+            connections: ["item_5", "item_10"]
+        },
+        {
+            id: "item_7",
+            name: "PLUTO",
+            image_url: "https://example.com/images/pluto.jpg",
+            description: "A dwarf planet in the Kuiper belt, formerly classified as the ninth planet.",
+            connections: ["item_2", "item_10"]
+        },
+        {
+            id: "item_8",
+            name: "COMET",
+            image_url: "https://example.com/images/comet.jpg",
+            description: "A celestial object consisting of ice, dust, and gas that develops a tail when approaching the Sun.",
+            connections: ["item_9", "item_10"]
+        },
+        {
+            id: "item_9",
+            name: "ORBIT",
+            image_url: "https://example.com/images/orbit.jpg",
+            description: "The curved path of a celestial object around a star, planet, or moon.",
+            connections: ["item_1", "item_3", "item_4", "item_8"]
+        },
+        {
+            id: "item_10",
+            name: "STAR",
+            image_url: "https://example.com/images/star.jpg",
+            description: "A luminous sphere of plasma held together by gravity, like our Sun.",
+            connections: ["item_2", "item_5", "item_6", "item_7"]
+        }
+    ],
+    difficulty_score: 8,
+    metadata: {
+        category_focus: ["Celestial Bodies", "Space Missions", "Astronomical Phenomena"],
+        visual_distinctiveness: 9,
+        connectivity_density: 3.2,
+        color_palette: "Deep blues, purples, and golds against the black of space"
+    }
+};
+
+const VICTORIAN_LONDON_PUZZLE = {
+    theme: "Victorian Era London",
+    themeWords: [
+        "BUCKINGHAM",
+        "BIG BEN",
+        "FOG",
+        "CARRIAGE",
+        "GASLIGHT",
+        "THAMES",
+        "TOWER",
+        "PARLIAMENT",
+        "COAL",
+        "STREET"
+    ],
+    spangram: "LONDON",
+    difficulty: "HARD",
+    description: "Find words related to Victorian Era London, focusing on landmarks and daily life."
+};
+
+// NYT Strands Puzzle JSON format for Victorian Era London
+const VICTORIAN_LONDON_STRANDS = {
+    theme: "Victorian Era London",
+    items: [
+        {
+            id: "item_1",
+            name: "BUCKINGHAM",
+            image_url: "https://example.com/images/buckingham.jpg",
+            description: "The official London residence of the British monarch, featuring the iconic balcony.",
+            connections: ["item_9", "item_10"]
+        },
+        {
+            id: "item_2",
+            name: "BIG BEN",
+            image_url: "https://example.com/images/bigben.jpg",
+            description: "The nickname for the Great Bell of the clock at the north end of the Palace of Westminster.",
+            connections: ["item_8", "item_10"]
+        },
+        {
+            id: "item_3",
+            name: "FOG",
+            image_url: "https://example.com/images/fog.jpg",
+            description: "The thick, polluted air that often blanketed London, caused by coal burning and industrial emissions.",
+            connections: ["item_9", "item_10"]
+        },
+        {
+            id: "item_4",
+            name: "CARRIAGE",
+            image_url: "https://example.com/images/carriage.jpg",
+            description: "A horse-drawn vehicle used for transportation, common among the wealthy in Victorian London.",
+            connections: ["item_5", "item_10"]
+        },
+        {
+            id: "item_5",
+            name: "GASLIGHT",
+            image_url: "https://example.com/images/gaslight.jpg",
+            description: "Street lighting powered by gas, which illuminated London's streets during the Victorian era.",
+            connections: ["item_4", "item_9", "item_10"]
+        },
+        {
+            id: "item_6",
+            name: "THAMES",
+            image_url: "https://example.com/images/thames.jpg",
+            description: "The river that flows through London, central to the city's commerce and transportation.",
+            connections: ["item_7", "item_10"]
+        },
+        {
+            id: "item_7",
+            name: "TOWER",
+            image_url: "https://example.com/images/tower.jpg",
+            description: "The Tower of London, a historic castle on the north bank of the River Thames.",
+            connections: ["item_6", "item_10"]
+        },
+        {
+            id: "item_8",
+            name: "PARLIAMENT",
+            image_url: "https://example.com/images/parliament.jpg",
+            description: "The Palace of Westminster, home to the Houses of Parliament and Big Ben.",
+            connections: ["item_2", "item_10"]
+        },
+        {
+            id: "item_9",
+            name: "COAL",
+            image_url: "https://example.com/images/coal.jpg",
+            description: "The primary fuel source that powered London's industry and contributed to the famous fog.",
+            connections: ["item_1", "item_3", "item_5"]
+        },
+        {
+            id: "item_10",
+            name: "STREET",
+            image_url: "https://example.com/images/street.jpg",
+            description: "The cobblestone streets of London, lined with gaslights and filled with carriages and pedestrians.",
+            connections: ["item_1", "item_2", "item_4", "item_5", "item_6", "item_7", "item_8"]
+        }
+    ],
+    difficulty_score: 7,
+    metadata: {
+        category_focus: ["Architectural Elements", "Transportation", "Urban Infrastructure"],
+        visual_distinctiveness: 8,
+        connectivity_density: 3.5,
+        color_palette: "Muted browns, grays, and sepia tones with occasional gold accents"
+    }
+};
+
+let currentTheme;
+let board;
+let selectedLetters = [];
+let selectedWord = '';
+let foundWords = new Set();
+let score = 0;
+let hintsRemaining = 3;
+let hintWords = new Set();
+let spangramFound = false;
+let themeWords = [];
+let spangram = '';
+let difficulty = '';
+let description = '';
+
+// Initialize the game with the Victorian London puzzle
+let currentPuzzle = VICTORIAN_LONDON_PUZZLE;
+
+function initGame() {
+    // Reset game state
+    score = 0;
+    foundWords = new Set();
+    spangramFound = false;
+    hintsRemaining = 3;
+    hintWords.clear();
+    
+    // Use the current puzzle configuration
+    currentTheme = currentPuzzle.theme;
+    themeWords = currentPuzzle.themeWords;
+    spangram = currentPuzzle.spangram;
+    difficulty = currentPuzzle.difficulty;
+    description = currentPuzzle.description;
+    
+    // Update UI
+    document.getElementById('score').textContent = score;
+    document.getElementById('theme-hint').textContent = description;
+    
+    // Initialize the game board
+    initializeBoard();
+    
+    // Update the found words display
+    updateFoundWordsDisplay();
+}
+
+function initializeBoard() {
+    const boardElement = document.getElementById('game-board');
+    boardElement.innerHTML = '';
+    
+    const table = document.createElement('table');
+    
+    // Create a 5x5 grid (changed from 6x6)
+    for (let i = 0; i < 5; i++) {
+        const row = document.createElement('tr');
+        for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            const letter = document.createElement('div');
+            letter.className = 'letter';
+            letter.dataset.row = i;
+            letter.dataset.col = j;
+            letter.addEventListener('click', () => handleLetterClick(i, j));
+            cell.appendChild(letter);
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+    
+    boardElement.appendChild(table);
+    
+    // Initialize the board array
+    board = Array(5).fill().map(() => Array(5).fill(''));
+    
+    // Generate the board with words
+    generateBoard();
+}
+
+function renderBoard() {
+    // Update the visual state of each cell
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            const letter = document.querySelector(`.letter[data-row="${i}"][data-col="${j}"]`);
+            if (letter) {
+                letter.textContent = board[i][j];
+                
+                // Reset classes
+                letter.className = 'letter';
+                
+                // Add appropriate classes based on state
+                if (selectedLetters.some(p => p.row === i && p.col === j)) {
+                    letter.classList.add('selected');
+                }
+                
+                // Add 'found' class if this letter is part of a found word
+                const isPartOfFoundWord = Array.from(foundWords).some(word => {
+                    const positions = findWordPositions(word);
+                    return positions.some(pos => pos.row === i && pos.col === j);
+                });
+                
+                if (isPartOfFoundWord) {
+                    letter.classList.add('found');
+                }
+            }
+        }
+    }
+}
+
+function placeSpangram() {
+    // Place the spangram on the board
+    const spangramCells = findSpangramCells();
+    
+    // Update the board array
+    spangramCells.forEach(cell => {
+        board[cell.row][cell.col] = cell.letter;
+    });
+    
+    // Update the visual state
+    renderBoard();
+    
+    return true;
+}
+
+function findSpangramCells() {
+    // This is a simplified version - in a real implementation,
+    // you would want to ensure the spangram fits on the board
+    // and doesn't overlap with other words
+    const cells = [];
+    
+    // Try to place the spangram diagonally from top-left to bottom-right
+    for (let i = 0; i < spangram.length; i++) {
+        if (i < 5) { // Make sure we don't go out of bounds
+            cells.push({
+                row: i,
+                col: i,
+                letter: spangram[i]
+            });
+        }
+    }
+    
+    return cells;
+}
+
+function updateFoundWordsDisplay() {
+    const foundWordsElement = document.getElementById('found-words');
+    foundWordsElement.innerHTML = '';
+    
+    // Add found words to the display
+    foundWords.forEach(word => {
+        const wordElement = document.createElement('div');
+        wordElement.className = 'found-word';
+        wordElement.textContent = word;
+        foundWordsElement.appendChild(wordElement);
+    });
+    
+    // Update spangram status
+    if (spangramFound) {
+        const spangramElement = document.createElement('div');
+        spangramElement.className = 'found-word spangram';
+        spangramElement.textContent = spangram;
+        foundWordsElement.appendChild(spangramElement);
+    }
+}
+
+function handleLetterClick(row, col) {
+    console.log(`Letter clicked at (${row}, ${col}): ${board[row][col]}`);
+    
+    // Check if the letter is already selected
+    const letterIndex = selectedLetters.findIndex(p => p.row === row && p.col === col);
+    
+    // If the letter is already selected, unselect it and all letters after it
+    if (letterIndex !== -1) {
+        console.log(`Letter already selected at index ${letterIndex}, unselecting it and all after`);
+        selectedLetters = selectedLetters.slice(0, letterIndex);
+        selectedWord = selectedLetters.map(p => board[p.row][p.col]).join('');
+        updateSelectedWordDisplay();
+        renderBoard();
+        return;
+    }
+    
+    // Check if the letter has already been used in the current selection
+    if (selectedLetters.some(p => p.row === row && p.col === col)) {
+        console.log(`Letter already used in current selection`);
+        showMessage("Each letter can only be used once!");
+        return;
+    }
+    
+    // Check if the new letter is adjacent to the last selected letter
+    if (selectedLetters.length > 0) {
+        const last = selectedLetters[selectedLetters.length - 1];
+        const dx = Math.abs(col - last.col);
+        const dy = Math.abs(row - last.row);
+        
+        // A letter is adjacent if it's within 1 step in any direction (including diagonally)
+        if (dx > 1 || dy > 1) {
+            console.log(`Letter not adjacent: dx=${dx}, dy=${dy}`);
+            showMessage("Letters must be adjacent!");
+            return;
+        }
+    }
+    
+    // Add the letter to the selection
+    console.log(`Adding letter to selection: ${board[row][col]}`);
+    selectedLetters.push({ row, col });
+    selectedWord = selectedLetters.map(p => board[p.row][p.col]).join('');
+    updateSelectedWordDisplay();
+    
+    // Check if the current selection forms a valid word
+    if (selectedWord.length >= 3) {
+        const word = selectedWord.toUpperCase();
+        console.log(`Checking if "${word}" is a valid word`);
+        
+        if (isValidWord(word) && !foundWords.has(word)) {
+            console.log(`Valid word found: ${word}`);
+            // Automatically submit the word
+            let points = calculateWordPoints(word);
+            let wordType = '';
+            
+            if (word === spangram) {
+                wordType = 'spangram';
+                spangramFound = true;
+            } else if (themeWords.includes(word)) {
+                wordType = 'theme';
+            }
+            
+            score += points;
+            foundWords.add(word);
+            updateScore();
+            addFoundWord(word, wordType);
+            checkProgress();
+            
+            // Show a success message
+            showMessage(`Found: ${word}! +${points} points`);
+            
+            // Clear the selection and update the board
+            selectedLetters = [];
+            selectedWord = '';
+            updateSelectedWordDisplay();
+            
+            // Force a re-render of the board
+            renderBoard();
+            
+            return;
+        }
+    }
+    
+    // Update the board to show the new selection
+    renderBoard();
+}
+
+// Helper function to update the selected word display
+function updateSelectedWordDisplay() {
+    const selectedWordElement = document.getElementById('selected-word');
+    if (selectedWordElement) {
+        selectedWordElement.textContent = selectedWord;
+    } else {
+        console.error("Selected word element not found!");
+        // Try to create it if it doesn't exist
+        const gameControls = document.querySelector('.game-controls');
+        if (gameControls) {
+            const newSelectedWordElement = document.createElement('div');
+            newSelectedWordElement.id = 'selected-word';
+            newSelectedWordElement.className = 'selected-word';
+            newSelectedWordElement.textContent = selectedWord;
+            gameControls.insertBefore(newSelectedWordElement, gameControls.firstChild);
+            console.log("Created missing selected-word element");
+        } else {
+            console.error("Game controls element not found!");
+        }
+    }
+}
+
+function handleWordSubmit() {
+    const word = selectedWord.toUpperCase();
+    if (word.length < 3) {
+        showMessage("Words must be at least 3 letters long!");
+        return;
+    }
+    
+    if (foundWords.has(word)) {
+        showMessage("Word already found!");
+        return;
+    }
+    
+    // Check if each letter is used only once
+    const letterCounts = {};
+    for (let i = 0; i < word.length; i++) {
+        const letter = word[i];
+        letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+        
+        // If a letter appears more than once in the word, it's not valid
+        if (letterCounts[letter] > 1) {
+            showMessage("Each letter can only be used once!");
+            return;
+        }
+    }
+    
+    if (isValidWord(word)) {
+        let points = calculateWordPoints(word);
+        let wordType = '';
+        
+        if (word === spangram) {
+            wordType = 'spangram';
+            showMessage("Spangram found! +" + points + " points");
+        } else if (themeWords.includes(word)) {
+            wordType = 'theme';
+            showMessage("Theme word found! +" + points + " points");
+        } else {
+            showMessage("Word found! +" + points + " points");
+        }
+        
+        score += points;
+        foundWords.add(word);
+        updateScore();
+        addFoundWord(word, wordType);
+        checkProgress();
+    } else {
+        showMessage("Not a valid word!");
+    }
+    
+    clearSelection();
+}
+
+function calculateWordPoints(word) {
+    let points = word.length; // Base points = word length
+    
+    // Bonus points for longer words
+    if (word.length >= 6) {
+        points += Math.floor(word.length / 2); // Extra point for every 2 letters in words 6+ letters
+    }
+    
+    // Theme word bonus (2x)
+    if (themeWords.includes(word)) {
+        points *= 2;
+    }
+    
+    // Spangram bonus (3x)
+    if (word === spangram) {
+        points *= 3;
+    }
+    
+    return points;
+}
+
+function isValidWord(word) {
+    // Only accept theme words and the spangram
+    if (themeWords.includes(word) || word === spangram) {
+        // Check if each letter is used only once
+        const letterCounts = {};
+        for (let i = 0; i < word.length; i++) {
+            const letter = word[i];
+            letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+            
+            // If a letter appears more than once in the word, it's not valid
+            if (letterCounts[letter] > 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    // Reject all other words, even if they can be formed on the board
+    return false;
+}
+
+function showMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'game-message';
+    messageDiv.textContent = message;
+    document.querySelector('.game-controls').prepend(messageDiv);
+    
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 2000);
+}
+
+function checkProgress() {
+    const themeWordsFound = Array.from(foundWords).filter(word => 
+        themeWords.includes(word)
+    ).length;
+    
+    const progress = (themeWordsFound / themeWords.length) * 100;
+    
+    document.getElementById('progress-fill').style.width = `${progress}%`;
+    document.getElementById('progress-text').textContent = 
+        `${themeWordsFound}/${themeWords.length} Theme Words`;
+    
+    if (themeWordsFound === themeWords.length && spangramFound) {
+        document.getElementById('perfect-badge').classList.remove('hidden');
+        showMessage("Perfect! You found all the words!");
+        
+        // Calculate final score bonus for perfect completion
+        const perfectBonus = Math.floor(score * 0.1); // 10% bonus
+        score += perfectBonus;
+        updateScore();
+        showMessage(`Perfect bonus: +${perfectBonus} points!`);
+    }
+}
+
+function addFoundWord(word, type) {
+    const foundWordsDiv = document.getElementById('found-words');
+    const wordElement = document.createElement('span');
+    wordElement.className = `found-word ${type || ''}`;
+    wordElement.textContent = word;
+    foundWordsDiv.appendChild(wordElement);
+}
+
+function clearSelection() {
+    selectedLetters = [];
+    selectedWord = '';
+    updateSelectedWordDisplay();
+    renderBoard();
+}
+
+function showHint() {
+    const remainingThemeWords = themeWords.filter(word => !foundWords.has(word));
+    const spangramNotFound = !foundWords.has(spangram);
+    
+    if (remainingThemeWords.length === 0 && !spangramNotFound) {
+        showMessage("No more hints available!");
+        return;
+    }
+    
+    // Prioritize spangram hint if not found
+    if (spangramNotFound && Math.random() < 0.3) {
+        showMessage(`Try finding a ${spangram.length}-letter word that spans the grid!`);
+    } else if (remainingThemeWords.length > 0) {
+        const hintWord = remainingThemeWords[Math.floor(Math.random() * remainingThemeWords.length)];
+        showMessage(`Try finding a ${hintWord.length}-letter theme word!`);
+    }
+}
+
+function newGame() {
+    initGame();
+}
+
+function findWordPositions(word) {
+    const positions = [];
+    const directions = [
+        { dx: 1, dy: 0 },  // horizontal
+        { dx: 0, dy: 1 },  // vertical
+        { dx: 1, dy: 1 },  // diagonal down
+        { dx: 1, dy: -1 }  // diagonal up
+    ];
+    
+    // Check each cell in the board
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            // If this cell matches the first letter of the word
+            if (board[i][j] === word[0]) {
+                // Try each direction
+                for (const dir of directions) {
+                    let found = true;
+                    const wordPositions = [];
+                    
+                    // Check if the word can be formed in this direction
+                    for (let k = 0; k < word.length; k++) {
+                        const row = i + dir.dy * k;
+                        const col = j + dir.dx * k;
+                        
+                        // Check if we're still within the board and the letter matches
+                        if (row < 0 || row >= 5 || col < 0 || col >= 5 || board[row][col] !== word[k]) {
+                            found = false;
+                            break;
+                        }
+                        
+                        // Add this position to the list
+                        wordPositions.push({ row, col });
+                    }
+                    
+                    // If we found the word, add all positions to the result
+                    if (found) {
+                        positions.push(...wordPositions);
+                    }
+                }
+            }
+        }
+    }
+    
+    return positions;
+}
+
+function placeThemeWords() {
+    // Sort theme words by length (longest first) to optimize placement
+    const sortedWords = [...themeWords].sort((a, b) => b.length - a.length);
+    
+    // Track which words have been placed to avoid duplicates
+    const placedWords = new Set();
+    
+    // Define directions for word placement
+    const directions = [
+        { dx: 1, dy: 0 },  // horizontal
+        { dx: 0, dy: 1 },  // vertical
+        { dx: 1, dy: 1 },  // diagonal down
+        { dx: 1, dy: -1 }, // diagonal up
+        { dx: -1, dy: 0 }, // horizontal reverse
+        { dx: 0, dy: -1 }, // vertical reverse
+        { dx: -1, dy: -1 }, // diagonal down reverse
+        { dx: -1, dy: 1 }  // diagonal up reverse
+    ];
+    
+    // Try to place each theme word
+    for (const word of sortedWords) {
+        let placed = false;
+        let attempts = 0;
+        const maxAttempts = 50;
+        
+        while (!placed && attempts < maxAttempts) {
+            attempts++;
+            
+            // Try a random starting position
+            const startRow = Math.floor(Math.random() * 5);
+            const startCol = Math.floor(Math.random() * 5);
+            
+            // Try each direction
+            for (const dir of directions) {
+                if (canPlaceWord(word, startRow, startCol, dir)) {
+                    placeWord(word, startRow, startCol, dir);
+                    placed = true;
+                    placedWords.add(word);
+                    console.log(`Placed theme word: ${word}`);
+                    break;
+                }
+            }
+        }
+        
+        if (!placed) {
+            console.warn(`Could not place theme word: ${word} after ${maxAttempts} attempts`);
+        }
+    }
+    
+    // Fill any remaining empty cells with random letters
+    fillEmptyCells();
+    
+    // Update the visual state
+    renderBoard();
+}
+
+function fillEmptyCells() {
+    // Common letters in English (weighted by frequency)
+    const commonLetters = [
+        'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E',
+        'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A',
+        'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'I',
+        'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O',
+        'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N',
+        'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R',
+        'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S',
+        'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T',
+        'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',
+        'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D',
+        'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U',
+        'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
+        'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
+        'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C',
+        'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M', 'M',
+        'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+        'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F',
+        'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H',
+        'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'V',
+        'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',
+        'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',
+        'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K', 'K',
+        'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J', 'J',
+        'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
+        'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q', 'Q',
+        'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z', 'Z'
+    ];
+    
+    // Fill any empty cells with random letters
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            if (!board[i][j]) {
+                const randomIndex = Math.floor(Math.random() * commonLetters.length);
+                board[i][j] = commonLetters[randomIndex];
+            }
+        }
+    }
+}
+
+function generateBoard() {
+    // Clear the grid
+    board = Array(5).fill().map(() => Array(5).fill(''));
+    
+    // Keep trying to generate a valid board
+    let attempts = 0;
+    const maxAttempts = 100; // Limit attempts to prevent infinite loops
+    
+    while (attempts < maxAttempts) {
+        attempts++;
+        
+        // Clear the grid for this attempt
+        board = Array(5).fill().map(() => Array(5).fill(''));
+        
+        // ALWAYS place the spangram first
+        placeSpangram();
+        
+        // Try to place theme words
+        placeThemeWords();
+        
+        // Check if any words are repeated in the board
+        if (hasRepeatedWords()) {
+            console.log("Board has repeated words, trying again...");
+            continue;
+        }
+        
+        // If we got here, we have a valid board
+        console.log("Successfully generated board after", attempts, "attempts");
+        
+        // Update the visual state
+        renderBoard();
+        
+        return true;
+    }
+    
+    console.error("Failed to generate a valid board after", maxAttempts, "attempts");
+    return false;
+}
+
+// New function to check for repeated words in the board
+function hasRepeatedWords() {
+    const foundWords = new Set();
+    
+    // Check horizontal words
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            // Skip empty cells
+            if (!board[i][j]) continue;
+            
+            // Try to form words in different directions
+            const directions = [
+                { dx: 1, dy: 0 },  // horizontal
+                { dx: 0, dy: 1 },  // vertical
+                { dx: 1, dy: 1 },  // diagonal down
+                { dx: 1, dy: -1 }  // diagonal up
+            ];
+            
+            for (const dir of directions) {
+                let word = '';
+                let row = i;
+                let col = j;
+                
+                // Build the word in this direction
+                while (row >= 0 && row < 5 && col >= 0 && col < 5 && board[row][col]) {
+                    word += board[row][col];
+                    row += dir.dy;
+                    col += dir.dx;
+                    
+                    // If we have a word of at least 3 letters, check if it's valid
+                    if (word.length >= 3) {
+                        if (isValidWord(word) && foundWords.has(word)) {
+                            console.log(`Found repeated word: ${word}`);
+                            return true;
+                        }
+                        foundWords.add(word);
+                    }
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+
+function updateScore() {
+    const scoreElement = document.getElementById('score');
+    scoreElement.textContent = score;
+    
+    // Update found words display
+    const foundWordsElement = document.getElementById('found-words');
+    foundWordsElement.innerHTML = '';
+    
+    // Sort found words by type and length
+    const sortedWords = Array.from(foundWords).sort((a, b) => {
+        // Sort by type first (spangram, theme, other)
+        const getTypeOrder = (word) => {
+            if (word === spangram) return 0;
+            if (themeWords.includes(word)) return 1;
+            return 2;
+        };
+        
+        const typeOrderA = getTypeOrder(a);
+        const typeOrderB = getTypeOrder(b);
+        
+        if (typeOrderA !== typeOrderB) {
+            return typeOrderA - typeOrderB;
+        }
+        
+        // Then sort by length (longest first)
+        return b.length - a.length;
+    });
+    
+    // Add each found word to the display
+    for (const word of sortedWords) {
+        let wordType = '';
+        if (word === spangram) {
+            wordType = 'spangram';
+        } else if (themeWords.includes(word)) {
+            wordType = 'theme';
+        }
+        
+        const wordElement = document.createElement('span');
+        wordElement.className = `found-word ${wordType}`;
+        wordElement.textContent = word;
+        foundWordsElement.appendChild(wordElement);
+    }
+}
+
+function canPlaceWord(word, startRow, startCol, dir) {
+    // Check if the word can be placed starting at the given position in the given direction
+    for (let i = 0; i < word.length; i++) {
+        const row = startRow + dir.dy * i;
+        const col = startCol + dir.dx * i;
+        
+        // Check if we're still within the board
+        if (row < 0 || row >= 5 || col < 0 || col >= 5) {
+            return false;
+        }
+        
+        // Check if the cell is empty or has the same letter
+        if (board[row][col] !== '' && board[row][col] !== word[i]) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function placeWord(word, startRow, startCol, dir) {
+    // Place the word on the board starting at the given position in the given direction
+    for (let i = 0; i < word.length; i++) {
+        const row = startRow + dir.dy * i;
+        const col = startCol + dir.dx * i;
+        
+        board[row][col] = word[i];
+    }
+    
+    // Update the visual state
+    renderBoard();
+}
+
+// Event Listeners
+document.getElementById('submitWord').addEventListener('click', handleWordSubmit);
+document.getElementById('clearSelection').addEventListener('click', clearSelection);
+document.getElementById('newGame').addEventListener('click', newGame);
+
+// Start the game
+initGame();
+</script>
+
+        </div>
+    </div>
+</body>
+</html> 
