@@ -12,6 +12,7 @@ from typing import List, Dict, Optional, Any, Tuple
 from app.models.post import Post
 from app.models.exceptions import PostError, PostNotFoundError, PostMetadataError, PostContentError, YAMLParsingError, MarkdownRenderingError
 from app.repositories.post_repository import PostRepository
+from app import create_app
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -32,10 +33,7 @@ def render_markdown(text):
     ]
     return markdown.markdown(text, extensions=extensions)
 
-app = Flask(__name__, 
-            template_folder=os.path.join(app_dir, 'app', 'templates'),
-            static_folder=os.path.join(app_dir, 'app', 'static'),
-            static_url_path='/static')
+app = create_app()
 
 # Configure Flask-FlatPages
 app.config['FLATPAGES_AUTO_RELOAD'] = True

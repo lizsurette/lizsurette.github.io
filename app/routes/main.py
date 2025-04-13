@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, current_app, abort
+from flask import Blueprint, render_template, current_app, abort, send_from_directory
+import os
 
 # Create the main blueprint
 main = Blueprint('main', __name__)
@@ -171,4 +172,36 @@ def post(post_path):
                              prev_post=prev_post)
     except Exception as e:
         current_app.logger.error(f"Error rendering post {post_path}: {e}")
-        return render_template('error.html', title='Error', error=str(e)), 500 
+        return render_template('error.html', title='Error', error=str(e)), 500
+
+@main.route('/maze/')
+def maze():
+    """
+    Render the maze game page.
+    
+    Returns:
+        str: The rendered maze game page
+    """
+    return render_template('maze.html', title='Maze Game')
+
+@main.route('/bubble/')
+def bubble():
+    """
+    Render the bubble shooter game page.
+    
+    Returns:
+        str: The rendered bubble shooter game page
+    """
+    return render_template('bubble.html', title='Bubble Shooter')
+
+@main.route('/factory/')
+def factory():
+    """
+    Render the gem miner game page.
+    
+    Returns:
+        str: The rendered gem miner game page
+    """
+    app_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    factory_dir = os.path.join(app_dir, '..', 'factory')
+    return send_from_directory(factory_dir, 'index.html') 
