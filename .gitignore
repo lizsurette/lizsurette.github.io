@@ -63,3 +63,7 @@ instance/
 
 logs/
 *.log 
+
+# Build directories
+_site/
+temp_site/ 
