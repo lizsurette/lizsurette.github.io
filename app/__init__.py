@@ -33,8 +33,7 @@ def create_app(config_name='default'):
     from app.services.config_service import ConfigService
     from app.utils.logger import setup_logger
     
-    global app, pages, post_repository
-    
+    # Create new Flask app instance
     app = Flask(__name__, 
                 template_folder=os.path.join(app_dir, 'templates'),
                 static_folder=os.path.join(app_dir, 'static'),
@@ -61,6 +60,9 @@ def create_app(config_name='default'):
         posts_dir=app.config['FLATPAGES_ROOT'],
         render_markdown_func=markdown_service._render_markdown
     )
+    
+    # Store post_repository in app context
+    app.post_repository = post_repository
     
     # Register blueprints and error handlers
     register_blueprints(app)
@@ -96,11 +98,10 @@ def create_app(config_name='default'):
 def register_blueprints(app):
     """Register Flask blueprints."""
     from app.routes.main import main as main_blueprint
-    # Remove the post blueprint import and registration
-    # from app.routes.post import post as post_blueprint
+    from app.routes.post import post as post_blueprint
     
     app.register_blueprint(main_blueprint)
-    # app.register_blueprint(post_blueprint)
+    app.register_blueprint(post_blueprint)
 
 def register_error_handlers(app):
     """Register error handlers."""
@@ -125,8 +126,5 @@ def register_error_handlers(app):
                               title='Post Error', 
                               error=str(error)), 500
 
-# Create the app instance
-app = create_app()
-
-# Export the app instance, pages, and post_repository
-__all__ = ['app', 'pages', 'post_repository']
+# Export the create_app function
+__all__ = ['create_app']

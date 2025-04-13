@@ -21,9 +21,9 @@
 
         <ul class="posts" id="posts-list">
             {% for post in posts %}
-                <li class="post-item" data-title="{{ post.meta.title }}" data-date="{{ format_date(post.meta.date) }}">
+                <li class="post-item" data-title="{{ post.meta.title }}" data-date="{{ format_date(post.meta.date) }}" data-path="{{ post.path }}">
                     <i><span>{{ format_date(post.meta.date) }}</span></i> &raquo; 
-                    <a href="{{ url_for('main.post', post_path=post.path) }}">{{ post.meta.title }}</a>
+                    <a href="{{ url_for('post.view', path=post.path) }}">{{ post.meta.title }}</a>
                 </li>
             {% else %}
                 <li>No posts found.</li>
@@ -129,8 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const postsList = document.getElementById('posts-list');
     const postItems = postsList.getElementsByClassName('post-item');
     
-    // Store original posts list
-    const originalPosts = Array.from(postItems);
+    // Store original posts list with their original HTML
+    const originalPosts = Array.from(postItems).map(post => ({
+        element: post,
+        html: post.outerHTML
+    }));
     
     searchInput.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
@@ -142,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (searchTerm === '') {
             // If search is empty, show all posts
             originalPosts.forEach(post => {
-                postsList.appendChild(post.cloneNode(true));
+                postsList.insertAdjacentHTML('beforeend', post.html);
             });
             searchResults.classList.remove('active');
             return;
@@ -150,14 +153,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Filter posts
         const filteredPosts = originalPosts.filter(post => {
-            const title = post.getAttribute('data-title').toLowerCase();
-            const date = post.getAttribute('data-date').toLowerCase();
+            const title = post.element.getAttribute('data-title').toLowerCase();
+            const date = post.element.getAttribute('data-date').toLowerCase();
             return title.includes(searchTerm) || date.includes(searchTerm);
         });
         
         // Show filtered posts
         filteredPosts.forEach(post => {
-            postsList.appendChild(post.cloneNode(true));
+            postsList.insertAdjacentHTML('beforeend', post.html);
         });
         
         // Show search results
@@ -165,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             searchResults.classList.add('active');
             filteredPosts.forEach(post => {
                 const li = document.createElement('li');
-                li.innerHTML = post.innerHTML;
+                li.innerHTML = post.html;
                 li.addEventListener('click', function() {
                     const link = this.querySelector('a');
                     if (link) {

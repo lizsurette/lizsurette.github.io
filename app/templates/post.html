@@ -31,11 +31,11 @@
         
         <div class="post-pagination">
             {% if prev_post %}
-            <a href="{{ url_for('main.post', post_path=prev_post.path) }}">&laquo; {{ prev_post.title }}</a>
+            <a href="{{ url_for('post.view', path=prev_post.path) }}">&laquo; {{ prev_post.title }}</a>
             {% endif %}
             
             {% if next_post %}
-            <a href="{{ url_for('main.post', post_path=next_post.path) }}">{{ next_post.title }} &raquo;</a>
+            <a href="{{ url_for('post.view', path=next_post.path) }}">{{ next_post.title }} &raquo;</a>
             {% endif %}
         </div>
     </div>

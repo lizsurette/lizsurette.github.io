@@ -14,15 +14,15 @@
             {% for post in posts %}
             <article class="post-preview">
                 <h2 class="post-title">
-                    <a href="{{ url_for('main.post', post_path=post.path) }}">{{ post.title }}</a>
+                    <a href="{{ url_for('post.view', path=post.path) }}">{{ post.title }}</a>
                 </h2>
                 <div class="post-meta">
                     <span class="post-date">{{ format_date(post.date) }}</span>
                 </div>
                 <div class="post-excerpt">
-                    {{ post.content[:200] }}...
+                    {{ post.excerpt|safe }}
                 </div>
-                <a href="{{ url_for('main.post', post_path=post.path) }}" class="read-more">Read more &raquo;</a>
+                <a href="{{ url_for('post.view', path=post.path) }}" class="read-more">Read more &raquo;</a>
             </article>
             {% endfor %}
         {% else %}

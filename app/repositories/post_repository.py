@@ -65,18 +65,22 @@ class PostRepository:
         Returns:
             Optional[Post]: The Post object if found, None otherwise
         """
-        # Remove any trailing slashes and .markdown extension
+        # Remove any trailing slashes
         path = path.rstrip('/')
-        if path.endswith('.markdown'):
-            path = path[:-9]  # Remove .markdown extension
-            
-        file_path = os.path.join(self.posts_dir, f"{path}.markdown")
         
-        try:
-            return Post.from_file(file_path, self.render_markdown_func)
-        except PostError as e:
-            logger.error(f"Error getting post {path}: {e}")
-            return None
+        # Try to find the post file
+        for filename in os.listdir(self.posts_dir):
+            if filename.endswith('.markdown'):
+                # Remove date prefix and extension for comparison
+                file_path = os.path.join(self.posts_dir, filename)
+                try:
+                    post = Post.from_file(file_path, self.render_markdown_func)
+                    if post.path == path:
+                        return post
+                except PostError:
+                    continue
+        
+        return None
     
     def get_next_post(self, current_path: str) -> Optional[Post]:
         """
