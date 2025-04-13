@@ -89,6 +89,15 @@ def generate_static_files():
                 f.write(game_html)
             logger.info(f"Saved _site/{game_slug}/index.html")
 
+        # Handle gem-miner route by copying the factory directory
+        logger.info("Generating Gem Miner page")
+        gem_miner_dir = os.path.join('_site', 'gem-miner')
+        factory_dir = os.path.join('factory')
+        if os.path.exists(factory_dir):
+            os.makedirs(gem_miner_dir, exist_ok=True)
+            shutil.copy2(os.path.join(factory_dir, 'index.html'), os.path.join(gem_miner_dir, 'index.html'))
+            logger.info("Saved _site/gem-miner/index.html")
+
         # Generate projects page
         logger.info("Generating projects page")
         projects_html = render_template('projects.html', title='Projects')

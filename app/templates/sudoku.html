@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sudoku.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="sudoku-container">
+            <h1>Sudoku</h1>
+            <div class="difficulty-selector">
+                <label for="difficulty">Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div id="sudoku-grid"></div>
+            <div class="controls">
+                <button id="new-game">New Game</button>
+                <button id="check-solution">Check Solution</button>
+                <button id="show-solution">Show Solution</button>
+                <button id="toggle-candidates">Toggle Candidates</button>
+            </div>
+        </div>
+        <div class="number-selector">
+            <h3>Select Number</h3>
+            <div class="number-grid">
+                <button class="number-btn" data-number="1">1</button>
+                <button class="number-btn" data-number="2">2</button>
+                <button class="number-btn" data-number="3">3</button>
+                <button class="number-btn" data-number="4">4</button>
+                <button class="number-btn" data-number="5">5</button>
+                <button class="number-btn" data-number="6">6</button>
+                <button class="number-btn" data-number="7">7</button>
+                <button class="number-btn" data-number="8">8</button>
+                <button class="number-btn" data-number="9">9</button>
+                <button class="number-btn clear" data-number="0"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/sudoku.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new SudokuGame();
+            game.init();
+        });
+    </script>
+</body>
+</html> 

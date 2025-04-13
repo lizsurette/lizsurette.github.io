@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app, abort, send_from_directory
+from flask import Blueprint, render_template, current_app, abort, send_from_directory, redirect
 import os
 
 # Create the main blueprint
@@ -197,11 +197,43 @@ def bubble():
 @main.route('/factory/')
 def factory():
     """
-    Render the gem miner game page.
+    Serve the factory game from the factory directory.
     
     Returns:
-        str: The rendered gem miner game page
+        str: The factory game HTML file
     """
-    app_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    factory_dir = os.path.join(app_dir, '..', 'factory')
+    # Get the absolute path to the factory directory
+    factory_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'factory')
+    return send_from_directory(factory_dir, 'index.html')
+
+@main.route('/sudoku/')
+def sudoku():
+    """
+    Render the Sudoku game page.
+    
+    Returns:
+        str: The rendered Sudoku game page
+    """
+    return render_template('sudoku.html', title='Sudoku Game')
+
+@main.route('/gem-miner/')
+def gem_miner():
+    """
+    Redirect to the factory route.
+    
+    Returns:
+        redirect: Redirect to the factory route
+    """
+    return redirect('/factory/')
+
+@main.route('/gem-miner/')
+def gem_miner_old():
+    """
+    Serve the Gem Miner game from the factory directory.
+    
+    Returns:
+        str: The Gem Miner game HTML file
+    """
+    # Get the absolute path to the factory directory
+    factory_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'factory')
     return send_from_directory(factory_dir, 'index.html') 
