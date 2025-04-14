@@ -20,18 +20,27 @@ def main():
     
     # Copy HTML files
     for html_file in Path(".").glob("**/*.html"):
+        # Skip files in _site directory
+        if "_site" in str(html_file):
+            continue
+            
+        # Calculate destination path
         if html_file.name == "index.html":
-            # Handle root index.html
-            dest = Path("_site") / html_file.parent.name / "index.html"
+            # For index.html files, maintain directory structure
+            rel_path = html_file.parent.relative_to(".")
+            dest = Path("_site") / rel_path / "index.html"
         else:
-            # Handle other HTML files
-            dest = Path("_site") / html_file.parent.name / html_file.name
+            # For other HTML files, maintain directory structure
+            rel_path = html_file.parent.relative_to(".")
+            dest = Path("_site") / rel_path / html_file.name
         
         # Create destination directory if it doesn't exist
         os.makedirs(dest.parent, exist_ok=True)
         
-        # Copy the file
-        shutil.copy2(html_file, dest)
+        # Only copy if source and destination are different
+        if html_file != dest:
+            print(f"Copying {html_file} to {dest}")
+            shutil.copy2(html_file, dest)
     
     print("Static site built successfully!")
 
