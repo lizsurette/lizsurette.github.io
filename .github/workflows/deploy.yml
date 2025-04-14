@@ -12,21 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install gh-pages
-        run: npm install -g gh-pages
-
       - name: Deploy to GitHub Pages
-        run: |
-          # Create a temporary directory
-          mkdir -p temp_site
-          
-          # Copy all files and directories except .git and _site
-          rsync -av --exclude='.git' --exclude='_site' --exclude='temp_site' --exclude='node_modules' ./ temp_site/
-          
-          # Deploy to GitHub Pages using the correct syntax
-          npx gh-pages -d temp_site --dotfiles true 
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          exclude_assets: ".git,_site,node_modules" 
