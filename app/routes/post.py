@@ -20,7 +20,7 @@ def view(path=None):
         from app import post_repository
         
         # If no path is provided or path is empty, redirect to writings
-        if not path:
+        if not path or path.strip() == '':
             current_app.logger.warning("No path provided, redirecting to writings")
             return redirect(url_for('main.writings'))
         

@@ -219,21 +219,21 @@ def sudoku():
 @main.route('/gem-miner/')
 def gem_miner():
     """
-    Redirect to the factory route.
+    Serve the Gem Miner game from the gem-miner directory.
     
     Returns:
-        redirect: Redirect to the factory route
+        str: The gem miner game HTML file
     """
-    return redirect('/factory/')
+    # Get the absolute path to the gem-miner directory
+    gem_miner_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gem-miner')
+    return send_from_directory(gem_miner_dir, 'index.html')
 
-@main.route('/gem-miner/')
-def gem_miner_old():
+@main.route('/gem-miner')
+def gem_miner_redirect():
     """
-    Serve the Gem Miner game from the factory directory.
+    Redirect to the gem-miner route.
     
     Returns:
-        str: The Gem Miner game HTML file
+        redirect: Redirect to the gem-miner route
     """
-    # Get the absolute path to the factory directory
-    factory_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'factory')
-    return send_from_directory(factory_dir, 'index.html') 
+    return redirect('/gem-miner/') 
