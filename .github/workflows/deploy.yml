@@ -12,22 +12,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.12'
+          node-version: '18'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Build site
-        run: |
-          python build.py
+      - name: Install gh-pages
+        run: npm install -g gh-pages
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site 
+        run: |
+          # Create a temporary directory
+          mkdir -p temp_site
+          
+          # Copy all files except .git and _site
+          find . -maxdepth 1 -not -path "*/\.*" -not -path "*/_site" -not -path "*/temp_site" -exec cp -r {} temp_site/ \;
+          
+          # Copy all directories except .git and _site
+          find . -maxdepth 1 -type d -not -path "*/\.*" -not -path "*/_site" -not -path "*/temp_site" -exec cp -r {} temp_site/ \;
+          
+          # Deploy to GitHub Pages
+          gh-pages -d temp_site -t true 
