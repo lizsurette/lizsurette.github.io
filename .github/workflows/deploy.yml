@@ -25,11 +25,8 @@ jobs:
           # Create a temporary directory
           mkdir -p temp_site
           
-          # Copy all files except .git and _site
-          find . -maxdepth 1 -not -path "*/\.*" -not -path "*/_site" -not -path "*/temp_site" -exec cp -r {} temp_site/ \;
-          
-          # Copy all directories except .git and _site
-          find . -maxdepth 1 -type d -not -path "*/\.*" -not -path "*/_site" -not -path "*/temp_site" -exec cp -r {} temp_site/ \;
+          # Copy all files and directories except .git and _site
+          rsync -av --exclude='.git' --exclude='_site' --exclude='temp_site' --exclude='node_modules' ./ temp_site/
           
           # Deploy to GitHub Pages
           gh-pages -d temp_site -t true 
