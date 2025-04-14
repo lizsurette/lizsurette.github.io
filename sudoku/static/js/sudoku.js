@@ -3,6 +3,8 @@ class SudokuGame {
         this.board = Array(9).fill().map(() => Array(9).fill(0));
         this.solution = Array(9).fill().map(() => Array(9).fill(0));
         this.fixed = Array(9).fill().map(() => Array(9).fill(false));
+        this.candidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
+        this.showCandidates = false;
         this.selectedCell = null;
         this.init();
     }
@@ -39,6 +41,10 @@ class SudokuGame {
 
         document.getElementById('check-solution').addEventListener('click', () => {
             this.checkSolution();
+        });
+
+        document.getElementById('toggle-candidates').addEventListener('click', () => {
+            this.toggleCandidates();
         });
 
         // Add number pad
@@ -130,9 +136,16 @@ class SudokuGame {
         this.selectedCell.textContent = num || '';
         this.selectedCell.classList.remove('invalid');
         
+        // Clear candidates for this cell
+        this.candidates[row][col].clear();
+        this.updateCandidatesDisplay();
+        
         if (num !== 0) {
             this.validateMove(row, col);
         }
+
+        // Update candidates for related cells
+        this.updateCandidates();
     }
 
     validateMove(row, col) {
@@ -174,10 +187,91 @@ class SudokuGame {
         }
     }
 
+    updateCandidates() {
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                if (this.board[row][col] === 0) {
+                    this.candidates[row][col].clear();
+                    for (let num = 1; num <= 9; num++) {
+                        if (this.isValidCandidate(row, col, num)) {
+                            this.candidates[row][col].add(num);
+                        }
+                    }
+                } else {
+                    this.candidates[row][col].clear();
+                }
+            }
+        }
+        this.updateCandidatesDisplay();
+    }
+
+    isValidCandidate(row, col, num) {
+        // Check row
+        for (let i = 0; i < 9; i++) {
+            if (i !== col && this.board[row][i] === num) {
+                return false;
+            }
+        }
+
+        // Check column
+        for (let i = 0; i < 9; i++) {
+            if (i !== row && this.board[i][col] === num) {
+                return false;
+            }
+        }
+
+        // Check 3x3 box
+        const boxRow = Math.floor(row / 3) * 3;
+        const boxCol = Math.floor(col / 3) * 3;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                const r = boxRow + i;
+                const c = boxCol + j;
+                if (r !== row && c !== col && this.board[r][c] === num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    updateCandidatesDisplay() {
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                const cell = document.querySelector(`[data-index="${row * 9 + col}"]`);
+                let candidatesDiv = cell.querySelector('.candidates');
+                
+                if (!candidatesDiv) {
+                    candidatesDiv = document.createElement('div');
+                    candidatesDiv.className = 'candidates';
+                    cell.appendChild(candidatesDiv);
+                }
+
+                candidatesDiv.innerHTML = '';
+                if (this.board[row][col] === 0) {
+                    for (let i = 1; i <= 9; i++) {
+                        const span = document.createElement('span');
+                        span.textContent = this.candidates[row][col].has(i) ? i : '';
+                        candidatesDiv.appendChild(span);
+                    }
+                }
+
+                candidatesDiv.classList.toggle('hidden', !this.showCandidates || this.board[row][col] !== 0);
+            }
+        }
+    }
+
+    toggleCandidates() {
+        this.showCandidates = !this.showCandidates;
+        this.updateCandidatesDisplay();
+    }
+
     generateNewGame() {
         // Clear the board
         this.board = Array(9).fill().map(() => Array(9).fill(0));
         this.fixed = Array(9).fill().map(() => Array(9).fill(false));
+        this.candidates = Array(9).fill().map(() => Array(9).fill().map(() => new Set()));
         
         // Generate a solved board
         this.generateSolution();
@@ -212,6 +306,7 @@ class SudokuGame {
         }
 
         this.updateDisplay();
+        this.updateCandidates();
     }
 
     generateSolution() {

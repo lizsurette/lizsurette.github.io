@@ -24,6 +24,7 @@
     font-size: 1.5em;
     cursor: pointer;
     transition: background-color 0.2s;
+    position: relative;
 }
 
 .cell:hover {
@@ -65,6 +66,29 @@
 /* Remove bottom border from last row */
 .cell:nth-child(n+73):nth-child(-n+81) {
     border-bottom: none;
+}
+
+.cell .candidates {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 0.4em;
+    color: #666;
+}
+
+.cell .candidates span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cell .candidates.hidden {
+    display: none;
 }
 
 #message {
