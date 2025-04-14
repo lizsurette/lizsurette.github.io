@@ -20,8 +20,21 @@ jobs:
           git config --global user.email "actions@github.com"
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-          exclude_assets: ".git,_site,node_modules" 
+        run: |
+          # Create a new branch
+          git checkout --orphan gh-pages-temp
+          
+          # Add all files
+          git add -A
+          
+          # Commit changes
+          git commit -m "Deploy to GitHub Pages"
+          
+          # Delete the gh-pages branch if it exists
+          git push origin --delete gh-pages || true
+          
+          # Rename the temporary branch to gh-pages
+          git branch -m gh-pages
+          
+          # Push to GitHub Pages
+          git push -f origin gh-pages 
