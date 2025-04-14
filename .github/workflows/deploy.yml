@@ -37,8 +37,14 @@ jobs:
           cp -r sudoku/static/js/sudoku.js _site/static/js/
           
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: _site
-          branch: gh-pages
-          clean: true 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
+          commit_message: 'Deploy static site'
+          force: true
+
+      - name: Verify deployment
+        run: |
+          echo "Deployment completed. Please check https://lizsurette.github.io in a few minutes." 
