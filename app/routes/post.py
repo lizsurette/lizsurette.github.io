@@ -26,6 +26,10 @@ def view(path=None):
         
         # Remove trailing slash if present
         path = path.rstrip('/')
+        
+        # Ensure path doesn't contain double slashes
+        path = path.replace('//', '/')
+        
         current_app.logger.info(f"Attempting to load post: {path}")
         
         # Get the post

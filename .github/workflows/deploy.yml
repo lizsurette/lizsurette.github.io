@@ -33,8 +33,18 @@ jobs:
         run: |
           mkdir -p _site/static/css
           mkdir -p _site/static/js
-          cp -r sudoku/static/css/sudoku.css _site/static/css/
-          cp -r sudoku/static/js/sudoku.js _site/static/js/
+          if [ -f "sudoku/static/css/sudoku.css" ]; then
+            cp -r sudoku/static/css/sudoku.css _site/static/css/
+            echo "Copied sudoku.css successfully"
+          else
+            echo "Warning: sudoku.css not found"
+          fi
+          if [ -f "sudoku/static/js/sudoku.js" ]; then
+            cp -r sudoku/static/js/sudoku.js _site/static/js/
+            echo "Copied sudoku.js successfully"
+          else
+            echo "Warning: sudoku.js not found"
+          fi
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

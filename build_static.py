@@ -48,82 +48,76 @@ def generate_static_files():
         logger.info("Generating index page")
         index_html = render_template('index.html', title='About Me')
         os.makedirs('_site', exist_ok=True)
+        
         with open('_site/index.html', 'w', encoding='utf-8') as f:
             f.write(index_html)
-        logger.info("Saved _site/index.html")
-
+        
         # Generate writings page
         logger.info("Generating writings page")
-        writings_html = render_template('writings.html', title='Writings', posts=get_posts())
+        posts = get_posts()
+        writings_html = render_template('writings.html', title='Writings', posts=posts)
         os.makedirs('_site/writings', exist_ok=True)
+        
         with open('_site/writings/index.html', 'w', encoding='utf-8') as f:
             f.write(writings_html)
-        logger.info("Saved _site/writings/index.html")
-
-        # Generate games page and individual game pages
-        logger.info("Generating games pages")
-        # Main games page
+        
+        # Generate post pages
+        logger.info("Generating post pages")
+        for post in posts:
+            # Skip posts with empty paths
+            if not post.path or post.path.strip() == '':
+                logger.warning(f"Skipping post with empty path: {post.title}")
+                continue
+                
+            # Create directory for post
+            post_dir = os.path.join('_site', 'posts', post.path)
+            os.makedirs(post_dir, exist_ok=True)
+            
+            # Generate post HTML
+            post_html = render_template('post.html', post=post)
+            
+            # Write post HTML
+            with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
+                f.write(post_html)
+            
+            logger.info(f"Generated post: {post.path}")
+        
+        # Generate games page
+        logger.info("Generating games page")
         games_html = render_template('games.html', title='Games')
         os.makedirs('_site/games', exist_ok=True)
+        
         with open('_site/games/index.html', 'w', encoding='utf-8') as f:
             f.write(games_html)
-        logger.info("Saved _site/games/index.html")
-
-        # Individual game pages
-        game_pages = [
-            ('snake', 'Snake Game'),
-            ('hangman', 'Hangman Game'),
-            ('strands', 'Strands Game'),
-            ('survival', 'Survival Game'),
-            ('factory', 'Factory Builder'),
-            ('bubble', 'Bubble Shooter'),
-            ('maze', 'Maze Runner')
-        ]
         
-        for game_slug, game_title in game_pages:
-            logger.info(f"Generating {game_title} page")
-            game_html = render_template(f'{game_slug}.html', title=game_title)
-            game_dir = os.path.join('_site', game_slug)
-            os.makedirs(game_dir, exist_ok=True)
-            with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
-                f.write(game_html)
-            logger.info(f"Saved _site/{game_slug}/index.html")
-
-        # Handle gem-miner route
-        logger.info("Generating Gem Miner page")
-        gem_miner_dir = os.path.join('gem-miner')
-        if os.path.exists(gem_miner_dir):
-            os.makedirs(gem_miner_dir, exist_ok=True)
-            shutil.copy2(os.path.join(gem_miner_dir, 'index.html'), os.path.join(gem_miner_dir, 'index.html'))
-            logger.info("Saved _site/gem-miner/index.html")
-
+        # Generate game pages
+        game_dirs = ['sudoku', 'hangman', 'snake', 'maze', 'bubble', 'gem-miner', 'survival', 'strands']
+        for game_dir in game_dirs:
+            if os.path.exists(os.path.join('app', 'templates', f'{game_dir}.html')):
+                logger.info(f"Generating {game_dir} page")
+                game_html = render_template(f'{game_dir}.html', title=game_dir.capitalize())
+                os.makedirs(f'_site/{game_dir}', exist_ok=True)
+                
+                with open(f'_site/{game_dir}/index.html', 'w', encoding='utf-8') as f:
+                    f.write(game_html)
+        
         # Generate projects page
         logger.info("Generating projects page")
         projects_html = render_template('projects.html', title='Projects')
         os.makedirs('_site/projects', exist_ok=True)
+        
         with open('_site/projects/index.html', 'w', encoding='utf-8') as f:
             f.write(projects_html)
-        logger.info("Saved _site/projects/index.html")
-
-        # Generate apps page
-        logger.info("Generating apps page")
-        apps_html = render_template('apps.html', title='Apps')
-        os.makedirs('_site/apps', exist_ok=True)
-        with open('_site/apps/index.html', 'w', encoding='utf-8') as f:
-            f.write(apps_html)
-        logger.info("Saved _site/apps/index.html")
-
-        # Generate blog post pages
-        logger.info("Generating blog post pages")
-        posts = get_posts()
-        for post in posts:
-            logger.info(f"Generating post: {post.slug}")
-            post_html = render_template('post.html', post=post)
-            post_dir = os.path.join('_site', post.slug)
-            os.makedirs(post_dir, exist_ok=True)
-            with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
-                f.write(post_html)
-            logger.info(f"Saved _site/{post.slug}/index.html")
+        
+        # Generate error page
+        logger.info("Generating error page")
+        error_html = render_template('error.html', title='Error', error='Page not found')
+        os.makedirs('_site/error', exist_ok=True)
+        
+        with open('_site/error/index.html', 'w', encoding='utf-8') as f:
+            f.write(error_html)
+        
+        logger.info("Static site generation completed")
 
 def update_static_paths(file_path):
     """Update static file paths in HTML files to be relative."""

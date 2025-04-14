@@ -250,6 +250,14 @@ def deploy_to_github_pages():
     """Deploy the site to GitHub Pages."""
     print("Deploying to GitHub Pages...")
     
+    # Check if we're already on the gh-pages branch
+    current_branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], 
+                                   check=True, capture_output=True, text=True).stdout.strip()
+    
+    if current_branch == "gh-pages":
+        print("Already on gh-pages branch. Switching to main first.")
+        subprocess.run(["git", "checkout", "main"], check=True)
+    
     # Create a new branch
     subprocess.run(["git", "checkout", "--orphan", "gh-pages-temp"], check=True)
     
@@ -262,6 +270,7 @@ def deploy_to_github_pages():
     # Delete the gh-pages branch if it exists
     try:
         subprocess.run(["git", "push", "origin", "--delete", "gh-pages"], check=True)
+        print("Deleted existing gh-pages branch")
     except subprocess.CalledProcessError:
         print("gh-pages branch does not exist or could not be deleted")
     

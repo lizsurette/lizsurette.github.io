@@ -23,7 +23,7 @@
             {% for post in posts %}
                 <li class="post-item" data-title="{{ post.meta.title }}" data-date="{{ format_date(post.meta.date) }}" data-path="{{ post.path }}">
                     <i><span>{{ format_date(post.meta.date) }}</span></i> &raquo; 
-                    {% if post.path %}
+                    {% if post.path and post.path.strip() %}
                         <a href="{{ url_for('post.view', path=post.path) }}">{{ post.meta.title }}</a>
                     {% else %}
                         <a href="{{ url_for('main.writings') }}">{{ post.meta.title }}</a>

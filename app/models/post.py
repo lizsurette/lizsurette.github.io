@@ -101,8 +101,15 @@ class Post:
             # Ensure path is not empty and properly formatted
             if not path or path.isspace():
                 # If path is empty, use the title to create a slug
-                path = re.sub(r'[^a-z0-9]+', '-', title.lower())
-                path = re.sub(r'^-+|-+$', '', path)  # Remove leading/trailing hyphens
+                if title:
+                    path = re.sub(r'[^a-z0-9]+', '-', title.lower())
+                    path = re.sub(r'^-+|-+$', '', path)  # Remove leading/trailing hyphens
+                else:
+                    # If both path and title are empty, use a default
+                    path = "untitled-post"
+            
+            # Ensure path doesn't contain double slashes
+            path = path.replace('//', '/')
             
             if not all([title, date_str]):
                 raise PostError("Missing required fields in front matter")
