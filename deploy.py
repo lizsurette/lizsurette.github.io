@@ -22,34 +22,33 @@ def build_site():
     if os.path.exists("_site"):
         shutil.rmtree("_site")
     
-    # Create _site directory
-    os.makedirs("_site", exist_ok=True)
+    # Create _site directory and static subdirectories
+    os.makedirs("_site/static/css", exist_ok=True)
+    os.makedirs("_site/static/js", exist_ok=True)
+    os.makedirs("_site/static/img", exist_ok=True)
     
-    # Copy all static assets
-    if os.path.exists("static"):
-        shutil.copytree("static", "_site/static", dirs_exist_ok=True)
-    
-    # Copy all CSS files
-    for css_file in Path(".").glob("**/*.css"):
-        if "_site" in str(css_file):
-            continue
-        rel_path = css_file.parent.relative_to(".")
-        dest = Path("_site") / rel_path / css_file.name
-        os.makedirs(dest.parent, exist_ok=True)
-        if css_file != dest:
+    # Copy all CSS files from app/static/css to _site/static/css
+    if os.path.exists("app/static/css"):
+        for css_file in Path("app/static/css").glob("*.css"):
+            dest = Path("_site/static/css") / css_file.name
             print(f"Copying {css_file} to {dest}")
             shutil.copy2(css_file, dest)
     
-    # Copy all JS files
-    for js_file in Path(".").glob("**/*.js"):
-        if "_site" in str(js_file):
-            continue
-        rel_path = js_file.parent.relative_to(".")
-        dest = Path("_site") / rel_path / js_file.name
-        os.makedirs(dest.parent, exist_ok=True)
-        if js_file != dest:
+    # Copy all JS files from app/static/js to _site/static/js
+    if os.path.exists("app/static/js"):
+        for js_file in Path("app/static/js").glob("*.js"):
+            dest = Path("_site/static/js") / js_file.name
             print(f"Copying {js_file} to {dest}")
             shutil.copy2(js_file, dest)
+    
+    # Copy all image files from app/static/img to _site/static/img
+    if os.path.exists("app/static/img"):
+        for img_file in Path("app/static/img").glob("**/*.*"):
+            rel_path = img_file.relative_to("app/static/img")
+            dest = Path("_site/static/img") / rel_path
+            os.makedirs(dest.parent, exist_ok=True)
+            print(f"Copying {img_file} to {dest}")
+            shutil.copy2(img_file, dest)
     
     # Copy all HTML files and fix static asset paths
     for html_file in Path(".").glob("**/*.html"):
@@ -110,17 +109,6 @@ def build_site():
             print(f"Writing {dest} with fixed paths")
             f.write(content)
     
-    # Copy all image files
-    for img_file in Path(".").glob("**/*.{png,jpg,jpeg,gif,svg,ico}"):
-        if "_site" in str(img_file):
-            continue
-        rel_path = img_file.parent.relative_to(".")
-        dest = Path("_site") / rel_path / img_file.name
-        os.makedirs(dest.parent, exist_ok=True)
-        if img_file != dest:
-            print(f"Copying {img_file} to {dest}")
-            shutil.copy2(img_file, dest)
-    
     # Copy any other important directories
     important_dirs = ["app", "games", "gem-miner", "snake", "hangman", "strands", "survival", "bubble", "maze", "sudoku"]
     for dir_name in important_dirs:
@@ -130,119 +118,6 @@ def build_site():
             if not os.path.exists(dest_dir):
                 print(f"Copying directory {src_dir} to {dest_dir}")
                 shutil.copytree(src_dir, dest_dir, dirs_exist_ok=True)
-    
-    # Create posts directory structure
-    posts_dir = Path("_site") / "posts"
-    os.makedirs(posts_dir, exist_ok=True)
-    
-    # Create a mapping of post titles to their slugs
-    post_title_to_slug = {}
-    
-    # Get all markdown files from app/posts directory
-    if os.path.exists("app/posts"):
-        for post_file in Path("app/posts").glob("*.markdown"):
-            # Extract post slug from filename
-            post_slug = post_file.stem
-            # Remove date prefix if present
-            if re.match(r'^\d{4}-\d{2}-\d{2}-', post_slug):
-                post_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', post_slug)
-            
-            # Read the post file to get the title and content
-            with open(post_file, "r", encoding="utf-8") as f:
-                content = f.read()
-                
-            # Split front matter and content
-            _, front_matter, markdown_content = content.split("---", 2)
-            metadata = yaml.safe_load(front_matter)
-            post_title = metadata.get("title", "")
-            post_title_to_slug[post_title] = post_slug
-            
-            # Convert markdown to HTML
-            html_content = markdown.markdown(markdown_content, extensions=['fenced_code', 'tables'])
-            
-            # Create directory for this post
-            post_dir = posts_dir / post_slug
-            os.makedirs(post_dir, exist_ok=True)
-            
-            # Create a complete HTML file for this post
-            with open(post_dir / "index.html", "w", encoding="utf-8") as f:
-                f.write(f"""<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{post_title}</title>
-    <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../static/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../../static/css/style.css">
-    <link rel="stylesheet" href="../../static/css/navigation.css">
-    <link rel="stylesheet" href="../../static/css/syntax.css">
-    <link rel="stylesheet" href="../../static/css/thickbox.css">
-    <link rel="stylesheet" href="../../static/css/projects.css">
-    <link rel="stylesheet" href="../../static/css/super-search.css">
-    <link rel="stylesheet" href="../../static/css/fonts.css">
-</head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="about">
-                <!-- Social links removed from here -->
-            </div>
-            <hr>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="../../">About Me</a></li>
-                    <li><a href="../../writings/" class="active">Writings</a></li>
-                    <li><a href="../../games/">Games</a></li>
-                    <li><a href="../../projects/">Projects</a></li>
-                    <li><a href="../../apps/">Apps</a></li>
-                </ul>
-            </nav>
-        </div>
-        <div class="content">
-            <article class="post">
-                <header class="page-header">
-                    <h1>{post_title}</h1>
-                </header>
-                <div class="post-content">
-                    {html_content}
-                </div>
-            </article>
-        </div>
-    </div>
-</body>
-</html>""")
-    
-    # Fix post URLs in writings.html
-    writings_file = Path("_site") / "writings" / "index.html"
-    if writings_file.exists():
-        with open(writings_file, "r", encoding="utf-8") as f:
-            content = f.read()
-        
-        # Create a new content with fixed URLs
-        new_content = content
-        
-        # Find all post items
-        post_items = re.finditer(r'<li class="post-item" data-title="([^"]*)" data-date="([^"]*)"[^>]*>(.*?)</li>', content, re.DOTALL)
-        
-        for post_item in post_items:
-            post_title = post_item.group(1)
-            post_date = post_item.group(2)
-            post_content = post_item.group(3)
-            
-            # Find the corresponding slug
-            if post_title in post_title_to_slug:
-                post_slug = post_title_to_slug[post_title]
-                
-                # Create the new post item with the correct URL
-                new_post_item = f'<li class="post-item" data-title="{post_title}" data-date="{post_date}">{post_content}</li>'
-                new_post_item = re.sub(r'<a href="../posts//">', f'<a href="../posts/{post_slug}/">', new_post_item)
-                
-                # Replace the old post item with the new one
-                new_content = new_content.replace(post_item.group(0), new_post_item)
-        
-        with open(writings_file, "w", encoding="utf-8") as f:
-            f.write(new_content)
     
     print("Static site built successfully!")
 
