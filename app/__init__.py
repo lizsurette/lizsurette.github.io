@@ -2,7 +2,7 @@ import os
 import logging
 from flask import Flask, render_template
 from flask_flatpages import FlatPages
-from config import config
+from app.services.config_service import ConfigService
 from app.services.markdown_service import MarkdownService
 from app.models.exceptions import PostError, PostNotFoundError, PostMetadataError
 
@@ -30,7 +30,6 @@ def create_app(config_name='default'):
     """
     # Import necessary modules
     from app.repositories.post_repository import PostRepository
-    from app.services.config_service import ConfigService
     from app.utils.logger import setup_logger
     
     # Create new Flask app instance
@@ -40,7 +39,7 @@ def create_app(config_name='default'):
                 static_url_path='/static')
     
     # Load configuration
-    app.config.from_object(config[config_name])
+    app.config.from_object(ConfigService())
     
     # Set up logging
     setup_logger(app)
@@ -97,11 +96,10 @@ def create_app(config_name='default'):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    from app.routes.main import main as main_blueprint
-    from app.routes.post import post as post_blueprint
-    
-    app.register_blueprint(main_blueprint)
-    app.register_blueprint(post_blueprint)
+    from app.routes import main, post, games
+    app.register_blueprint(main.bp)
+    app.register_blueprint(post.bp)
+    app.register_blueprint(games.bp)
 
 def register_error_handlers(app):
     """Register error handlers."""
