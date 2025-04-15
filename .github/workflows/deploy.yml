@@ -4,13 +4,19 @@ on:
   push:
     branches:
       - main
-      - gh-pages
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,15 +53,14 @@ jobs:
             echo "Warning: sudoku.js not found"
           fi
           
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          publish_branch: gh-pages
-          commit_message: 'Deploy static site'
-          force: true
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
 
-      - name: Verify deployment
-        run: |
-          echo "Deployment completed. Please check https://lizsurette.github.io in a few minutes." 
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 
