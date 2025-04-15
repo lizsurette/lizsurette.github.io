@@ -64,7 +64,7 @@ def build_site():
         
         # Calculate relative path to root
         depth = len(dest.parent.relative_to("_site").parts)
-        path_to_root = "../" * depth if depth > 0 else "./"
+        path_to_root = "../" * depth if depth > 0 else ""
         
         # Fix url_for references
         content = re.sub(
@@ -89,11 +89,21 @@ def build_site():
             f'\\1="{path_to_root}static/',
             content
         )
+        content = re.sub(
+            r'(href|src)="./static/',
+            f'\\1="{path_to_root}static/',
+            content
+        )
         
         # Fix navigation links
         content = re.sub(
             r'href="/([^"]+)/"',
             f'href="{path_to_root}\\1/"',
+            content
+        )
+        content = re.sub(
+            r'href="./"',
+            f'href="{path_to_root}"',
             content
         )
         
@@ -185,6 +195,34 @@ def serve_locally():
     finally:
         # Change back to the original directory
         os.chdir("..")
+
+def update_static_paths(html_content, is_root=False):
+    """Update static file paths in HTML content to be relative"""
+    # Handle both Flask url_for generated paths and direct paths
+    replacements = [
+        ('href="/static/', 'href="static/' if is_root else 'href="../static/'),
+        ('src="/static/', 'src="static/' if is_root else 'src="../static/'),
+        ('href="static/', 'href="static/' if is_root else 'href="../static/'),
+        ('src="static/', 'src="static/' if is_root else 'src="../static/'),
+        ('href="./static/', 'href="static/' if is_root else 'href="../static/'),
+        ('src="./static/', 'src="static/' if is_root else 'src="../static/'),
+    ]
+    
+    # Update navigation links to be relative
+    replacements.extend([
+        ('href="/writings"', 'href="writings"' if is_root else 'href="../writings"'),
+        ('href="/projects"', 'href="projects"' if is_root else 'href="../projects"'),
+        ('href="/games"', 'href="games"' if is_root else 'href="../games"'),
+        ('href="/apps"', 'href="apps"' if is_root else 'href="../apps"'),
+        ('href="/"', 'href="."' if is_root else 'href="../"'),
+        ('href="./"', 'href="."' if is_root else 'href="../"'),
+    ])
+    
+    # Update post links to be relative
+    for old, new in replacements:
+        html_content = html_content.replace(old, new)
+    
+    return html_content
 
 def main():
     """Main function."""
