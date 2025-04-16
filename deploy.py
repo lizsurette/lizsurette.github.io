@@ -80,9 +80,10 @@ def build_site():
                     f.write(response.data.decode())
         
         logger.info("Static site built successfully!")
-    finally:
-        # Always change back to the original directory
-        os.chdir(original_dir)
+        return original_dir
+    except Exception as e:
+        logger.error(f"Error building site: {str(e)}")
+        raise e
 
 def deploy_to_github_pages():
     """Deploy the built site to GitHub Pages."""
@@ -96,6 +97,12 @@ def deploy_to_github_pages():
     try:
         # Always rebuild the site before deploying
         build_site()
+        
+        # Verify _site directory exists and has content
+        if not os.path.exists("_site"):
+            raise FileNotFoundError("_site directory not found after building")
+        if not os.listdir("_site"):
+            raise FileNotFoundError("_site directory is empty after building")
         
         # Create a temporary branch for deployment
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
