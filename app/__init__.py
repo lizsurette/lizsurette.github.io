@@ -52,11 +52,12 @@ def create_app(config_name='default'):
     
     # Configure FlatPages with custom HTML renderer
     app.config['FLATPAGES_HTML_RENDERER'] = markdown_service._render_markdown
+    app.config['FLATPAGES_ROOT'] = os.path.join(app_dir, 'posts')
     pages = FlatPages(app)
     
     # Create post repository
     post_repository = PostRepository(
-        posts_dir=app.config['FLATPAGES_ROOT'],
+        posts_dir=os.path.join(app_dir, 'posts'),
         render_markdown_func=markdown_service._render_markdown
     )
     
@@ -96,10 +97,9 @@ def create_app(config_name='default'):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    from app.routes import main, post, games
-    app.register_blueprint(main.bp)
-    app.register_blueprint(post.bp)
-    app.register_blueprint(games.bp)
+    from app.routes import main, post
+    app.register_blueprint(main)
+    app.register_blueprint(post)
 
 def register_error_handlers(app):
     """Register error handlers."""

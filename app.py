@@ -112,4 +112,4 @@ if __name__ == '__main__':
     except Exception as e:
         logger.error(f"Error loading posts at startup: {e}")
     
-    app.run(debug=True) 
+    app.run(debug=True, port=5001) 
