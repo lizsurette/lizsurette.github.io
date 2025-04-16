@@ -53,7 +53,35 @@ def build_site():
         
         # Initialize Flask app
         app = create_app()
-        app.config['SERVER_NAME'] = None  # Remove server name to prevent redirect issues
+        
+        # Create a custom URL generator for static site
+        class StaticURLGenerator:
+            def __init__(self, app, prefix=''):
+                self.app = app
+                self.prefix = prefix
+            
+            def url_for(self, endpoint, **values):
+                if endpoint == 'static':
+                    return f"{self.prefix}static/{values.get('filename', '')}"
+                elif endpoint == 'main.index':
+                    return f"{self.prefix}"
+                elif endpoint == 'main.writings':
+                    return f"{self.prefix}writings/"
+                elif endpoint == 'main.games':
+                    return f"{self.prefix}games/"
+                elif endpoint == 'main.projects':
+                    return f"{self.prefix}projects/"
+                elif endpoint == 'main.apps':
+                    return f"{self.prefix}apps/"
+                elif endpoint == 'post.view':
+                    return f"{self.prefix}posts/{values.get('path', '')}/"
+                elif endpoint == 'main.category':
+                    return f"{self.prefix}category/{values.get('name', '')}/"
+                else:
+                    return f"{self.prefix}{endpoint}/"
+        
+        # Override the url_for function in the app context
+        app.jinja_env.globals['url_for'] = StaticURLGenerator(app).url_for
         
         with app.test_client() as client:
             with app.app_context():
@@ -98,6 +126,8 @@ def build_site():
                         if post_file.endswith('.md'):
                             post_name = os.path.splitext(post_file)[0]
                             os.makedirs(f'_site/posts/{post_name}', exist_ok=True)
+                            # Update URL generator for this post
+                            app.jinja_env.globals['url_for'] = StaticURLGenerator(app, '../').url_for
                             response = client.get(f'/posts/{post_name}')
                             with open(f'_site/posts/{post_name}/index.html', 'wb') as f:
                                 f.write(response.data)
@@ -106,6 +136,8 @@ def build_site():
                 categories = ['kubernetes', 'openshift', 'python', 'web-development']
                 for category in categories:
                     os.makedirs(f'_site/category/{category}', exist_ok=True)
+                    # Update URL generator for this category
+                    app.jinja_env.globals['url_for'] = StaticURLGenerator(app, '../../').url_for
                     response = client.get(f'/category/{category}')
                     with open(f'_site/category/{category}/index.html', 'wb') as f:
                         f.write(response.data)
@@ -114,41 +146,6 @@ def build_site():
                 response = client.get('/error')
                 with open('_site/error.html', 'wb') as f:
                     f.write(response.data)
-                
-                # Update URLs in all HTML files
-                for root, dirs, files in os.walk('_site'):
-                    for file in files:
-                        if file.endswith('.html'):
-                            file_path = os.path.join(root, file)
-                            with open(file_path, 'r', encoding='utf-8') as f:
-                                content = f.read()
-                            
-                            # Calculate relative path to root
-                            rel_path = os.path.relpath(root, '_site')
-                            if rel_path == '.':
-                                prefix = ''
-                            else:
-                                prefix = '../' * (len(rel_path.split(os.sep)))
-                            
-                            # Update static file paths
-                            content = content.replace('href="/static/', f'href="{prefix}static/')
-                            content = content.replace('src="/static/', f'src="{prefix}static/')
-                            
-                            # Update navigation links
-                            content = content.replace('href="/"', f'href="{prefix}"')
-                            content = content.replace('href="/writings/"', f'href="{prefix}writings/"')
-                            content = content.replace('href="/games/"', f'href="{prefix}games/"')
-                            content = content.replace('href="/projects/"', f'href="{prefix}projects/"')
-                            content = content.replace('href="/apps/"', f'href="{prefix}apps/"')
-                            
-                            # Update post links
-                            content = content.replace('href="/posts/', f'href="{prefix}posts/')
-                            
-                            # Update category links
-                            content = content.replace('href="/category/', f'href="{prefix}category/')
-                            
-                            with open(file_path, 'w', encoding='utf-8') as f:
-                                f.write(content)
         
         logger.info("Static site built successfully!")
         return original_dir
