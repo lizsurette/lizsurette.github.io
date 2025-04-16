@@ -7,12 +7,14 @@ This script handles building and deploying the site to GitHub Pages.
 import os
 import shutil
 import subprocess
+import sys
 import argparse
 from pathlib import Path
 import re
 import logging
 import markdown
 import yaml
+from datetime import datetime
 
 def build_site():
     """Build the static site."""
