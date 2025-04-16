@@ -33,7 +33,7 @@ def run_command(command, cwd=None, env=None):
         sys.exit(1)
 
 def build_site():
-    """Build the static site using Flask."""
+    """Build the static site."""
     logger.info("Building static site...")
     
     # Create _site directory if it doesn't exist
@@ -45,11 +45,32 @@ def build_site():
     if os.path.exists("app/static"):
         shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
     
-    # Run Flask app to generate HTML files
-    env = os.environ.copy()
-    env["FLASK_APP"] = "app.py"
-    env["FLASK_ENV"] = "production"
-    run_command("flask build", env=env)
+    # Import Flask app here to avoid circular imports
+    from app import app
+    
+    # Generate HTML files for each route
+    with app.test_client() as client:
+        # Generate index page
+        response = client.get('/')
+        with open("_site/index.html", "w") as f:
+            f.write(response.data.decode())
+        
+        # Generate writings page
+        response = client.get('/writings')
+        with open("_site/writings.html", "w") as f:
+            f.write(response.data.decode())
+        
+        # Generate individual post pages
+        from app.repositories.post_repository import PostRepository
+        post_repository = PostRepository(os.path.join('app', 'posts'), app.config['FLATPAGES_HTML_RENDERER'])
+        posts = post_repository.get_all_posts()
+        
+        for post in posts:
+            post_dir = os.path.join("_site", "posts")
+            os.makedirs(post_dir, exist_ok=True)
+            response = client.get(f'/posts/{post.path}')
+            with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
+                f.write(response.data.decode())
     
     logger.info("Static site built successfully!")
 
