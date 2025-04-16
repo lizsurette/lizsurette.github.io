@@ -116,7 +116,11 @@ def deploy_to_github_pages():
     finally:
         # Clean up
         run_command("git checkout main")
-        run_command(f"git branch -D {temp_branch}")
+        try:
+            run_command(f"git branch -D {temp_branch}")
+        except:
+            # Ignore errors if the branch doesn't exist
+            pass
 
 def serve_locally():
     """Serve the site locally for testing."""
