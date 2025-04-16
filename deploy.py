@@ -58,14 +58,6 @@ def build_site():
         # Copy the writings directory and its index.html
         if os.path.exists("writings"):
             shutil.copytree("writings", "_site/writings", dirs_exist_ok=True)
-            
-        # Copy the apps directory and its index.html
-        if os.path.exists("apps"):
-            shutil.copytree("apps", "_site/apps", dirs_exist_ok=True)
-            
-        # Copy the projects directory and its index.html
-        if os.path.exists("projects"):
-            shutil.copytree("projects", "_site/projects", dirs_exist_ok=True)
         
         # Copy game directories and their assets
         game_dirs = ['snake', 'hangman', 'strands', 'maze', 'bubble', 'gem-miner', 'survival', 'sudoku']
@@ -91,17 +83,7 @@ def build_site():
             
             # Generate writings page
             response = client.get('/writings')
-            with open("_site/writings/index.html", "w") as f:
-                f.write(response.data.decode())
-            
-            # Generate apps page
-            response = client.get('/apps')
-            with open("_site/apps/index.html", "w") as f:
-                f.write(response.data.decode())
-            
-            # Generate projects page
-            response = client.get('/projects')
-            with open("_site/projects/index.html", "w") as f:
+            with open("_site/writings.html", "w") as f:
                 f.write(response.data.decode())
             
             # Generate individual post pages
