@@ -19,7 +19,7 @@ def index():
         current_app.logger.error(f"Error in index route: {e}")
         return render_template('error.html', title='Error', error="An error occurred while loading the home page.")
 
-@main.route('/writings/')
+@main.route('/writings')
 def writings():
     """
     Render the writings page.
@@ -34,7 +34,7 @@ def writings():
         current_app.logger.error(f"Error getting posts: {e}")
         return render_template('error.html', title='Error', error=str(e)), 500
 
-@main.route('/games/')
+@main.route('/games')
 def games():
     """
     Render the games page.
@@ -44,7 +44,7 @@ def games():
     """
     return render_template('games.html', title='Games')
 
-@main.route('/projects/')
+@main.route('/projects')
 def projects():
     """
     Render the projects page.
@@ -54,7 +54,7 @@ def projects():
     """
     return render_template('projects.html', title='Projects')
 
-@main.route('/apps/')
+@main.route('/apps')
 def apps():
     """
     Render the apps page.

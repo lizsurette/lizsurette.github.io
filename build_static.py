@@ -41,7 +41,12 @@ def copy_static_assets():
 def generate_static_files():
     """Generate static HTML files for all routes."""
     app = create_app()
-    app.config['SERVER_NAME'] = 'localhost'
+    
+    # Configure Flask to use relative URLs and prevent redirects
+    app.config['SERVER_NAME'] = None
+    app.config['PREFERRED_URL_SCHEME'] = 'http'
+    app.config['APPLICATION_ROOT'] = '/'
+    app.url_map.strict_slashes = False
     
     with app.test_request_context():
         # Generate index page
@@ -57,7 +62,6 @@ def generate_static_files():
         posts = get_posts()
         writings_html = render_template('writings.html', title='Writings', posts=posts)
         os.makedirs('_site/writings', exist_ok=True)
-        
         with open('_site/writings/index.html', 'w', encoding='utf-8') as f:
             f.write(writings_html)
         
@@ -86,7 +90,6 @@ def generate_static_files():
         logger.info("Generating games page")
         games_html = render_template('games.html', title='Games')
         os.makedirs('_site/games', exist_ok=True)
-        
         with open('_site/games/index.html', 'w', encoding='utf-8') as f:
             f.write(games_html)
         
@@ -105,40 +108,44 @@ def generate_static_files():
         logger.info("Generating projects page")
         projects_html = render_template('projects.html', title='Projects')
         os.makedirs('_site/projects', exist_ok=True)
-        
         with open('_site/projects/index.html', 'w', encoding='utf-8') as f:
             f.write(projects_html)
+        
+        # Generate apps page
+        logger.info("Generating apps page")
+        apps_html = render_template('apps.html', title='Apps')
+        os.makedirs('_site/apps', exist_ok=True)
+        with open('_site/apps/index.html', 'w', encoding='utf-8') as f:
+            f.write(apps_html)
         
         # Generate error page
         logger.info("Generating error page")
         error_html = render_template('error.html', title='Error', error='Page not found')
-        os.makedirs('_site/error', exist_ok=True)
-        
-        with open('_site/error/index.html', 'w', encoding='utf-8') as f:
+        with open('_site/error.html', 'w', encoding='utf-8') as f:
             f.write(error_html)
         
         logger.info("Static site generation completed")
 
 def update_static_paths(file_path):
-    """Update static file paths in HTML files to be relative."""
-    with open(file_path, 'r', encoding='utf-8') as f:
+    """Update static file paths to be relative."""
+    with open(file_path, 'r') as f:
         content = f.read()
 
     # Update static file paths
-    content = content.replace('href="/static/', 'href="../static/')
-    content = content.replace('src="/static/', 'src="../static/')
-
+    content = content.replace('href="/static/', 'href="static/')
+    
     # Update navigation links
-    content = content.replace('href="/"', 'href="../"')
-    content = content.replace('href="/writings/"', 'href="../writings/"')
-    content = content.replace('href="/games/"', 'href="../games/"')
-    content = content.replace('href="/projects/"', 'href="../projects/"')
-    content = content.replace('href="/apps/"', 'href="../apps/"')
-
+    content = content.replace('href="/games/"', 'href="/games"')
+    content = content.replace('href="/projects/"', 'href="/projects"')
+    content = content.replace('href="/apps/"', 'href="/apps"')
+    content = content.replace('href="/writings/"', 'href="/writings"')
+    
     # Update post links
-    content = content.replace('href="/posts/', 'href="../posts/')
+    content = content.replace('href="/posts/', 'href="/posts')
+    content = content.replace('.html/"', '.html"')
+    content = content.replace('/">', '">')
 
-    with open(file_path, 'w', encoding='utf-8') as f:
+    with open(file_path, 'w') as f:
         f.write(content)
 
     logging.info(f"Updated static paths in {file_path}")
@@ -154,13 +161,15 @@ def update_index_paths(file_path):
 
     # Update navigation links
     content = content.replace('href="/"', 'href="./"')
-    content = content.replace('href="/writings/"', 'href="writings/"')
-    content = content.replace('href="/games/"', 'href="games/"')
-    content = content.replace('href="/projects/"', 'href="projects/"')
-    content = content.replace('href="/apps/"', 'href="apps/"')
+    content = content.replace('href="/writings/"', 'href="writings.html"')
+    content = content.replace('href="/games"', 'href="games.html"')
+    content = content.replace('href="/projects"', 'href="projects.html"')
+    content = content.replace('href="/apps"', 'href="apps.html"')
 
-    # Update post links
+    # Update post links - remove trailing slashes
     content = content.replace('href="/posts/', 'href="posts/')
+    content = content.replace('.html/"', '.html"')
+    content = content.replace('/">', '">')
 
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(content)
