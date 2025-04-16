@@ -15,7 +15,6 @@ import logging
 import markdown
 import yaml
 from datetime import datetime
-from app import create_app
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -44,114 +43,84 @@ def build_site():
     
     try:
         # Create _site directory if it doesn't exist
-        if not os.path.exists('_site'):
-            os.makedirs('_site')
+        if os.path.exists("_site"):
+            shutil.rmtree("_site")
+        os.makedirs("_site")
         
         # Copy static files
-        if os.path.exists('app/static'):
-            shutil.copytree('app/static', '_site/static', dirs_exist_ok=True)
+        if os.path.exists("app/static"):
+            shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
         
-        # Initialize Flask app
+        # Copy the games directory and its index.html
+        if os.path.exists("games"):
+            shutil.copytree("games", "_site/games", dirs_exist_ok=True)
+            
+        # Copy the writings directory and its index.html
+        if os.path.exists("writings"):
+            shutil.copytree("writings", "_site/writings", dirs_exist_ok=True)
+            
+        # Copy the apps directory and its index.html
+        if os.path.exists("apps"):
+            shutil.copytree("apps", "_site/apps", dirs_exist_ok=True)
+            
+        # Copy the projects directory and its index.html
+        if os.path.exists("projects"):
+            shutil.copytree("projects", "_site/projects", dirs_exist_ok=True)
+        
+        # Copy game directories and their assets
+        game_dirs = ['snake', 'hangman', 'strands', 'maze', 'bubble', 'gem-miner', 'survival', 'sudoku']
+        for game_dir in game_dirs:
+            if os.path.exists(game_dir):
+                # Copy the game directory
+                shutil.copytree(game_dir, f"_site/{game_dir}", dirs_exist_ok=True)
+                
+                # Copy any static assets from the game directory
+                if os.path.exists(f"{game_dir}/static"):
+                    shutil.copytree(f"{game_dir}/static", f"_site/static/{game_dir}", dirs_exist_ok=True)
+        
+        # Import Flask app here to avoid circular imports
+        from app import create_app
         app = create_app()
         
-        # Create a custom URL generator for static site
-        class StaticURLGenerator:
-            def __init__(self, app, prefix=''):
-                self.app = app
-                self.prefix = prefix
-            
-            def url_for(self, endpoint, **values):
-                if endpoint == 'static':
-                    return f"{self.prefix}static/{values.get('filename', '')}"
-                elif endpoint == 'main.index':
-                    return f"{self.prefix}"
-                elif endpoint == 'main.writings':
-                    return f"{self.prefix}writings/"
-                elif endpoint == 'main.games':
-                    return f"{self.prefix}games/"
-                elif endpoint == 'main.projects':
-                    return f"{self.prefix}projects/"
-                elif endpoint == 'main.apps':
-                    return f"{self.prefix}apps/"
-                elif endpoint == 'post.view':
-                    return f"{self.prefix}posts/{values.get('path', '')}/"
-                elif endpoint == 'main.category':
-                    return f"{self.prefix}category/{values.get('name', '')}/"
-                else:
-                    return f"{self.prefix}{endpoint}/"
-        
-        # Override the url_for function in the app context
-        app.jinja_env.globals['url_for'] = StaticURLGenerator(app).url_for
-        
+        # Generate HTML files for each route
         with app.test_client() as client:
-            with app.app_context():
-                # Generate index page
-                response = client.get('/')
-                with open('_site/index.html', 'wb') as f:
-                    f.write(response.data)
-                
-                # Generate writings page
-                os.makedirs('_site/writings', exist_ok=True)
-                response = client.get('/writings')
-                with open('_site/writings/index.html', 'wb') as f:
-                    f.write(response.data)
-                
-                # Generate apps page
-                os.makedirs('_site/apps', exist_ok=True)
-                response = client.get('/apps')
-                with open('_site/apps/index.html', 'wb') as f:
-                    f.write(response.data)
-                
-                # Generate projects page
-                os.makedirs('_site/projects', exist_ok=True)
-                response = client.get('/projects')
-                with open('_site/projects/index.html', 'wb') as f:
-                    f.write(response.data)
-                
-                # Generate games page
-                os.makedirs('_site/games', exist_ok=True)
-                response = client.get('/games')
-                with open('_site/games/index.html', 'wb') as f:
-                    f.write(response.data)
-                
-                # Copy game directories
-                for game_dir in ['bubble', 'factory', 'hangman', 'maze', 'snake', 'strands', 'sudoku']:
-                    if os.path.exists(f'app/templates/{game_dir}'):
-                        shutil.copytree(f'app/templates/{game_dir}', f'_site/{game_dir}', dirs_exist_ok=True)
-                
-                # Generate post pages
-                posts_dir = os.path.join('app', 'posts')
-                if os.path.exists(posts_dir):
-                    for post_file in os.listdir(posts_dir):
-                        if post_file.endswith('.md'):
-                            post_name = os.path.splitext(post_file)[0]
-                            os.makedirs(f'_site/posts/{post_name}', exist_ok=True)
-                            # Update URL generator for this post
-                            app.jinja_env.globals['url_for'] = StaticURLGenerator(app, '../').url_for
-                            response = client.get(f'/posts/{post_name}')
-                            with open(f'_site/posts/{post_name}/index.html', 'wb') as f:
-                                f.write(response.data)
-                
-                # Generate category pages
-                categories = ['kubernetes', 'openshift', 'python', 'web-development']
-                for category in categories:
-                    os.makedirs(f'_site/category/{category}', exist_ok=True)
-                    # Update URL generator for this category
-                    app.jinja_env.globals['url_for'] = StaticURLGenerator(app, '../../').url_for
-                    response = client.get(f'/category/{category}')
-                    with open(f'_site/category/{category}/index.html', 'wb') as f:
-                        f.write(response.data)
-                
-                # Generate error pages
-                response = client.get('/error')
-                with open('_site/error.html', 'wb') as f:
-                    f.write(response.data)
+            # Generate index page
+            response = client.get('/')
+            with open("_site/index.html", "w") as f:
+                f.write(response.data.decode())
+            
+            # Generate writings page
+            response = client.get('/writings')
+            with open("_site/writings/index.html", "w") as f:
+                f.write(response.data.decode())
+            
+            # Generate apps page
+            response = client.get('/apps')
+            with open("_site/apps/index.html", "w") as f:
+                f.write(response.data.decode())
+            
+            # Generate projects page
+            response = client.get('/projects')
+            with open("_site/projects/index.html", "w") as f:
+                f.write(response.data.decode())
+            
+            # Generate individual post pages
+            from app.repositories.post_repository import PostRepository
+            post_repository = PostRepository(os.path.join('app', 'posts'), app.config['FLATPAGES_HTML_RENDERER'])
+            posts = post_repository.get_all_posts()
+            
+            for post in posts:
+                post_dir = os.path.join("_site", "posts")
+                os.makedirs(post_dir, exist_ok=True)
+                response = client.get(f'/posts/{post.path}')
+                with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
+                    f.write(response.data.decode())
         
         logger.info("Static site built successfully!")
         return original_dir
     except Exception as e:
         logger.error(f"Error building site: {str(e)}")
-        raise
+        raise e
 
 def deploy_to_github_pages():
     """Deploy the built site to GitHub Pages."""
