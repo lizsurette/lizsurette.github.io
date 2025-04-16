@@ -22,177 +22,97 @@ def build_site():
     if os.path.exists("_site"):
         shutil.rmtree("_site")
     
-    # Create _site directory and static subdirectories
-    os.makedirs("_site/static/css", exist_ok=True)
-    os.makedirs("_site/static/js", exist_ok=True)
-    os.makedirs("_site/static/img", exist_ok=True)
+    # Create _site directory
+    os.makedirs("_site", exist_ok=True)
     
-    # Copy all CSS files from app/static/css to _site/static/css
-    if os.path.exists("app/static/css"):
-        for css_file in Path("app/static/css").glob("*.css"):
-            dest = Path("_site/static/css") / css_file.name
-            print(f"Copying {css_file} to {dest}")
-            shutil.copy2(css_file, dest)
+    # Copy app/static to _site/static
+    if os.path.exists("app/static"):
+        shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
     
-    # Copy all JS files from app/static/js to _site/static/js
-    if os.path.exists("app/static/js"):
-        for js_file in Path("app/static/js").glob("*.js"):
-            dest = Path("_site/static/js") / js_file.name
-            print(f"Copying {js_file} to {dest}")
-            shutil.copy2(js_file, dest)
+    # Copy root static files if they exist
+    if os.path.exists("static"):
+        for item in os.listdir("static"):
+            src = os.path.join("static", item)
+            dst = os.path.join("_site/static", item)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src, dst)
     
-    # Copy all image files from app/static/img to _site/static/img
-    if os.path.exists("app/static/img"):
-        for img_file in Path("app/static/img").glob("**/*.*"):
-            rel_path = img_file.relative_to("app/static/img")
-            dest = Path("_site/static/img") / rel_path
-            os.makedirs(dest.parent, exist_ok=True)
-            print(f"Copying {img_file} to {dest}")
-            shutil.copy2(img_file, dest)
+    # Copy CSS files from app directory
+    for css_file in os.listdir("app/static/css"):
+        if css_file.endswith(".css"):
+            src = os.path.join("app/static/css", css_file)
+            dst = os.path.join("_site/static/css", css_file)
+            shutil.copy2(src, dst)
+            print(f"Copying {src} to {dst}")
     
-    # Copy all HTML files and fix static asset paths
-    for html_file in Path(".").glob("**/*.html"):
-        if "_site" in str(html_file):
-            continue
-        rel_path = html_file.parent.relative_to(".")
-        dest = Path("_site") / rel_path / html_file.name
-        os.makedirs(dest.parent, exist_ok=True)
-        
-        # Read the HTML file
-        with open(html_file, "r", encoding="utf-8") as f:
-            content = f.read()
-        
-        # Calculate relative path to root
-        depth = len(dest.parent.relative_to("_site").parts)
-        path_to_root = "../" * depth if depth > 0 else ""
-        
-        # Fix url_for references
-        content = re.sub(
-            r'url_for\(\'static\', filename=\'([^\']+)\'\)', 
-            f'{path_to_root}static/\\1', 
-            content
-        )
-        content = re.sub(
-            r'url_for\(\'main\.([^\']+)\'\)', 
-            f'{path_to_root}\\1/', 
-            content
-        )
-        
-        # Fix relative paths to static assets
-        content = re.sub(
-            r'(href|src)="static/',
-            f'\\1="{path_to_root}static/',
-            content
-        )
-        content = re.sub(
-            r'(href|src)="/static/',
-            f'\\1="{path_to_root}static/',
-            content
-        )
-        content = re.sub(
-            r'(href|src)="./static/',
-            f'\\1="{path_to_root}static/',
-            content
-        )
-        
-        # Fix navigation links
-        content = re.sub(
-            r'href="/([^"]+)/"',
-            f'href="{path_to_root}\\1/"',
-            content
-        )
-        content = re.sub(
-            r'href="./"',
-            f'href="{path_to_root}"',
-            content
-        )
-        
-        # Fix specific game links
-        content = re.sub(
-            r'href="/gem-miner/"',
-            f'href="{path_to_root}gem-miner/"',
-            content
-        )
-        
-        # Write the modified content
-        with open(dest, "w", encoding="utf-8") as f:
-            print(f"Writing {dest} with fixed paths")
-            f.write(content)
+    # Copy JS files from app directory
+    for js_file in os.listdir("app/static/js"):
+        if js_file.endswith(".js"):
+            src = os.path.join("app/static/js", js_file)
+            dst = os.path.join("_site/static/js", js_file)
+            shutil.copy2(src, dst)
+            print(f"Copying {src} to {dst}")
     
-    # Copy any other important directories
-    important_dirs = ["app", "games", "gem-miner", "snake", "hangman", "strands", "survival", "bubble", "maze", "sudoku"]
-    for dir_name in important_dirs:
-        if os.path.exists(dir_name) and dir_name != "_site":
-            src_dir = Path(dir_name)
-            dest_dir = Path("_site") / dir_name
-            if not os.path.exists(dest_dir):
-                print(f"Copying directory {src_dir} to {dest_dir}")
-                shutil.copytree(src_dir, dest_dir, dirs_exist_ok=True)
+    # Copy HTML files from app directory
+    for html_file in os.listdir("app/templates"):
+        if html_file.endswith(".html"):
+            src = os.path.join("app/templates", html_file)
+            dst = os.path.join("_site", html_file)
+            shutil.copy2(src, dst)
+            print(f"Writing {dst} with fixed paths")
     
     print("Static site built successfully!")
 
 def deploy_to_github_pages():
-    """Deploy the static site to GitHub Pages."""
+    """Deploy the built site to GitHub Pages"""
     print("Deploying to GitHub Pages...")
     
-    # Check if we're on the main branch
-    current_branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode().strip()
-    if current_branch != "main":
-        print(f"Warning: Not on main branch (current: {current_branch})")
-        if input("Continue anyway? (y/n): ").lower() != 'y':
-            return
+    # Make sure we're on main branch
+    run_command("git checkout main")
     
-    # Build the static site
-    print("Building static site...")
+    # Build the site
     build_site()
     
-    # Push changes to main first
-    print("Pushing changes to main...")
-    subprocess.run(["git", "add", "."], check=True)
-    try:
-        subprocess.run(["git", "commit", "-m", "Update site content"], check=True)
-        subprocess.run(["git", "push", "origin", "main"], check=True)
-    except subprocess.CalledProcessError:
-        print("No changes to commit to main")
+    # Create a new orphan branch for gh-pages
+    run_command("git checkout --orphan gh-pages-temp")
     
-    # Checkout gh-pages branch
-    print("Checking out gh-pages branch...")
-    try:
-        subprocess.run(["git", "checkout", "gh-pages"], check=True)
-    except subprocess.CalledProcessError:
-        print("gh-pages branch does not exist, creating new branch...")
-        subprocess.run(["git", "checkout", "--orphan", "gh-pages"], check=True)
+    # Clean the new branch
+    for item in os.listdir("."):
+        if item != ".git" and item != "_site":
+            if os.path.isdir(item):
+                shutil.rmtree(item)
+            else:
+                os.remove(item)
     
-    # Remove all files except .git and _site
-    print("Cleaning gh-pages branch...")
-    subprocess.run(["git", "rm", "-rf", "."], check=False)
-    
-    # Copy _site contents to root
-    print("Copying built site...")
-    for item in os.listdir('_site'):
-        src = os.path.join('_site', item)
-        dst = item
+    # Copy built site
+    for item in os.listdir("_site"):
+        src = os.path.join("_site", item)
         if os.path.isdir(src):
-            shutil.copytree(src, dst, dirs_exist_ok=True)
+            shutil.copytree(src, item, dirs_exist_ok=True)
         else:
-            shutil.copy2(src, dst)
+            shutil.copy2(src, item)
     
-    # Add .nojekyll file
-    with open('.nojekyll', 'w') as f:
-        pass
+    # Remove _site directory
+    shutil.rmtree("_site")
     
-    # Add all files and commit
-    print("Committing changes...")
-    subprocess.run(["git", "add", "-A"], check=True)
-    subprocess.run(["git", "commit", "-m", "Deploy to GitHub Pages", "--allow-empty"], check=True)
+    # Commit changes
+    run_command('git add .')
+    run_command('git commit -m "Deploy to GitHub Pages"')
     
-    # Push to GitHub
-    print("Pushing to GitHub...")
-    subprocess.run(["git", "push", "origin", "gh-pages", "--force"], check=True)
+    # Delete the old gh-pages branch locally and remotely
+    run_command("git branch -D gh-pages")
+    run_command("git push origin --delete gh-pages")
     
-    # Switch back to main branch
-    print("Switching back to main branch...")
-    subprocess.run(["git", "checkout", "main"], check=True)
+    # Rename the temporary branch to gh-pages
+    run_command("git branch -m gh-pages")
+    
+    # Push the new gh-pages branch
+    run_command("git push -f origin gh-pages")
+    
+    # Switch back to main
+    run_command("git checkout main")
     
     print("Deployment to GitHub Pages completed successfully!")
 
@@ -276,4 +196,13 @@ def main():
             parser.print_help()
 
 if __name__ == "__main__":
-    main() 
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "--build":
+            build_site()
+        elif sys.argv[1] == "--deploy":
+            deploy_to_github_pages()
+        elif sys.argv[1] == "--build-deploy":
+            deploy_to_github_pages()
+    else:
+        print("Usage: python deploy.py [--build|--deploy|--build-deploy]")
+        sys.exit(1) 
