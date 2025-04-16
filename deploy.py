@@ -132,62 +132,66 @@ def build_site():
     print("Static site built successfully!")
 
 def deploy_to_github_pages():
-    """Deploy the site to GitHub Pages."""
+    """Deploy the static site to GitHub Pages."""
     print("Deploying to GitHub Pages...")
     
-    # Check for uncommitted changes
-    try:
-        subprocess.run(["git", "diff-index", "--quiet", "HEAD"], check=True)
-    except subprocess.CalledProcessError:
-        print("Error: You have uncommitted changes. Please commit or stash them before deploying.")
-        return
-    
-    # Ensure we're on main and it's up to date
-    current_branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], 
-                                   check=True, capture_output=True, text=True).stdout.strip()
-    
+    # Check if we're on the main branch
+    current_branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode().strip()
     if current_branch != "main":
-        print("Switching to main branch...")
-        subprocess.run(["git", "checkout", "main"], check=True)
+        print(f"Warning: Not on main branch (current: {current_branch})")
+        if input("Continue anyway? (y/n): ").lower() != 'y':
+            return
     
-    print("Pulling latest changes from main...")
-    subprocess.run(["git", "pull", "origin", "main"], check=True)
-    
-    # Build the site
+    # Build the static site
+    print("Building static site...")
     build_site()
     
-    # Check if gh-pages branch exists
+    # Push changes to main first
+    print("Pushing changes to main...")
+    subprocess.run(["git", "add", "."], check=True)
     try:
-        subprocess.run(["git", "show-ref", "--verify", "--quiet", "refs/heads/gh-pages"], check=True)
-        print("gh-pages branch exists, checking it out...")
+        subprocess.run(["git", "commit", "-m", "Update site content"], check=True)
+        subprocess.run(["git", "push", "origin", "main"], check=True)
+    except subprocess.CalledProcessError:
+        print("No changes to commit to main")
+    
+    # Checkout gh-pages branch
+    print("Checking out gh-pages branch...")
+    try:
         subprocess.run(["git", "checkout", "gh-pages"], check=True)
-        # Pull latest changes
-        subprocess.run(["git", "pull", "origin", "gh-pages"], check=True)
     except subprocess.CalledProcessError:
         print("gh-pages branch does not exist, creating new branch...")
         subprocess.run(["git", "checkout", "--orphan", "gh-pages"], check=True)
     
+    # Remove all files except .git and _site
+    print("Cleaning gh-pages branch...")
+    subprocess.run(["git", "rm", "-rf", "."], check=False)
+    
     # Copy _site contents to root
-    if os.path.exists("_site"):
-        for item in os.listdir("_site"):
-            src = os.path.join("_site", item)
-            if os.path.isfile(src):
-                shutil.copy2(src, item)
-            elif os.path.isdir(src):
-                if os.path.exists(item):
-                    shutil.rmtree(item)
-                shutil.copytree(src, item)
+    print("Copying built site...")
+    for item in os.listdir('_site'):
+        src = os.path.join('_site', item)
+        dst = item
+        if os.path.isdir(src):
+            shutil.copytree(src, dst, dirs_exist_ok=True)
+        else:
+            shutil.copy2(src, dst)
     
-    # Add all files
+    # Add .nojekyll file
+    with open('.nojekyll', 'w') as f:
+        pass
+    
+    # Add all files and commit
+    print("Committing changes...")
     subprocess.run(["git", "add", "-A"], check=True)
+    subprocess.run(["git", "commit", "-m", "Deploy to GitHub Pages", "--allow-empty"], check=True)
     
-    # Commit changes
-    subprocess.run(["git", "commit", "-m", "Deploy to GitHub Pages"], check=True)
-    
-    # Push to GitHub Pages
-    subprocess.run(["git", "push", "-f", "origin", "gh-pages"], check=True)
+    # Push to GitHub
+    print("Pushing to GitHub...")
+    subprocess.run(["git", "push", "origin", "gh-pages", "--force"], check=True)
     
     # Switch back to main branch
+    print("Switching back to main branch...")
     subprocess.run(["git", "checkout", "main"], check=True)
     
     print("Deployment to GitHub Pages completed successfully!")
