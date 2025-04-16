@@ -114,6 +114,41 @@ def build_site():
                 response = client.get('/error')
                 with open('_site/error.html', 'wb') as f:
                     f.write(response.data)
+                
+                # Update URLs in all HTML files
+                for root, dirs, files in os.walk('_site'):
+                    for file in files:
+                        if file.endswith('.html'):
+                            file_path = os.path.join(root, file)
+                            with open(file_path, 'r', encoding='utf-8') as f:
+                                content = f.read()
+                            
+                            # Calculate relative path to root
+                            rel_path = os.path.relpath(root, '_site')
+                            if rel_path == '.':
+                                prefix = ''
+                            else:
+                                prefix = '../' * (len(rel_path.split(os.sep)))
+                            
+                            # Update static file paths
+                            content = content.replace('href="/static/', f'href="{prefix}static/')
+                            content = content.replace('src="/static/', f'src="{prefix}static/')
+                            
+                            # Update navigation links
+                            content = content.replace('href="/"', f'href="{prefix}"')
+                            content = content.replace('href="/writings/"', f'href="{prefix}writings/"')
+                            content = content.replace('href="/games/"', f'href="{prefix}games/"')
+                            content = content.replace('href="/projects/"', f'href="{prefix}projects/"')
+                            content = content.replace('href="/apps/"', f'href="{prefix}apps/"')
+                            
+                            # Update post links
+                            content = content.replace('href="/posts/', f'href="{prefix}posts/')
+                            
+                            # Update category links
+                            content = content.replace('href="/category/', f'href="{prefix}category/')
+                            
+                            with open(file_path, 'w', encoding='utf-8') as f:
+                                f.write(content)
         
         logger.info("Static site built successfully!")
         return original_dir
