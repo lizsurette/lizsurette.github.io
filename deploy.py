@@ -51,6 +51,10 @@ def build_site():
         if os.path.exists("app/static"):
             shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
         
+        # Copy the games directory and its index.html
+        if os.path.exists("games"):
+            shutil.copytree("games", "_site/games", dirs_exist_ok=True)
+        
         # Copy game directories and their assets
         game_dirs = ['snake', 'hangman', 'strands', 'maze', 'bubble', 'gem-miner', 'survival', 'sudoku']
         for game_dir in game_dirs:
