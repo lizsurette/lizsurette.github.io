@@ -53,66 +53,67 @@ def build_site():
         
         # Initialize Flask app
         app = create_app()
-        app.config['SERVER_NAME'] = 'localhost'  # Add this line to prevent redirect issues
+        app.config['SERVER_NAME'] = None  # Remove server name to prevent redirect issues
         
         with app.test_client() as client:
-            # Generate index page
-            response = client.get('/')
-            with open('_site/index.html', 'wb') as f:
-                f.write(response.data)
-            
-            # Generate writings page
-            os.makedirs('_site/writings', exist_ok=True)
-            response = client.get('/writings')
-            with open('_site/writings/index.html', 'wb') as f:
-                f.write(response.data)
-            
-            # Generate apps page
-            os.makedirs('_site/apps', exist_ok=True)
-            response = client.get('/apps')
-            with open('_site/apps/index.html', 'wb') as f:
-                f.write(response.data)
-            
-            # Generate projects page
-            os.makedirs('_site/projects', exist_ok=True)
-            response = client.get('/projects')
-            with open('_site/projects/index.html', 'wb') as f:
-                f.write(response.data)
-            
-            # Generate games page
-            os.makedirs('_site/games', exist_ok=True)
-            response = client.get('/games')
-            with open('_site/games/index.html', 'wb') as f:
-                f.write(response.data)
-            
-            # Copy game directories
-            for game_dir in ['bubble', 'factory', 'hangman', 'maze', 'snake', 'strands', 'sudoku']:
-                if os.path.exists(f'app/templates/{game_dir}'):
-                    shutil.copytree(f'app/templates/{game_dir}', f'_site/{game_dir}', dirs_exist_ok=True)
-            
-            # Generate post pages
-            posts_dir = os.path.join('app', 'posts')
-            if os.path.exists(posts_dir):
-                for post_file in os.listdir(posts_dir):
-                    if post_file.endswith('.md'):
-                        post_name = os.path.splitext(post_file)[0]
-                        os.makedirs(f'_site/posts/{post_name}', exist_ok=True)
-                        response = client.get(f'/posts/{post_name}')
-                        with open(f'_site/posts/{post_name}/index.html', 'wb') as f:
-                            f.write(response.data)
-            
-            # Generate category pages
-            categories = ['kubernetes', 'openshift', 'python', 'web-development']
-            for category in categories:
-                os.makedirs(f'_site/category/{category}', exist_ok=True)
-                response = client.get(f'/category/{category}')
-                with open(f'_site/category/{category}/index.html', 'wb') as f:
+            with app.app_context():
+                # Generate index page
+                response = client.get('/')
+                with open('_site/index.html', 'wb') as f:
                     f.write(response.data)
-            
-            # Generate error pages
-            response = client.get('/error')
-            with open('_site/error.html', 'wb') as f:
-                f.write(response.data)
+                
+                # Generate writings page
+                os.makedirs('_site/writings', exist_ok=True)
+                response = client.get('/writings')
+                with open('_site/writings/index.html', 'wb') as f:
+                    f.write(response.data)
+                
+                # Generate apps page
+                os.makedirs('_site/apps', exist_ok=True)
+                response = client.get('/apps')
+                with open('_site/apps/index.html', 'wb') as f:
+                    f.write(response.data)
+                
+                # Generate projects page
+                os.makedirs('_site/projects', exist_ok=True)
+                response = client.get('/projects')
+                with open('_site/projects/index.html', 'wb') as f:
+                    f.write(response.data)
+                
+                # Generate games page
+                os.makedirs('_site/games', exist_ok=True)
+                response = client.get('/games')
+                with open('_site/games/index.html', 'wb') as f:
+                    f.write(response.data)
+                
+                # Copy game directories
+                for game_dir in ['bubble', 'factory', 'hangman', 'maze', 'snake', 'strands', 'sudoku']:
+                    if os.path.exists(f'app/templates/{game_dir}'):
+                        shutil.copytree(f'app/templates/{game_dir}', f'_site/{game_dir}', dirs_exist_ok=True)
+                
+                # Generate post pages
+                posts_dir = os.path.join('app', 'posts')
+                if os.path.exists(posts_dir):
+                    for post_file in os.listdir(posts_dir):
+                        if post_file.endswith('.md'):
+                            post_name = os.path.splitext(post_file)[0]
+                            os.makedirs(f'_site/posts/{post_name}', exist_ok=True)
+                            response = client.get(f'/posts/{post_name}')
+                            with open(f'_site/posts/{post_name}/index.html', 'wb') as f:
+                                f.write(response.data)
+                
+                # Generate category pages
+                categories = ['kubernetes', 'openshift', 'python', 'web-development']
+                for category in categories:
+                    os.makedirs(f'_site/category/{category}', exist_ok=True)
+                    response = client.get(f'/category/{category}')
+                    with open(f'_site/category/{category}/index.html', 'wb') as f:
+                        f.write(response.data)
+                
+                # Generate error pages
+                response = client.get('/error')
+                with open('_site/error.html', 'wb') as f:
+                    f.write(response.data)
         
         logger.info("Static site built successfully!")
         return original_dir
