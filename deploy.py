@@ -51,33 +51,6 @@ def build_site():
         if os.path.exists("app/static"):
             shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
         
-        # Copy the games directory and its index.html
-        if os.path.exists("games"):
-            shutil.copytree("games", "_site/games", dirs_exist_ok=True)
-            
-        # Copy the writings directory and its index.html
-        if os.path.exists("writings"):
-            shutil.copytree("writings", "_site/writings", dirs_exist_ok=True)
-            
-        # Copy the apps directory and its index.html
-        if os.path.exists("apps"):
-            shutil.copytree("apps", "_site/apps", dirs_exist_ok=True)
-            
-        # Copy the projects directory and its index.html
-        if os.path.exists("projects"):
-            shutil.copytree("projects", "_site/projects", dirs_exist_ok=True)
-        
-        # Copy game directories and their assets
-        game_dirs = ['snake', 'hangman', 'strands', 'maze', 'bubble', 'gem-miner', 'survival', 'sudoku']
-        for game_dir in game_dirs:
-            if os.path.exists(game_dir):
-                # Copy the game directory
-                shutil.copytree(game_dir, f"_site/{game_dir}", dirs_exist_ok=True)
-                
-                # Copy any static assets from the game directory
-                if os.path.exists(f"{game_dir}/static"):
-                    shutil.copytree(f"{game_dir}/static", f"_site/static/{game_dir}", dirs_exist_ok=True)
-        
         # Import Flask app here to avoid circular imports
         from app import create_app
         app = create_app()
@@ -91,17 +64,26 @@ def build_site():
             
             # Generate writings page
             response = client.get('/writings')
+            os.makedirs("_site/writings", exist_ok=True)
             with open("_site/writings/index.html", "w") as f:
                 f.write(response.data.decode())
             
             # Generate apps page
             response = client.get('/apps')
+            os.makedirs("_site/apps", exist_ok=True)
             with open("_site/apps/index.html", "w") as f:
                 f.write(response.data.decode())
             
             # Generate projects page
             response = client.get('/projects')
+            os.makedirs("_site/projects", exist_ok=True)
             with open("_site/projects/index.html", "w") as f:
+                f.write(response.data.decode())
+            
+            # Generate games page
+            response = client.get('/games')
+            os.makedirs("_site/games", exist_ok=True)
+            with open("_site/games/index.html", "w") as f:
                 f.write(response.data.decode())
             
             # Generate individual post pages
@@ -115,6 +97,17 @@ def build_site():
                 response = client.get(f'/posts/{post.path}')
                 with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
                     f.write(response.data.decode())
+        
+        # Copy game directories and their assets
+        game_dirs = ['snake', 'hangman', 'strands', 'maze', 'bubble', 'gem-miner', 'survival', 'sudoku']
+        for game_dir in game_dirs:
+            if os.path.exists(game_dir):
+                # Copy the game directory
+                shutil.copytree(game_dir, f"_site/{game_dir}", dirs_exist_ok=True)
+                
+                # Copy any static assets from the game directory
+                if os.path.exists(f"{game_dir}/static"):
+                    shutil.copytree(f"{game_dir}/static", f"_site/static/{game_dir}", dirs_exist_ok=True)
         
         logger.info("Static site built successfully!")
         return original_dir
