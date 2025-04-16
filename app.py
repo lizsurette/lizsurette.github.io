@@ -13,9 +13,11 @@ from app.models.post import Post
 from app.models.exceptions import PostError, PostNotFoundError, PostMetadataError, PostContentError, YAMLParsingError, MarkdownRenderingError
 from app.repositories.post_repository import PostRepository
 from app import create_app
+from app.services.markdown_service import MarkdownService
+from app.routes import main, post
 
 # Set up logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Get the absolute path to the app directory
@@ -51,10 +53,8 @@ app.config['FLATPAGES_HTML_RENDERER'] = render_markdown
 pages = FlatPages(app)
 
 # Register blueprints
-from app.routes.main import main as main_blueprint
-from app.routes.post import post as post_blueprint
-app.register_blueprint(main_blueprint)
-app.register_blueprint(post_blueprint)
+app.register_blueprint(main)
+app.register_blueprint(post)
 
 # Create a PostRepository instance
 post_repository = PostRepository(os.path.join(app_dir, 'app', 'posts'), render_markdown)
@@ -96,6 +96,40 @@ def utility_processor():
                 return date
         return date.strftime('%B %d, %Y')
     return dict(format_date=format_date)
+
+@app.cli.command("build")
+def build():
+    """Build the static site."""
+    logger.info("Building static site...")
+    
+    # Create _site directory if it doesn't exist
+    if not os.path.exists("_site"):
+        os.makedirs("_site")
+    
+    # Copy static files
+    if os.path.exists("app/static"):
+        import shutil
+        shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
+    
+    # Generate HTML files for each route
+    with app.test_request_context():
+        # Generate index page
+        with open("_site/index.html", "w") as f:
+            f.write(render_template("index.html"))
+        
+        # Generate writings page
+        posts = post_repository.get_all_posts()
+        with open("_site/writings.html", "w") as f:
+            f.write(render_template("writings.html", posts=posts))
+        
+        # Generate individual post pages
+        for post in posts:
+            post_dir = os.path.join("_site", "posts")
+            os.makedirs(post_dir, exist_ok=True)
+            with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
+                f.write(render_template("post.html", post=post))
+    
+    logger.info("Static site built successfully!")
 
 if __name__ == '__main__':
     logger.info(f"Posts directory at startup: {app.config['FLATPAGES_ROOT']}")
