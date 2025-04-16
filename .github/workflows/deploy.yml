@@ -13,15 +13,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: gh-pages
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
@@ -30,6 +30,11 @@ jobs:
 
       - name: Build static site
         run: python deploy.py --build
+
+      - name: Deploy to GitHub Pages
+        run: python deploy.py --deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fix Sudoku files
         run: |
@@ -46,13 +51,4 @@ jobs:
             echo "Copied sudoku.js successfully"
           else
             echo "Warning: sudoku.js not found"
-          fi
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          publish_branch: gh-pages
-          commit_message: 'Deploy static site [skip ci]'
-          force: true 
+          fi 
