@@ -15,6 +15,7 @@ import logging
 import markdown
 import yaml
 from datetime import datetime
+from app import create_app
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
