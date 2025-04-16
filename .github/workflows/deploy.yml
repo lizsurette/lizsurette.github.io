@@ -30,6 +30,26 @@ jobs:
       - name: Build site
         run: python deploy.py --build
 
+      - name: Fix Sudoku files
+        run: |
+          mkdir -p _site/static/css
+          mkdir -p _site/static/js
+          if [ -f "sudoku/static/css/sudoku.css" ]; then
+            cp -r sudoku/static/css/sudoku.css _site/static/css/
+            echo "Copied sudoku.css successfully"
+          else
+            echo "Warning: sudoku.css not found"
+          fi
+          if [ -f "sudoku/static/js/sudoku.js" ]; then
+            cp -r sudoku/static/js/sudoku.js _site/static/js/
+            echo "Copied sudoku.js successfully"
+          else
+            echo "Warning: sudoku.js not found"
+          fi
+
+      - name: Ensure .nojekyll file exists
+        run: touch _site/.nojekyll
+
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Actions"
@@ -41,21 +61,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _site
           publish_branch: gh-pages
-          force_orphan: true
-
-      - name: Fix Sudoku files
-        run: |
-          mkdir -p static/css
-          mkdir -p static/js
-          if [ -f "sudoku/static/css/sudoku.css" ]; then
-            cp -r sudoku/static/css/sudoku.css static/css/
-            echo "Copied sudoku.css successfully"
-          else
-            echo "Warning: sudoku.css not found"
-          fi
-          if [ -f "sudoku/static/js/sudoku.js" ]; then
-            cp -r sudoku/static/js/sudoku.js static/js/
-            echo "Copied sudoku.js successfully"
-          else
-            echo "Warning: sudoku.js not found"
-          fi 
+          force_orphan: true 
