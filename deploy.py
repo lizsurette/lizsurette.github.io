@@ -91,15 +91,13 @@ def build_site():
                 f.write(response.data.decode())
             
             # Generate projects page
-            os.makedirs("_site/projects", exist_ok=True)
             response = client.get('/projects')
-            with open("_site/projects/index.html", "w") as f:
+            with open("_site/projects.html", "w") as f:
                 f.write(response.data.decode())
             
             # Generate apps page
-            os.makedirs("_site/apps", exist_ok=True)
             response = client.get('/apps')
-            with open("_site/apps/index.html", "w") as f:
+            with open("_site/apps.html", "w") as f:
                 f.write(response.data.decode())
             
             # Generate individual post pages
