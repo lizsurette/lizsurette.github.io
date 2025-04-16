@@ -121,6 +121,14 @@ def build():
         posts = post_repository.get_all_posts()
         with open("_site/writings.html", "w") as f:
             f.write(render_template("writings.html", posts=posts))
+
+        # Generate projects page
+        with open("_site/projects.html", "w") as f:
+            f.write(render_template("projects.html"))
+
+        # Generate apps page
+        with open("_site/apps.html", "w") as f:
+            f.write(render_template("apps.html"))
         
         # Generate individual post pages
         for post in posts:
