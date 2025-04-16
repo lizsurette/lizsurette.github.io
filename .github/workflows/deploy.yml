@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - gh-pages
   workflow_dispatch:
 
 permissions:
@@ -28,6 +28,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install flask flask-flatpages frozen-flask markdown pygments
 
+      - name: Build site
+        run: |
+          python deploy.py --build
+          echo "Site built successfully"
+
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Actions"
@@ -37,7 +42,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: _site
           publish_branch: gh-pages
           force_orphan: true
 
