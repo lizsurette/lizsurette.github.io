@@ -79,6 +79,11 @@ def deploy_to_github_pages():
     """Deploy the built site to GitHub Pages."""
     logger.info("Deploying to GitHub Pages...")
     
+    # Make sure _site exists
+    if not os.path.exists("_site"):
+        logger.info("No _site directory found. Building site first...")
+        build_site()
+    
     # Create a temporary branch for deployment
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     temp_branch = f"gh-pages-{timestamp}"
