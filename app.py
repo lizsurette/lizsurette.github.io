@@ -119,22 +119,25 @@ def build():
         
         # Generate writings page
         posts = post_repository.get_all_posts()
-        with open("_site/writings.html", "w") as f:
+        os.makedirs("_site/writings", exist_ok=True)
+        with open("_site/writings/index.html", "w") as f:
             f.write(render_template("writings.html", posts=posts))
 
         # Generate projects page
-        with open("_site/projects.html", "w") as f:
+        os.makedirs("_site/projects", exist_ok=True)
+        with open("_site/projects/index.html", "w") as f:
             f.write(render_template("projects.html"))
 
         # Generate apps page
-        with open("_site/apps.html", "w") as f:
+        os.makedirs("_site/apps", exist_ok=True)
+        with open("_site/apps/index.html", "w") as f:
             f.write(render_template("apps.html"))
         
         # Generate individual post pages
         for post in posts:
-            post_dir = os.path.join("_site", "posts")
+            post_dir = os.path.join("_site", "posts", post.path)
             os.makedirs(post_dir, exist_ok=True)
-            with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
+            with open(os.path.join(post_dir, "index.html"), "w") as f:
                 f.write(render_template("post.html", post=post))
     
     logger.info("Static site built successfully!")

@@ -7,6 +7,7 @@ from app import create_app
 from app.services.post_service import PostService
 from app.services.markdown_service import MarkdownService
 from app.services.config_service import ConfigService
+from app.models.post import Post
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -23,8 +24,13 @@ def clean_site_directory():
     """Clean the _site directory before generating static files."""
     site_dir = '_site'
     if os.path.exists(site_dir):
-        shutil.rmtree(site_dir)
-    os.makedirs(site_dir)
+        # Remove HTML files but preserve directories
+        for item in os.listdir(site_dir):
+            item_path = os.path.join(site_dir, item)
+            if os.path.isfile(item_path):
+                os.remove(item_path)
+    else:
+        os.makedirs(site_dir)
     logger.info(f"Cleaned {site_dir} directory")
 
 def copy_static_assets():
@@ -69,8 +75,8 @@ def generate_static_files():
         logger.info("Generating post pages")
         for post in posts:
             # Skip posts with empty paths
-            if not post.path or post.path.strip() == '':
-                logger.warning(f"Skipping post with empty path: {post.title}")
+            if not isinstance(post, Post):
+                logger.warning(f"Skipping invalid post: {post}")
                 continue
                 
             # Create directory for post
@@ -128,24 +134,28 @@ def generate_static_files():
 
 def update_static_paths(file_path):
     """Update static file paths to be relative."""
-    with open(file_path, 'r') as f:
+    with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
     # Update static file paths
-    content = content.replace('href="/static/', 'href="static/')
+    content = content.replace('href="/static/', 'href="../static/')
+    content = content.replace('src="/static/', 'src="../static/')
     
     # Update navigation links
-    content = content.replace('href="/games/"', 'href="/games"')
-    content = content.replace('href="/projects/"', 'href="/projects"')
-    content = content.replace('href="/apps/"', 'href="/apps"')
-    content = content.replace('href="/writings/"', 'href="/writings"')
+    content = content.replace('href="/"', 'href="../"')
+    content = content.replace('href="/games/"', 'href="../games/"')
+    content = content.replace('href="/projects/"', 'href="../projects/"')
+    content = content.replace('href="/apps/"', 'href="../apps/"')
+    content = content.replace('href="/writings/"', 'href="../writings/"')
     
     # Update post links
-    content = content.replace('href="/posts/', 'href="/posts')
+    content = content.replace('href="/posts/', 'href="../posts/')
+    
+    # Remove trailing slashes from URLs
     content = content.replace('.html/"', '.html"')
     content = content.replace('/">', '">')
 
-    with open(file_path, 'w') as f:
+    with open(file_path, 'w', encoding='utf-8') as f:
         f.write(content)
 
     logging.info(f"Updated static paths in {file_path}")
@@ -161,13 +171,15 @@ def update_index_paths(file_path):
 
     # Update navigation links
     content = content.replace('href="/"', 'href="./"')
-    content = content.replace('href="/writings/"', 'href="writings.html"')
-    content = content.replace('href="/games"', 'href="games.html"')
-    content = content.replace('href="/projects"', 'href="projects.html"')
-    content = content.replace('href="/apps"', 'href="apps.html"')
+    content = content.replace('href="/writings/"', 'href="writings/"')
+    content = content.replace('href="/games/"', 'href="games/"')
+    content = content.replace('href="/projects/"', 'href="projects/"')
+    content = content.replace('href="/apps/"', 'href="apps/"')
 
-    # Update post links - remove trailing slashes
+    # Update post links
     content = content.replace('href="/posts/', 'href="posts/')
+    
+    # Remove trailing slashes from URLs
     content = content.replace('.html/"', '.html"')
     content = content.replace('/">', '">')
 

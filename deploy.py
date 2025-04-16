@@ -34,89 +34,27 @@ def run_command(command, cwd=None, env=None):
 
 def build_site():
     """Build the static site."""
-    logger.info("Building static site...")
+    logging.info("Building static site...")
     
-    # Get the absolute path to the project root
-    project_root = os.path.abspath(os.path.dirname(__file__))
-    original_dir = os.getcwd()
-    os.chdir(project_root)
+    # Import build_static here to avoid circular imports
+    from build_static import generate_static_files, clean_site_directory, copy_static_assets
     
-    try:
-        # Create _site directory if it doesn't exist
-        if os.path.exists("_site"):
-            shutil.rmtree("_site")
-        os.makedirs("_site")
-        
-        # Copy static files
-        if os.path.exists("app/static"):
-            shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
-        
-        # Copy the games directory and its index.html
-        if os.path.exists("games"):
-            shutil.copytree("games", "_site/games", dirs_exist_ok=True)
-            
-        # Copy the writings directory and its index.html
-        if os.path.exists("writings"):
-            shutil.copytree("writings", "_site/writings", dirs_exist_ok=True)
-        
-        # Copy game directories and their assets
-        game_dirs = ['snake', 'hangman', 'strands', 'maze', 'bubble', 'gem-miner', 'survival', 'sudoku']
-        for game_dir in game_dirs:
-            if os.path.exists(game_dir):
-                # Copy the game directory
-                shutil.copytree(game_dir, f"_site/{game_dir}", dirs_exist_ok=True)
-                
-                # Copy any static assets from the game directory
-                if os.path.exists(f"{game_dir}/static"):
-                    shutil.copytree(f"{game_dir}/static", f"_site/static/{game_dir}", dirs_exist_ok=True)
-        
-        # Import Flask app here to avoid circular imports
-        from app import create_app
-        app = create_app()
-        
-        # Configure Flask to use relative URLs
-        app.config['SERVER_NAME'] = None
-        app.config['PREFERRED_URL_SCHEME'] = 'http'
-        
-        # Generate HTML files for each route
-        with app.test_client() as client:
-            # Generate index page
-            response = client.get('/')
-            with open("_site/index.html", "w") as f:
-                f.write(response.data.decode())
-            
-            # Generate writings page
-            response = client.get('/writings')
-            with open("_site/writings.html", "w") as f:
-                f.write(response.data.decode())
-            
-            # Generate projects page
-            response = client.get('/projects')
-            with open("_site/projects.html", "w") as f:
-                f.write(response.data.decode())
-            
-            # Generate apps page
-            response = client.get('/apps')
-            with open("_site/apps.html", "w") as f:
-                f.write(response.data.decode())
-            
-            # Generate individual post pages
-            from app.repositories.post_repository import PostRepository
-            post_repository = PostRepository(os.path.join('app', 'posts'), app.config['FLATPAGES_HTML_RENDERER'])
-            posts = post_repository.get_all_posts()
-            
-            for post in posts:
-                post_dir = os.path.join("_site", "posts")
-                os.makedirs(post_dir, exist_ok=True)
-                response = client.get(f'/posts/{post.path}')
-                with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
-                    f.write(response.data.decode())
-        
-        logger.info("Static site built successfully!")
-        return original_dir
-    except Exception as e:
-        logger.error(f"Error building site: {str(e)}")
-        raise e
+    # Clean and prepare _site directory
+    clean_site_directory()
+    
+    # Copy static assets
+    copy_static_assets()
+    
+    # Generate static files
+    generate_static_files()
+    
+    # Copy any additional directories needed
+    for directory in ['posts', 'survival', 'snake', 'strands', 'sudoku', 'maze', 'gem-miner', 'hangman', 'bubble']:
+        if os.path.exists(directory):
+            shutil.copytree(directory, f'_site/{directory}', dirs_exist_ok=True)
+    
+    logging.info("Static site built successfully.")
+    return True
 
 def deploy_to_github_pages():
     """Deploy the built site to GitHub Pages."""
