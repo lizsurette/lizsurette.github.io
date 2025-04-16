@@ -38,46 +38,51 @@ def build_site():
     
     # Get the absolute path to the project root
     project_root = os.path.abspath(os.path.dirname(__file__))
+    original_dir = os.getcwd()
     os.chdir(project_root)
     
-    # Create _site directory if it doesn't exist
-    if os.path.exists("_site"):
-        shutil.rmtree("_site")
-    os.makedirs("_site")
-    
-    # Copy static files
-    if os.path.exists("app/static"):
-        shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
-    
-    # Import Flask app here to avoid circular imports
-    from app import create_app
-    app = create_app()
-    
-    # Generate HTML files for each route
-    with app.test_client() as client:
-        # Generate index page
-        response = client.get('/')
-        with open("_site/index.html", "w") as f:
-            f.write(response.data.decode())
+    try:
+        # Create _site directory if it doesn't exist
+        if os.path.exists("_site"):
+            shutil.rmtree("_site")
+        os.makedirs("_site")
         
-        # Generate writings page
-        response = client.get('/writings')
-        with open("_site/writings.html", "w") as f:
-            f.write(response.data.decode())
+        # Copy static files
+        if os.path.exists("app/static"):
+            shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
         
-        # Generate individual post pages
-        from app.repositories.post_repository import PostRepository
-        post_repository = PostRepository(os.path.join('app', 'posts'), app.config['FLATPAGES_HTML_RENDERER'])
-        posts = post_repository.get_all_posts()
+        # Import Flask app here to avoid circular imports
+        from app import create_app
+        app = create_app()
         
-        for post in posts:
-            post_dir = os.path.join("_site", "posts")
-            os.makedirs(post_dir, exist_ok=True)
-            response = client.get(f'/posts/{post.path}')
-            with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
+        # Generate HTML files for each route
+        with app.test_client() as client:
+            # Generate index page
+            response = client.get('/')
+            with open("_site/index.html", "w") as f:
                 f.write(response.data.decode())
-    
-    logger.info("Static site built successfully!")
+            
+            # Generate writings page
+            response = client.get('/writings')
+            with open("_site/writings.html", "w") as f:
+                f.write(response.data.decode())
+            
+            # Generate individual post pages
+            from app.repositories.post_repository import PostRepository
+            post_repository = PostRepository(os.path.join('app', 'posts'), app.config['FLATPAGES_HTML_RENDERER'])
+            posts = post_repository.get_all_posts()
+            
+            for post in posts:
+                post_dir = os.path.join("_site", "posts")
+                os.makedirs(post_dir, exist_ok=True)
+                response = client.get(f'/posts/{post.path}')
+                with open(os.path.join(post_dir, f"{post.path}.html"), "w") as f:
+                    f.write(response.data.decode())
+        
+        logger.info("Static site built successfully!")
+    finally:
+        # Always change back to the original directory
+        os.chdir(original_dir)
 
 def deploy_to_github_pages():
     """Deploy the built site to GitHub Pages."""
@@ -85,121 +90,104 @@ def deploy_to_github_pages():
     
     # Get the absolute path to the project root
     project_root = os.path.abspath(os.path.dirname(__file__))
+    original_dir = os.getcwd()
     os.chdir(project_root)
     
-    # Make sure _site exists
-    if not os.path.exists("_site"):
-        logger.info("No _site directory found. Building site first...")
-        build_site()
-    
-    # Create a temporary branch for deployment
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    temp_branch = f"gh-pages-{timestamp}"
-    
-    # Create and switch to temporary branch
-    run_command(f"git checkout --orphan {temp_branch}")
-    
-    # Remove everything except _site
-    run_command("git rm -rf .")
-    run_command("git clean -fxd")
-    
-    # Copy _site contents to root
-    for item in os.listdir("_site"):
-        src = os.path.join("_site", item)
-        dst = item
-        if os.path.isdir(src):
-            shutil.copytree(src, dst, dirs_exist_ok=True)
-        else:
-            shutil.copy2(src, dst)
-    
-    # Add .nojekyll file
-    with open(".nojekyll", "w") as f:
-        pass
-    
-    # Commit changes
-    run_command("git add .")
-    run_command('git commit -m "Deploy site"')
-    
-    # Push to gh-pages branch
-    run_command("git push origin HEAD:gh-pages --force")
-    
-    logger.info("Site deployed successfully!")
-    
-    # Clean up
-    run_command("git checkout main")
     try:
-        run_command(f"git branch -D {temp_branch}")
-    except:
-        # Ignore errors if the branch doesn't exist
-        pass
+        # Always rebuild the site before deploying
+        build_site()
+        
+        # Create a temporary branch for deployment
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        temp_branch = f"gh-pages-{timestamp}"
+        
+        # Create and switch to temporary branch
+        run_command(f"git checkout --orphan {temp_branch}")
+        
+        # Remove everything except _site
+        run_command("git rm -rf .")
+        run_command("git clean -fxd")
+        
+        # Copy _site contents to root
+        for item in os.listdir("_site"):
+            src = os.path.join("_site", item)
+            dst = item
+            if os.path.isdir(src):
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src, dst)
+        
+        # Add .nojekyll file
+        with open(".nojekyll", "w") as f:
+            pass
+        
+        # Commit changes
+        run_command("git add .")
+        run_command('git commit -m "Deploy site"')
+        
+        # Push to gh-pages branch
+        run_command("git push origin HEAD:gh-pages --force")
+        
+        logger.info("Site deployed successfully!")
+        
+        # Clean up
+        run_command("git checkout main")
+        try:
+            run_command(f"git branch -D {temp_branch}")
+        except:
+            # Ignore errors if the branch doesn't exist
+            pass
+    finally:
+        # Always change back to the original directory
+        os.chdir(original_dir)
 
 def serve_locally():
     """Serve the site locally for testing."""
     print("Serving site locally...")
     
-    # Check if _site directory exists
-    if not os.path.exists("_site"):
-        print("Error: _site directory does not exist. Please build the site first.")
-        return
-    
-    # Change to _site directory
-    os.chdir("_site")
-    
-    # Start a simple HTTP server
-    print("Starting server at http://localhost:8081")
-    print("Press Ctrl+C to stop the server")
+    # Get the absolute path to the project root
+    project_root = os.path.abspath(os.path.dirname(__file__))
+    original_dir = os.getcwd()
+    os.chdir(project_root)
     
     try:
-        subprocess.run(["python", "-m", "http.server", "8081"], check=True)
-    except KeyboardInterrupt:
-        print("\nServer stopped")
-    except subprocess.CalledProcessError as e:
-        print(f"Error starting server: {e}")
+        # Check if _site directory exists
+        if not os.path.exists("_site"):
+            print("Error: _site directory does not exist. Please build the site first.")
+            return
+        
+        # Change to _site directory
+        os.chdir("_site")
+        
+        # Start a simple HTTP server
+        print("Starting server at http://localhost:8081")
+        print("Press Ctrl+C to stop the server")
+        
+        try:
+            subprocess.run(["python", "-m", "http.server", "8081"])
+        except KeyboardInterrupt:
+            print("\nServer stopped.")
     finally:
-        # Change back to the original directory
-        os.chdir("..")
-
-def update_static_paths(html_content, is_root=False):
-    """Update static file paths in HTML content to be relative"""
-    # Handle both Flask url_for generated paths and direct paths
-    replacements = [
-        ('href="/static/', 'href="static/' if is_root else 'href="../static/'),
-        ('src="/static/', 'src="static/' if is_root else 'src="../static/'),
-        ('href="static/', 'href="static/' if is_root else 'href="../static/'),
-        ('src="static/', 'src="static/' if is_root else 'src="../static/'),
-        ('href="./static/', 'href="static/' if is_root else 'href="../static/'),
-        ('src="./static/', 'src="static/' if is_root else 'src="../static/'),
-    ]
-    
-    # Update navigation links to be relative
-    replacements.extend([
-        ('href="/writings"', 'href="writings"' if is_root else 'href="../writings"'),
-        ('href="/projects"', 'href="projects"' if is_root else 'href="../projects"'),
-        ('href="/games"', 'href="games"' if is_root else 'href="../games"'),
-        ('href="/apps"', 'href="apps"' if is_root else 'href="../apps"'),
-        ('href="/"', 'href="."' if is_root else 'href="../"'),
-        ('href="./"', 'href="."' if is_root else 'href="../"'),
-    ])
-    
-    # Update post links to be relative
-    for old, new in replacements:
-        html_content = html_content.replace(old, new)
-    
-    return html_content
+        # Always change back to the original directory
+        os.chdir(original_dir)
 
 def main():
-    """Main function to handle command line arguments."""
-    if len(sys.argv) < 2:
-        logger.error("Please specify --build, --deploy, or --build --deploy")
-        sys.exit(1)
+    """Main entry point for the script."""
+    parser = argparse.ArgumentParser(description="Build and deploy the site to GitHub Pages.")
+    parser.add_argument("--build", action="store_true", help="Build the static site")
+    parser.add_argument("--deploy", action="store_true", help="Deploy the site to GitHub Pages")
+    parser.add_argument("--serve", action="store_true", help="Serve the site locally")
     
-    args = sys.argv[1:]
+    args = parser.parse_args()
     
-    if "--build" in args:
+    if args.build:
         build_site()
-    
-    if "--deploy" in args:
+    elif args.deploy:
         deploy_to_github_pages()
+    elif args.serve:
+        serve_locally()
+    else:
+        parser.print_help()
 
 if __name__ == "__main__":
     main() 
