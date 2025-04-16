@@ -20,12 +20,12 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
-def run_command(command, cwd=None):
+def run_command(command, cwd=None, env=None):
     """Run a shell command and return its output."""
     try:
         result = subprocess.run(command, shell=True, check=True, cwd=cwd,
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                              text=True)
+                              text=True, env=env)
         return result.stdout
     except subprocess.CalledProcessError as e:
         logger.error(f"Command failed: {command}")
