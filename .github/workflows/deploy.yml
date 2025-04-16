@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Build site
+        run: python deploy.py --build
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _site
+          publish_branch: gh-pages
+          force_orphan: true
+
+      - name: Fix Sudoku files
+        run: |
+          mkdir -p static/css
+          mkdir -p static/js
+          if [ -f "sudoku/static/css/sudoku.css" ]; then
+            cp -r sudoku/static/css/sudoku.css static/css/
+            echo "Copied sudoku.css successfully"
+          else
+            echo "Warning: sudoku.css not found"
+          fi
+          if [ -f "sudoku/static/js/sudoku.js" ]; then
+            cp -r sudoku/static/js/sudoku.js static/js/
+            echo "Copied sudoku.js successfully"
+          else
+            echo "Warning: sudoku.js not found"
+          fi 
