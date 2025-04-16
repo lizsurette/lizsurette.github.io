@@ -51,6 +51,17 @@ def build_site():
         if os.path.exists("app/static"):
             shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
         
+        # Copy game directories and their assets
+        game_dirs = ['snake', 'hangman', 'strands', 'maze', 'bubble', 'gem-miner', 'survival', 'sudoku']
+        for game_dir in game_dirs:
+            if os.path.exists(game_dir):
+                # Copy the game directory
+                shutil.copytree(game_dir, f"_site/{game_dir}", dirs_exist_ok=True)
+                
+                # Copy any static assets from the game directory
+                if os.path.exists(f"{game_dir}/static"):
+                    shutil.copytree(f"{game_dir}/static", f"_site/static/{game_dir}", dirs_exist_ok=True)
+        
         # Import Flask app here to avoid circular imports
         from app import create_app
         app = create_app()
