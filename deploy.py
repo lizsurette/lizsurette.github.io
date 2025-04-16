@@ -36,6 +36,10 @@ def build_site():
     """Build the static site."""
     logger.info("Building static site...")
     
+    # Get the absolute path to the project root
+    project_root = os.path.abspath(os.path.dirname(__file__))
+    os.chdir(project_root)
+    
     # Create _site directory if it doesn't exist
     if os.path.exists("_site"):
         shutil.rmtree("_site")
