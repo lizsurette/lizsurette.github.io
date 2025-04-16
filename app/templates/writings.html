@@ -26,7 +26,7 @@
                     {% if post.path and post.path.strip() %}
                         <a href="{{ url_for('post.view', path=post.path) }}">{{ post.meta.title }}</a>
                     {% else %}
-                        <a href="{{ url_for('main.writings') }}">{{ post.meta.title }}</a>
+                        <a href="#">{{ post.meta.title }}</a>
                     {% endif %}
                 </li>
             {% else %}

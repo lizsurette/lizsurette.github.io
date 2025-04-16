@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import logging
+import re
 from flask import render_template, url_for
 from app import create_app
 from app.services.post_service import PostService
@@ -62,6 +63,7 @@ def generate_static_files():
         
         with open('_site/index.html', 'w', encoding='utf-8') as f:
             f.write(index_html)
+        update_index_paths('_site/index.html')
         
         # Generate writings page
         logger.info("Generating writings page")
@@ -70,6 +72,7 @@ def generate_static_files():
         os.makedirs('_site/writings', exist_ok=True)
         with open('_site/writings/index.html', 'w', encoding='utf-8') as f:
             f.write(writings_html)
+        update_static_paths('_site/writings/index.html')
         
         # Generate post pages
         logger.info("Generating post pages")
@@ -87,8 +90,10 @@ def generate_static_files():
             post_html = render_template('post.html', post=post)
             
             # Write post HTML
-            with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
+            post_path = os.path.join(post_dir, 'index.html')
+            with open(post_path, 'w', encoding='utf-8') as f:
                 f.write(post_html)
+            update_static_paths(post_path)
             
             logger.info(f"Generated post: {post.path}")
         
@@ -98,6 +103,7 @@ def generate_static_files():
         os.makedirs('_site/games', exist_ok=True)
         with open('_site/games/index.html', 'w', encoding='utf-8') as f:
             f.write(games_html)
+        update_static_paths('_site/games/index.html')
         
         # Generate game pages
         game_dirs = ['sudoku', 'hangman', 'snake', 'maze', 'bubble', 'gem-miner', 'survival', 'strands']
@@ -107,8 +113,10 @@ def generate_static_files():
                 game_html = render_template(f'{game_dir}.html', title=game_dir.capitalize())
                 os.makedirs(f'_site/{game_dir}', exist_ok=True)
                 
-                with open(f'_site/{game_dir}/index.html', 'w', encoding='utf-8') as f:
+                game_path = f'_site/{game_dir}/index.html'
+                with open(game_path, 'w', encoding='utf-8') as f:
                     f.write(game_html)
+                update_static_paths(game_path)
         
         # Generate projects page
         logger.info("Generating projects page")
@@ -116,6 +124,7 @@ def generate_static_files():
         os.makedirs('_site/projects', exist_ok=True)
         with open('_site/projects/index.html', 'w', encoding='utf-8') as f:
             f.write(projects_html)
+        update_static_paths('_site/projects/index.html')
         
         # Generate apps page
         logger.info("Generating apps page")
@@ -123,42 +132,75 @@ def generate_static_files():
         os.makedirs('_site/apps', exist_ok=True)
         with open('_site/apps/index.html', 'w', encoding='utf-8') as f:
             f.write(apps_html)
+        update_static_paths('_site/apps/index.html')
         
         # Generate error page
         logger.info("Generating error page")
         error_html = render_template('error.html', title='Error', error='Page not found')
         with open('_site/error.html', 'w', encoding='utf-8') as f:
             f.write(error_html)
+        update_static_paths('_site/error.html')
         
         logger.info("Static site generation completed")
 
 def update_static_paths(file_path):
-    """Update static file paths to be relative."""
+    """Update static file paths in HTML files to be relative."""
+    logger.info(f"Updating static paths in {file_path}")
+    
+    # Calculate the relative depth based on the file path
+    relative_depth = len(file_path.split(os.sep)[1:-1])
+    relative_prefix = '../' * relative_depth
+    
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
-
+    
     # Update static file paths
-    content = content.replace('href="/static/', 'href="../static/')
-    content = content.replace('src="/static/', 'src="../static/')
+    content = content.replace('href="/static/', f'href="{relative_prefix}static/')
+    content = content.replace('src="/static/', f'src="{relative_prefix}static/')
     
     # Update navigation links
-    content = content.replace('href="/"', 'href="../"')
-    content = content.replace('href="/games/"', 'href="../games/"')
-    content = content.replace('href="/projects/"', 'href="../projects/"')
-    content = content.replace('href="/apps/"', 'href="../apps/"')
-    content = content.replace('href="/writings/"', 'href="../writings/"')
+    nav_links = ['writings', 'games', 'projects', 'apps']
+    for link in nav_links:
+        # Handle both with and without trailing slash
+        content = content.replace(f'href="/{link}/"', f'href="{relative_prefix}{link}"')
+        content = content.replace(f'href="/{link}"', f'href="{relative_prefix}{link}"')
     
-    # Update post links
-    content = content.replace('href="/posts/', 'href="../posts/')
+    # Update home link
+    content = content.replace('href="/"', f'href="{relative_prefix}"')
+    
+    # Update post links in the writings page
+    if 'writings/index.html' in file_path:
+        # Find all post items and update their links
+        content = re.sub(
+            r'<a href="#">([^<]+)</a>',
+            lambda m: f'<a href="{relative_prefix}posts/{slugify(m.group(1))}.html">{m.group(1)}</a>',
+            content
+        )
+    
+    # Remove any remaining absolute paths that start with /
+    content = re.sub(r'(href|src)="/((?!/)([^"]+))"', rf'\1="{relative_prefix}\2"', content)
     
     # Remove trailing slashes from URLs
-    content = content.replace('.html/"', '.html"')
-    content = content.replace('/">', '">')
-
+    content = re.sub(r'(href="[^"]+)/"', r'\1"', content)
+    
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(content)
+    
+    logger.info(f"Updated static paths in {file_path}")
 
-    logging.info(f"Updated static paths in {file_path}")
+def slugify(text):
+    """Convert text to a URL-friendly slug."""
+    # Convert to lowercase
+    text = text.lower()
+    # Replace spaces with hyphens
+    text = re.sub(r'[\s]+', '-', text)
+    # Remove special characters
+    text = re.sub(r'[^\w\-]', '', text)
+    # Remove consecutive hyphens
+    text = re.sub(r'-+', '-', text)
+    # Remove leading/trailing hyphens
+    text = text.strip('-')
+    return text
 
 def update_index_paths(file_path):
     """Update paths in index.html to be relative to root."""
