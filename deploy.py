@@ -97,6 +97,10 @@ def deploy_to_github_pages():
     temp_branch = f"gh-pages-{timestamp}"
     
     try:
+        # Move _site to a temporary location
+        temp_site = f"_site_temp_{timestamp}"
+        shutil.move("_site", temp_site)
+        
         # Create and switch to temporary branch
         run_command(f"git checkout --orphan {temp_branch}")
         
@@ -104,7 +108,8 @@ def deploy_to_github_pages():
         run_command("git rm -rf .")
         run_command("git clean -fxd")
         
-        # Copy _site contents to root
+        # Move _site back and copy its contents to root
+        shutil.move(temp_site, "_site")
         for item in os.listdir("_site"):
             src = os.path.join("_site", item)
             dst = item
@@ -134,6 +139,10 @@ def deploy_to_github_pages():
         except:
             # Ignore errors if the branch doesn't exist
             pass
+        
+        # Clean up temporary site directory if it exists
+        if os.path.exists(temp_site):
+            shutil.move(temp_site, "_site")
 
 def serve_locally():
     """Serve the site locally for testing."""
