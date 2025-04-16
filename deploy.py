@@ -74,6 +74,10 @@ def build_site():
         from app import create_app
         app = create_app()
         
+        # Configure Flask to use relative URLs
+        app.config['SERVER_NAME'] = None
+        app.config['PREFERRED_URL_SCHEME'] = 'http'
+        
         # Generate HTML files for each route
         with app.test_client() as client:
             # Generate index page
