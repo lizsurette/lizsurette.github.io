@@ -135,32 +135,54 @@ def deploy_to_github_pages():
     """Deploy the site to GitHub Pages."""
     print("Deploying to GitHub Pages...")
     
-    # Check if we're already on the gh-pages branch
+    # Check for uncommitted changes
+    try:
+        subprocess.run(["git", "diff-index", "--quiet", "HEAD"], check=True)
+    except subprocess.CalledProcessError:
+        print("Error: You have uncommitted changes. Please commit or stash them before deploying.")
+        return
+    
+    # Ensure we're on main and it's up to date
     current_branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], 
                                    check=True, capture_output=True, text=True).stdout.strip()
     
-    if current_branch == "gh-pages":
-        print("Already on gh-pages branch. Switching to main first.")
+    if current_branch != "main":
+        print("Switching to main branch...")
         subprocess.run(["git", "checkout", "main"], check=True)
     
-    # Create a new branch
-    subprocess.run(["git", "checkout", "--orphan", "gh-pages-temp"], check=True)
+    print("Pulling latest changes from main...")
+    subprocess.run(["git", "pull", "origin", "main"], check=True)
+    
+    # Build the site
+    build_site()
+    
+    # Check if gh-pages branch exists
+    try:
+        subprocess.run(["git", "show-ref", "--verify", "--quiet", "refs/heads/gh-pages"], check=True)
+        print("gh-pages branch exists, checking it out...")
+        subprocess.run(["git", "checkout", "gh-pages"], check=True)
+        # Pull latest changes
+        subprocess.run(["git", "pull", "origin", "gh-pages"], check=True)
+    except subprocess.CalledProcessError:
+        print("gh-pages branch does not exist, creating new branch...")
+        subprocess.run(["git", "checkout", "--orphan", "gh-pages"], check=True)
+    
+    # Copy _site contents to root
+    if os.path.exists("_site"):
+        for item in os.listdir("_site"):
+            src = os.path.join("_site", item)
+            if os.path.isfile(src):
+                shutil.copy2(src, item)
+            elif os.path.isdir(src):
+                if os.path.exists(item):
+                    shutil.rmtree(item)
+                shutil.copytree(src, item)
     
     # Add all files
     subprocess.run(["git", "add", "-A"], check=True)
     
     # Commit changes
     subprocess.run(["git", "commit", "-m", "Deploy to GitHub Pages"], check=True)
-    
-    # Delete the gh-pages branch if it exists
-    try:
-        subprocess.run(["git", "push", "origin", "--delete", "gh-pages"], check=True)
-        print("Deleted existing gh-pages branch")
-    except subprocess.CalledProcessError:
-        print("gh-pages branch does not exist or could not be deleted")
-    
-    # Rename the temporary branch to gh-pages
-    subprocess.run(["git", "branch", "-m", "gh-pages"], check=True)
     
     # Push to GitHub Pages
     subprocess.run(["git", "push", "-f", "origin", "gh-pages"], check=True)
