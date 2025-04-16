@@ -46,7 +46,8 @@ def build_site():
         shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
     
     # Import Flask app here to avoid circular imports
-    from app import app
+    from app import create_app
+    app = create_app()
     
     # Generate HTML files for each route
     with app.test_client() as client:
