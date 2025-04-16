@@ -83,6 +83,10 @@ def deploy_to_github_pages():
     """Deploy the built site to GitHub Pages."""
     logger.info("Deploying to GitHub Pages...")
     
+    # Get the absolute path to the project root
+    project_root = os.path.abspath(os.path.dirname(__file__))
+    os.chdir(project_root)
+    
     # Make sure _site exists
     if not os.path.exists("_site"):
         logger.info("No _site directory found. Building site first...")
