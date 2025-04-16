@@ -96,53 +96,42 @@ def deploy_to_github_pages():
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     temp_branch = f"gh-pages-{timestamp}"
     
+    # Create and switch to temporary branch
+    run_command(f"git checkout --orphan {temp_branch}")
+    
+    # Remove everything except _site
+    run_command("git rm -rf .")
+    run_command("git clean -fxd")
+    
+    # Copy _site contents to root
+    for item in os.listdir("_site"):
+        src = os.path.join("_site", item)
+        dst = item
+        if os.path.isdir(src):
+            shutil.copytree(src, dst, dirs_exist_ok=True)
+        else:
+            shutil.copy2(src, dst)
+    
+    # Add .nojekyll file
+    with open(".nojekyll", "w") as f:
+        pass
+    
+    # Commit changes
+    run_command("git add .")
+    run_command('git commit -m "Deploy site"')
+    
+    # Push to gh-pages branch
+    run_command("git push origin HEAD:gh-pages --force")
+    
+    logger.info("Site deployed successfully!")
+    
+    # Clean up
+    run_command("git checkout main")
     try:
-        # Move _site to a temporary location
-        temp_site = f"_site_temp_{timestamp}"
-        shutil.move("_site", temp_site)
-        
-        # Create and switch to temporary branch
-        run_command(f"git checkout --orphan {temp_branch}")
-        
-        # Remove everything except _site
-        run_command("git rm -rf .")
-        run_command("git clean -fxd")
-        
-        # Move _site back and copy its contents to root
-        shutil.move(temp_site, "_site")
-        for item in os.listdir("_site"):
-            src = os.path.join("_site", item)
-            dst = item
-            if os.path.isdir(src):
-                shutil.copytree(src, dst, dirs_exist_ok=True)
-            else:
-                shutil.copy2(src, dst)
-        
-        # Add .nojekyll file
-        with open(".nojekyll", "w") as f:
-            pass
-        
-        # Commit changes
-        run_command("git add .")
-        run_command('git commit -m "Deploy site"')
-        
-        # Push to gh-pages branch
-        run_command("git push origin HEAD:gh-pages --force")
-        
-        logger.info("Site deployed successfully!")
-        
-    finally:
-        # Clean up
-        run_command("git checkout main")
-        try:
-            run_command(f"git branch -D {temp_branch}")
-        except:
-            # Ignore errors if the branch doesn't exist
-            pass
-        
-        # Clean up temporary site directory if it exists
-        if os.path.exists(temp_site):
-            shutil.move(temp_site, "_site")
+        run_command(f"git branch -D {temp_branch}")
+    except:
+        # Ignore errors if the branch doesn't exist
+        pass
 
 def serve_locally():
     """Serve the site locally for testing."""
