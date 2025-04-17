@@ -28,10 +28,31 @@
             const currentPath = window.location.pathname;
             const navLinks = document.querySelectorAll('.main-nav a');
             
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
             navLinks.forEach(link => {
                 const linkPath = link.getAttribute('href');
-                if (currentPath === linkPath || 
-                    (currentPath.startsWith(linkPath) && linkPath !== '/')) {
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
                     link.classList.add('active');
                 }
             });
