@@ -1,39 +1,11 @@
 import os
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from dataclasses import dataclass
 from pathlib import Path
 from .markdown_service import MarkdownService
 from .config_service import ConfigService
+from app.models.post import Post
 import re
-
-@dataclass
-class Post:
-    """Data class representing a blog post."""
-    title: str
-    date: datetime
-    content: str
-    slug: str
-    categories: List[str]
-    metadata: Dict[str, Any]
-    
-    @property
-    def url(self) -> str:
-        """Get the URL for this post."""
-        return f"/posts/{self.slug}"
-    
-    @property
-    def formatted_date(self) -> str:
-        """Get the formatted date string."""
-        return self.date.strftime("%B %d, %Y")
-
-    @property
-    def meta(self) -> Dict[str, Any]:
-        """Get post metadata."""
-        return {
-            'title': self.title,
-            'date': self.date
-        }
 
 class PostService:
     """Service for managing blog posts."""
@@ -55,62 +27,22 @@ class PostService:
         """Load all posts from the posts directory."""
         for file_path in self.posts_dir.glob("*.markdown"):
             try:
-                post = self._load_post(file_path)
+                post = Post.from_file(str(file_path), self.markdown._render_markdown)
                 if post:
-                    self._posts[post.slug] = post
+                    self._posts[post.path] = post
             except Exception as e:
                 print(f"Error loading post {file_path}: {str(e)}")
     
-    def _load_post(self, file_path: Path) -> Optional[Post]:
-        """Load a single post from a markdown file.
+    def get_post(self, path: str) -> Optional[Post]:
+        """Get a post by path.
         
         Args:
-            file_path: Path to the markdown file
-            
-        Returns:
-            Post object if successful, None otherwise
-        """
-        metadata, content = self.markdown.process_file(file_path)
-        
-        # Extract required fields
-        title = metadata.get('title')
-        date_str = metadata.get('date')
-        categories = metadata.get('categories', [])
-        
-        if not all([title, date_str]):
-            return None
-            
-        try:
-            # Handle both string and datetime objects
-            if isinstance(date_str, str):
-                date = datetime.strptime(date_str, "%Y-%m-%d")
-            else:
-                date = date_str
-        except ValueError:
-            return None
-            
-        # Generate slug from filename
-        slug = file_path.stem
-        
-        return Post(
-            title=title,
-            date=date,
-            content=content,
-            slug=slug,
-            categories=categories,
-            metadata=metadata
-        )
-    
-    def get_post(self, slug: str) -> Optional[Post]:
-        """Get a post by slug.
-        
-        Args:
-            slug: Post slug
+            path: Post path
             
         Returns:
             Post instance or None if not found
         """
-        return self._posts.get(slug)
+        return self._posts.get(path)
     
     def get_all_posts(self) -> List[Post]:
         """Get all posts.

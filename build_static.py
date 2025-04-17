@@ -46,102 +46,42 @@ def copy_static_assets():
     logger.info(f"Copied static assets to {site_static_dir}")
 
 def generate_static_files():
-    """Generate static HTML files for all routes."""
+    """Generate static files for the site."""
+    logger.info("Generating static files...")
+    
     app = create_app()
     
-    # Configure Flask to use relative URLs and prevent redirects
-    app.config['SERVER_NAME'] = None
-    app.config['PREFERRED_URL_SCHEME'] = 'http'
-    app.config['APPLICATION_ROOT'] = '/'
-    app.url_map.strict_slashes = False
-    
+    # Generate index page
     with app.test_request_context():
-        # Generate index page
-        logger.info("Generating index page")
-        index_html = render_template('index.html', title='About Me')
-        os.makedirs('_site', exist_ok=True)
-        
-        with open('_site/index.html', 'w', encoding='utf-8') as f:
+        index_html = render_template('index.html')
+        with open(os.path.join('_site', 'index.html'), 'w', encoding='utf-8') as f:
             f.write(index_html)
-        update_index_paths('_site/index.html')
-        
-        # Generate writings page
-        logger.info("Generating writings page")
+    
+    # Generate writings page
+    with app.test_request_context():
+        # Get all posts and ensure they have valid paths
         posts = get_posts()
-        writings_html = render_template('writings.html', title='Writings', posts=posts)
-        os.makedirs('_site/writings', exist_ok=True)
-        with open('_site/writings/index.html', 'w', encoding='utf-8') as f:
-            f.write(writings_html)
-        update_static_paths('_site/writings/index.html')
-        
-        # Generate post pages
-        logger.info("Generating post pages")
         for post in posts:
-            # Skip posts with empty paths
-            if not isinstance(post, Post):
-                logger.warning(f"Skipping invalid post: {post}")
-                continue
-                
-            # Create directory for post
-            post_dir = os.path.join('_site', 'posts', post.path)
-            os.makedirs(post_dir, exist_ok=True)
-            
-            # Generate post HTML
+            if not post.path or not post.path.strip():
+                post.path = slugify(post.meta.title)
+        
+        writings_html = render_template('writings.html', posts=posts)
+        os.makedirs(os.path.join('_site', 'writings'), exist_ok=True)
+        with open(os.path.join('_site', 'writings', 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(writings_html)
+    
+    # Generate post pages
+    for post in posts:
+        post_path = post.path
+        post_dir = os.path.join('_site', 'posts', post_path)
+        os.makedirs(post_dir, exist_ok=True)
+        
+        with app.test_request_context():
             post_html = render_template('post.html', post=post)
-            
-            # Write post HTML
-            post_path = os.path.join(post_dir, 'index.html')
-            with open(post_path, 'w', encoding='utf-8') as f:
+            with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
                 f.write(post_html)
-            update_static_paths(post_path)
-            
-            logger.info(f"Generated post: {post.path}")
-        
-        # Generate games page
-        logger.info("Generating games page")
-        games_html = render_template('games.html', title='Games')
-        os.makedirs('_site/games', exist_ok=True)
-        with open('_site/games/index.html', 'w', encoding='utf-8') as f:
-            f.write(games_html)
-        update_static_paths('_site/games/index.html')
-        
-        # Generate game pages
-        game_dirs = ['sudoku', 'hangman', 'snake', 'maze', 'bubble', 'gem-miner', 'survival', 'strands']
-        for game_dir in game_dirs:
-            if os.path.exists(os.path.join('app', 'templates', f'{game_dir}.html')):
-                logger.info(f"Generating {game_dir} page")
-                game_html = render_template(f'{game_dir}.html', title=game_dir.capitalize())
-                os.makedirs(f'_site/{game_dir}', exist_ok=True)
-                
-                game_path = f'_site/{game_dir}/index.html'
-                with open(game_path, 'w', encoding='utf-8') as f:
-                    f.write(game_html)
-                update_static_paths(game_path)
-        
-        # Generate projects page
-        logger.info("Generating projects page")
-        projects_html = render_template('projects.html', title='Projects')
-        os.makedirs('_site/projects', exist_ok=True)
-        with open('_site/projects/index.html', 'w', encoding='utf-8') as f:
-            f.write(projects_html)
-        update_static_paths('_site/projects/index.html')
-        
-        # Generate apps page
-        logger.info("Generating apps page")
-        apps_html = render_template('apps.html', title='Apps')
-        os.makedirs('_site/apps', exist_ok=True)
-        with open('_site/apps/index.html', 'w', encoding='utf-8') as f:
-            f.write(apps_html)
-        update_static_paths('_site/apps/index.html')
-        
-        # Generate error page
-        logger.info("Generating error page")
-        error_html = render_template('error.html', title='Error', error='Page not found')
-        with open('_site/error.html', 'w', encoding='utf-8') as f:
-            f.write(error_html)
-        update_static_paths('_site/error.html')
-        
-        logger.info("Static site generation completed")
+    
+    logger.info("Static files generated successfully")
 
 def update_static_paths(file_path):
     """Update static file paths in HTML files to be relative."""
@@ -168,14 +108,19 @@ def update_static_paths(file_path):
     # Update home link
     content = content.replace('href="/"', f'href="{relative_prefix}"')
     
-    # Update post links in the writings page
-    if 'writings/index.html' in file_path:
-        # Find all post items and update their links
-        content = re.sub(
-            r'<a href="#">([^<]+)</a>',
-            lambda m: f'<a href="{relative_prefix}posts/{slugify(m.group(1))}.html">{m.group(1)}</a>',
-            content
-        )
+    # Update post links to use directory structure instead of .html files
+    content = re.sub(
+        r'href="/posts/([^"]+)\.html"',
+        lambda m: f'href="{relative_prefix}posts/{m.group(1)}"',
+        content
+    )
+    
+    # Update empty post links (href="#") to use the data-path attribute
+    content = re.sub(
+        r'<a href="#">([^<]+)</a>',
+        lambda m: f'<a href="{relative_prefix}posts/{m.group(1).lower().replace(" ", "-")}">{m.group(1)}</a>',
+        content
+    )
     
     # Remove any remaining absolute paths that start with /
     content = re.sub(r'(href|src)="/((?!/)([^"]+))"', rf'\1="{relative_prefix}\2"', content)
@@ -218,11 +163,14 @@ def update_index_paths(file_path):
     content = content.replace('href="/projects/"', 'href="projects/"')
     content = content.replace('href="/apps/"', 'href="apps/"')
 
-    # Update post links
-    content = content.replace('href="/posts/', 'href="posts/')
+    # Update post links to use directory structure
+    content = re.sub(
+        r'href="/posts/([^"]+)\.html"',
+        lambda m: f'href="posts/{m.group(1)}"',
+        content
+    )
     
     # Remove trailing slashes from URLs
-    content = content.replace('.html/"', '.html"')
     content = content.replace('/">', '">')
 
     with open(file_path, 'w', encoding='utf-8') as f:
