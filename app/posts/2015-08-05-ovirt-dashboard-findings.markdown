@@ -10,7 +10,7 @@ categories: [virtualization]
 ---
 
 At [Red Hat Summit](http://www.redhat.com/summit/) this past year, we presented a few concepts that we hope to include as features in oVirt.NEXT. One of those concepts was a design for an overall dashboard. This dashboard would aggregate all of the data from within an environment (all data centers) and present the user with visualizations of this information. The following is the initial design concept for the overall dashboard that we showed:
-![Overall Dashboard](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/overall-dashboard.png)
+![Overall Dashboard](/static/img/_posts/overall-dashboard.png)
 
 We talked to about a dozen people at Summit as they visited our locations in Customer Central as well as Community Central and asked them to give their initial reactions to the design. The questions that we focused on were:
 1. What do you like with this design?

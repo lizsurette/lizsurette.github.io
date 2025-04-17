@@ -10,7 +10,7 @@ categories: [openstack]
 ---
 
 Let's take a quick look at the current (Havana) Horizon Overview page:
-![Havana Horizon Overview](https://github.com/lizsurette/lizsurette.github.io/raw/main/static/img/_posts/current-horizon-overview-page.png)
+![Havana Horizon Overview](/static/img/_posts/current-horizon-overview-page.png)
 
 Upon login, non-administrator users are taken to the Project Overview page within [Horizon](http://docs.openstack.org/developer/horizon/). Here the user can see a basic set of information about the number of instances, VCPUs, RAM, Floating IPs, and Security Groups that are currently in use in their environment along with the quota that they are allowed. There is also a table that lets the user view the running instances along with a usage summary for the instances shown. The user has the opportunity to filter this table by date range when needed. While this information might cover certain use cases, my colleague [Ju Lim](https://plus.google.com/105626042354015503324/posts) and I wanted to take a step back from the current Overview page and think through the type of information that this user of Horizon would want to see when they first log in.
 
