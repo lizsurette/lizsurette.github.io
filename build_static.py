@@ -80,8 +80,44 @@ def generate_static_files():
             post_html = render_template('post.html', post=post)
             with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
                 f.write(post_html)
-    
-    logger.info("Static files generated successfully")
+           
+        # Generate games page
+        logger.info("Generating games page")
+        games_html = render_template('games.html', title='Games')
+        os.makedirs('_site/games', exist_ok=True)
+        with open('_site/games/index.html', 'w', encoding='utf-8') as f:
+            f.write(games_html)
+        update_static_paths('_site/games/index.html')
+        
+        # Generate game pages
+        game_dirs = ['sudoku', 'hangman', 'snake', 'maze', 'bubble', 'gem-miner', 'survival', 'strands']
+        for game_dir in game_dirs:
+            if os.path.exists(os.path.join('app', 'templates', f'{game_dir}.html')):
+                logger.info(f"Generating {game_dir} page")
+                game_html = render_template(f'{game_dir}.html', title=game_dir.capitalize())
+                os.makedirs(f'_site/{game_dir}', exist_ok=True)
+                
+                game_path = f'_site/{game_dir}/index.html'
+                with open(game_path, 'w', encoding='utf-8') as f:
+                    f.write(game_html)
+                update_static_paths(game_path)
+        
+        # Generate projects page
+        logger.info("Generating projects page")
+        projects_html = render_template('projects.html', title='Projects')
+        os.makedirs('_site/projects', exist_ok=True)
+        with open('_site/projects/index.html', 'w', encoding='utf-8') as f:
+            f.write(projects_html)
+        update_static_paths('_site/projects/index.html')
+        
+        # Generate apps page
+        logger.info("Generating apps page")
+        apps_html = render_template('apps.html', title='Apps')
+        os.makedirs('_site/apps', exist_ok=True)
+        with open('_site/apps/index.html', 'w', encoding='utf-8') as f:
+            f.write(apps_html)
+        update_static_paths('_site/apps/index.html')
+
 
 def update_static_paths(file_path):
     """Update static file paths in HTML files to be relative."""
