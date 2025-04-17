@@ -99,62 +99,41 @@ def generate_static_files():
     
     logger.info("Static files generated successfully")
 
-def update_static_paths(file_path):
+def update_static_paths(html_file):
     """Update static file paths in HTML files to be relative."""
-    logger.info(f"Updating static paths in {file_path}")
-    
-    # Calculate the relative depth based on the file path
-    relative_depth = len(file_path.split(os.sep)[1:-1])
-    relative_prefix = '../' * relative_depth
-    
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(html_file, 'r', encoding='utf-8') as f:
         content = f.read()
-    
-    # Update static file paths
-    content = content.replace('href="/static/', f'href="{relative_prefix}static/')
-    content = content.replace('src="/static/', f'src="{relative_prefix}static/')
     
     # Update image paths from GitHub URLs to local paths
     content = re.sub(
         r'src="https://github\.com/lizsurette/lizsurette\.github\.io/raw/main/static/img/_posts/([^"]+)"',
-        lambda m: f'src="{relative_prefix}static/img/_posts/{m.group(1)}"',
+        r'src="../../static/img/_posts/\1"',
         content
     )
     
-    # Update navigation links
-    nav_links = ['writings', 'games', 'projects', 'apps']
-    for link in nav_links:
-        # Handle both with and without trailing slash
-        content = content.replace(f'href="/{link}/"', f'href="{relative_prefix}{link}"')
-        content = content.replace(f'href="/{link}"', f'href="{relative_prefix}{link}"')
-    
-    # Update home link
-    content = content.replace('href="/"', f'href="{relative_prefix}"')
-    
-    # Update post links to use directory structure instead of .html files
+    # Update image paths from absolute paths to relative paths
     content = re.sub(
-        r'href="/posts/([^"]+)\.html"',
-        lambda m: f'href="{relative_prefix}posts/{m.group(1)}"',
+        r'src="/static/img/_posts/([^"]+)"',
+        r'src="../../static/img/_posts/\1"',
         content
     )
     
-    # Update empty post links (href="#") to use the data-path attribute
-    content = re.sub(
-        r'<a href="#">([^<]+)</a>',
-        lambda m: f'<a href="{relative_prefix}posts/{m.group(1).lower().replace(" ", "-")}">{m.group(1)}</a>',
-        content
-    )
+    # Update navigation links to be relative
+    content = re.sub(r'href="/', 'href="../../', content)
+    
+    # Update home link to be relative
+    content = re.sub(r'href="([^"]*)" class="active">About Me</a>', r'href="../../" class="active">About Me</a>', content)
     
     # Remove any remaining absolute paths that start with /
-    content = re.sub(r'(href|src)="/((?!/)([^"]+))"', rf'\1="{relative_prefix}\2"', content)
+    content = re.sub(r'(href|src)="/', r'\1="../../', content)
     
     # Remove trailing slashes from URLs
-    content = re.sub(r'(href="[^"]+)/"', r'\1"', content)
+    content = re.sub(r'(href|src)="([^"]+)/"', r'\1="\2"', content)
     
-    with open(file_path, 'w', encoding='utf-8') as f:
+    with open(html_file, 'w', encoding='utf-8') as f:
         f.write(content)
     
-    logger.info(f"Updated static paths in {file_path}")
+    logger.info(f"Updated static paths in {html_file}")
 
 def slugify(text):
     """Convert text to a URL-friendly slug."""
