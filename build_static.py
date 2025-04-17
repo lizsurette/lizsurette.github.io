@@ -114,6 +114,13 @@ def update_static_paths(file_path):
     content = content.replace('href="/static/', f'href="{relative_prefix}static/')
     content = content.replace('src="/static/', f'src="{relative_prefix}static/')
     
+    # Update image paths from GitHub URLs to local paths
+    content = re.sub(
+        r'src="https://github\.com/lizsurette/lizsurette\.github\.io/raw/main/static/img/_posts/([^"]+)"',
+        lambda m: f'src="{relative_prefix}static/img/_posts/{m.group(1)}"',
+        content
+    )
+    
     # Update navigation links
     nav_links = ['writings', 'games', 'projects', 'apps']
     for link in nav_links:
