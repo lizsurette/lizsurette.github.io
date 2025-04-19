@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definitions -->
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2c1810" />
+      <stop offset="100%" stop-color="#1a0f0a" />
+    </linearGradient>
+    
+    <!-- Slot machine frame gradient -->
+    <linearGradient id="frameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b4513" />
+      <stop offset="50%" stop-color="#5d2e0c" />
+      <stop offset="100%" stop-color="#8b4513" />
+    </linearGradient>
+    
+    <!-- Gem shine effect -->
+    <filter id="gemGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Sparkle effect -->
+    <filter id="sparkle" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Neon glow effect -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Slot reel texture -->
+    <pattern id="reelTexture" patternUnits="userSpaceOnUse" width="100" height="100">
+      <rect width="100" height="100" fill="#1a0f0a" />
+      <circle cx="20" cy="20" r="2" fill="#2c1810" />
+      <circle cx="60" cy="40" r="3" fill="#2c1810" />
+      <circle cx="80" cy="80" r="2" fill="#2c1810" />
+      <circle cx="30" cy="70" r="3" fill="#2c1810" />
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGradient)" />
+  
+  <!-- Slot machine frame -->
+  <rect x="150" y="100" width="500" height="400" rx="20" ry="20" fill="url(#frameGradient)" stroke="#3d2314" stroke-width="8" />
+  
+  <!-- Slot machine top -->
+  <rect x="150" y="80" width="500" height="40" rx="10" ry="10" fill="#3d2314" />
+  
+  <!-- Slot machine bottom -->
+  <rect x="150" y="500" width="500" height="40" rx="10" ry="10" fill="#3d2314" />
+  
+  <!-- Slot machine display area -->
+  <rect x="180" y="130" width="440" height="340" fill="#000000" stroke="#3d2314" stroke-width="4" />
+  
+  <!-- Slot reels background -->
+  <rect x="200" y="150" width="400" height="300" fill="url(#reelTexture)" />
+  
+  <!-- Slot reel dividers -->
+  <line x1="333" y1="150" x2="333" y2="450" stroke="#3d2314" stroke-width="4" />
+  <line x1="466" y1="150" x2="466" y2="450" stroke="#3d2314" stroke-width="4" />
+  
+  <!-- Gems in slot reels -->
+  <!-- Reel 1 -->
+  <g transform="translate(266, 300)">
+    <!-- Diamond -->
+    <polygon points="0,0 25,-35 50,0 25,35" fill="#b9f2ff" stroke="#ffffff" stroke-width="2" filter="url(#gemGlow)" />
+    <circle cx="25" cy="0" r="8" fill="#ffffff" opacity="0.9" />
+    <circle cx="20" cy="-5" r="3" fill="#ffffff" opacity="0.7" />
+    <circle cx="30" cy="5" r="3" fill="#ffffff" opacity="0.7" />
+  </g>
+  
+  <!-- Reel 2 -->
+  <g transform="translate(400, 300)">
+    <!-- Ruby -->
+    <polygon points="0,0 25,-35 50,0 25,35" fill="#e0115f" stroke="#ffffff" stroke-width="2" filter="url(#gemGlow)" />
+    <circle cx="25" cy="0" r="8" fill="#ffffff" opacity="0.9" />
+    <circle cx="20" cy="-5" r="3" fill="#ffffff" opacity="0.7" />
+    <circle cx="30" cy="5" r="3" fill="#ffffff" opacity="0.7" />
+  </g>
+  
+  <!-- Reel 3 -->
+  <g transform="translate(533, 300)">
+    <!-- Emerald -->
+    <polygon points="0,0 25,-35 50,0 25,35" fill="#50c878" stroke="#ffffff" stroke-width="2" filter="url(#gemGlow)" />
+    <circle cx="25" cy="0" r="8" fill="#ffffff" opacity="0.9" />
+    <circle cx="20" cy="-5" r="3" fill="#ffffff" opacity="0.7" />
+    <circle cx="30" cy="5" r="3" fill="#ffffff" opacity="0.7" />
+  </g>
+  
+  <!-- Mining elements -->
+  <!-- Pickaxe -->
+  <g transform="translate(200, 200) rotate(-30)">
+    <rect x="0" y="-8" width="80" height="16" fill="#8b4513" />
+    <polygon points="80,-15 100,-8 80,0" fill="#a19d94" />
+    <rect x="10" y="-12" width="60" height="6" fill="#a0522d" />
+    <rect x="10" y="6" width="60" height="6" fill="#a0522d" />
+  </g>
+  
+  <!-- Mining particles -->
+  <g transform="translate(250, 220)">
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9" filter="url(#sparkle)" />
+    <circle cx="15" cy="-15" r="3" fill="#ffd700" opacity="0.8" filter="url(#sparkle)" />
+    <circle cx="-20" cy="10" r="3" fill="#ffd700" opacity="0.8" filter="url(#sparkle)" />
+    <circle cx="10" cy="20" r="3" fill="#ffd700" opacity="0.8" filter="url(#sparkle)" />
+  </g>
+  
+  <!-- Mine cart -->
+  <g transform="translate(600, 250)">
+    <rect x="0" y="0" width="80" height="40" fill="#8b4513" rx="5" ry="5" />
+    <rect x="10" y="-10" width="60" height="10" fill="#a0522d" rx="3" ry="3" />
+    <circle cx="20" cy="40" r="10" fill="#3d2314" />
+    <circle cx="60" cy="40" r="10" fill="#3d2314" />
+    <rect x="70" y="0" width="20" height="20" fill="#a0522d" rx="3" ry="3" />
+  </g>
+  
+  <!-- Gems in mine cart -->
+  <g transform="translate(610, 260)">
+    <!-- Gold -->
+    <polygon points="0,0 15,-20 30,0 15,20" fill="#ffd700" stroke="#ffffff" stroke-width="1" filter="url(#gemGlow)" />
+    <circle cx="15" cy="0" r="5" fill="#ffffff" opacity="0.9" />
+  </g>
+  
+  <g transform="translate(630, 265)">
+    <!-- Diamond -->
+    <polygon points="0,0 15,-20 30,0 15,20" fill="#b9f2ff" stroke="#ffffff" stroke-width="1" filter="url(#gemGlow)" />
+    <circle cx="15" cy="0" r="5" fill="#ffffff" opacity="0.9" />
+  </g>
+  
+  <g transform="translate(650, 260)">
+    <!-- Ruby -->
+    <polygon points="0,0 15,-20 30,0 15,20" fill="#e0115f" stroke="#ffffff" stroke-width="1" filter="url(#gemGlow)" />
+    <circle cx="15" cy="0" r="5" fill="#ffffff" opacity="0.9" />
+  </g>
+  
+  <!-- Slot machine buttons -->
+  <circle cx="300" cy="470" r="20" fill="#ff0000" stroke="#3d2314" stroke-width="2" />
+  <circle cx="400" cy="470" r="20" fill="#00ff00" stroke="#3d2314" stroke-width="2" />
+  <circle cx="500" cy="470" r="20" fill="#0000ff" stroke="#3d2314" stroke-width="2" />
+  
+  <!-- Slot machine lever -->
+  <g transform="translate(150, 300)">
+    <rect x="0" y="-10" width="30" height="100" fill="#c0c0c0" rx="5" ry="5" />
+    <circle cx="15" cy="-20" r="15" fill="#a0a0a0" />
+  </g>
+  
+  <!-- Game title with neon effect -->
+  <g filter="url(#neonGlow)">
+    <text x="400" y="550" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#ffd700">GEM MINER</text>
+  </g>
+  
+  <!-- Subtitle -->
+  <text x="400" y="580" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#ffcc00">Hit the Jackpot!</text>
+  
+  <!-- Decorative elements -->
+  <g transform="translate(100, 150)">
+    <circle cx="0" cy="0" r="15" fill="#ffd700" opacity="0.8" />
+    <circle cx="30" cy="0" r="15" fill="#b9f2ff" opacity="0.8" />
+    <circle cx="60" cy="0" r="15" fill="#e0115f" opacity="0.8" />
+  </g>
+  
+  <g transform="translate(700, 150)">
+    <circle cx="0" cy="0" r="15" fill="#ffd700" opacity="0.8" />
+    <circle cx="-30" cy="0" r="15" fill="#b9f2ff" opacity="0.8" />
+    <circle cx="-60" cy="0" r="15" fill="#e0115f" opacity="0.8" />
+  </g>
+  
+  <!-- Dollar signs -->
+  <text x="100" y="200" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffd700" opacity="0.8">$</text>
+  <text x="700" y="200" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffd700" opacity="0.8">$</text>
+  <text x="100" y="400" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffd700" opacity="0.8">$</text>
+  <text x="700" y="400" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffd700" opacity="0.8">$</text>
+</svg> 
