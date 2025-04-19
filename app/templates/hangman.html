@@ -3,6 +3,11 @@
 {% block title %}Hangman Game{% endblock %}
 
 {% block content %}
+<!-- Back button to return to games list -->
+<div class="custom-back-button-container">
+    <a href="{{ url_for('main.games') }}" class="custom-back-button">← Back to Games</a>
+</div>
+
 <article class="post">
     <header class="post-header">
         <h1 class="post-title">{{ title }}</h1>

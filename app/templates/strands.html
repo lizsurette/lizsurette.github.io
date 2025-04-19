@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Strands 2{% endblock %}
+{% block title %}Strands{% endblock %}
 
 {% block content %}
+<!-- Back button to return to games list -->
+<div class="custom-back-button-container">
+    <a href="{{ url_for('main.games') }}" class="custom-back-button">← Back to Games</a>
+</div>
+
 <style>
     .game-container {
         max-width: 600px;

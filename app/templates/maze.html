@@ -3,6 +3,11 @@
 {% block title %}Maze Game{% endblock %}
 
 {% block content %}
+<!-- Back button to return to games list -->
+<div class="custom-back-button-container">
+    <a href="{{ url_for('main.games') }}" class="custom-back-button">← Back to Games</a>
+</div>
+
 <style>
     .game-container {
         max-width: 900px;

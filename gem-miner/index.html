@@ -284,34 +284,6 @@
             }
         }
         
-        /* Back button styles */
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            margin-bottom: 20px;
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        
-        .back-button:hover {
-            color: #45a049;
-            text-decoration: none;
-            background-color: rgba(76, 175, 80, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .back-button i {
-            margin-right: 8px;
-        }
-        
         /* Game description styles */
         .game-description {
             background: #2d2d2d;
@@ -383,7 +355,7 @@
                 <ul>
                     <li><a href="../">About Me</a></li>
                     <li><a href="../writings/">Writings</a></li>
-                    <li><a href="../games/" class="active">Games</a></li>
+                    <li><a href="../games" class="active">Games</a></li>
                     <li><a href="../projects/">Projects</a></li>
                     <li><a href="../apps/">Apps</a></li>
                 </ul>
@@ -396,12 +368,12 @@
                     <hr />
                 </header>
 
+                <!-- Back button to return to games list -->
+                <div class="custom-back-button-container">
+                    <a href="../games" class="custom-back-button">← Back to Games</a>
+                </div>
+
                 <div class="post-content">
-                    <!-- Back button to return to games list -->
-                    <button onclick="window.location.href='../games/'" class="back-button">
-                        <i class="fa fa-arrow-left"></i> Back to Games
-                    </button>
-                    
                     <div class="game-description">
                         <p>Dig deep into the mine to discover valuable gems! Mine gems, sell them for money, and upgrade your tools to dig deeper and find rarer gems.</p>
                     </div>

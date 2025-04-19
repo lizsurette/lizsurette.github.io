@@ -42,12 +42,16 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <header class="post-header">
+                    <h1 class="post-title">Sudoku</h1>
+                    <hr />
+                </header>
+
                 <!-- Back button to return to games list -->
-                <button onclick="window.location.href='../games/'" class="back-button">
-                    <i class="fa fa-arrow-left"></i> Back to Games
-                </button>
-                
-                <h1>Sudoku</h1>
+                <div class="custom-back-button-container">
+                    <a href="../games" class="custom-back-button">← Back to Games</a>
+                </div>
+
                 <div class="game-controls">
                     <button id="new-game" class="btn btn-primary">New Game</button>
                     <button id="check-solution" class="btn btn-success">Check Solution</button>
