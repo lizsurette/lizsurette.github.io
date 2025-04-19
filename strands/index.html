@@ -41,7 +41,48 @@
             </nav>
         </div>
         <div class="content">
-            
+            <article class="post">
+                <header class="post-header">
+                    <h1 class="post-title">Strands</h1>
+                    <hr />
+                </header>
+
+                <!-- Back button to return to games list -->
+                <button onclick="window.location.href='../games/'" class="back-button">
+                    <i class="fa fa-arrow-left"></i> Back to Games
+                </button>
+
+                <style>
+                    /* Back button styles */
+                    .back-button {
+                        display: inline-flex;
+                        align-items: center;
+                        margin-bottom: 20px;
+                        color: #4CAF50;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s;
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                        padding: 10px 18px;
+                        border-radius: 6px;
+                        font-size: 16px;
+                    }
+
+                    .back-button:hover {
+                        color: #45a049;
+                        text-decoration: none;
+                        background-color: rgba(76, 175, 80, 0.1);
+                        transform: translateY(-2px);
+                    }
+
+                    .back-button i {
+                        margin-right: 8px;
+                    }
+                </style>
+
+                <div class="post-content">
 <style>
     .game-container {
         max-width: 600px;
@@ -198,7 +239,6 @@
         background-color: #ffd700;
         border-color: #ffd700;
         color: #000;
-        opacity: 1;
     }
 
     .game-controls {
@@ -299,46 +339,81 @@
         font-size: 14px;
         line-height: 1.4;
     }
+
+    /* Back button styles */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+        color: #4CAF50;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+    
+    .back-button:hover {
+        color: #45a049;
+        text-decoration: none;
+        background-color: rgba(76, 175, 80, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .back-button i {
+        margin-right: 8px;
+    }
 </style>
 
-<div class="game-container">
-    <div class="game-header">
-        <div class="game-title">Strands: Renaissance Art</div>
-        <div class="score-container">
-            <span class="score">Score 3: <span id="score">0</span></span>
-            <span id="perfect-badge" class="perfect-badge hidden">Perfect!</span>
+<div class="content">
+    <!-- Back button to return to games list -->
+    <button onclick="window.location.href='../games/'" class="back-button">
+        <i class="fa fa-arrow-left"></i> Back to Games
+    </button>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-title">Strands: Renaissance Art</div>
+            <div class="score-container">
+                <span class="score">Score 3: <span id="score">0</span></span>
+                <span id="perfect-badge" class="perfect-badge hidden">Perfect!</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <div id="progress-text" class="progress-text">0/0 Theme Words</div>
         </div>
-        <div class="progress-bar">
-            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+
+        <div class="theme-container">
+            <div class="theme-hint">Theme: <span id="theme-hint"></span></div>
         </div>
-        <div id="progress-text" class="progress-text">0/0 Theme Words</div>
-    </div>
 
-    <div class="theme-container">
-        <div class="theme-hint">Theme: <span id="theme-hint"></span></div>
-    </div>
+        <div id="game-board" class="game-board"></div>
 
-    <div id="game-board" class="game-board"></div>
+        <div class="game-controls">
+            <div id="selected-word" class="selected-word"></div>
+            <button id="submitWord" class="btn btn-primary">Submit Word</button>
+            <button id="clearSelection" class="btn btn-secondary">Clear Selection</button>
+            <button id="newGame" class="btn btn-success">New Game</button>
+        </div>
 
-    <div class="game-controls">
-        <div id="selected-word" class="selected-word"></div>
-        <button id="submitWord" class="btn btn-primary">Submit Word</button>
-        <button id="clearSelection" class="btn btn-secondary">Clear Selection</button>
-        <button id="newGame" class="btn btn-success">New Game</button>
-    </div>
+        <div id="found-words" class="found-words"></div>
 
-    <div id="found-words" class="found-words"></div>
-
-    <div class="game-rules">
-        <h3>How to Play</h3>
-        <ul>
-            <li>Find words by selecting adjacent letters in any direction.</li>
-            <li>Words must be at least 3 letters long.</li>
-            <li>Each letter can only be used once in a word.</li>
-            <li>Theme words are worth double points.</li>
-            <li>The spangram (a word that uses all letters and spans the grid) is worth triple points.</li>
-            <li>Find all theme words and the spangram to achieve a Perfect score!</li>
-        </ul>
+        <div class="game-rules">
+            <h3>How to Play</h3>
+            <ul>
+                <li>Find words by selecting adjacent letters in any direction.</li>
+                <li>Words must be at least 3 letters long.</li>
+                <li>Each letter can only be used once in a word.</li>
+                <li>Theme words are worth double points.</li>
+                <li>The spangram (a word that uses all letters and spans the grid) is worth triple points.</li>
+                <li>Find all theme words and the spangram to achieve a Perfect score!</li>
+            </ul>
+        </div>
     </div>
 </div>
 

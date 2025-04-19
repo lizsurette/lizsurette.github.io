@@ -33,6 +33,13 @@
                 ? '/lizsurette.github.io' 
                 : '';
             
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
             navLinks.forEach(link => {
                 const linkPath = link.getAttribute('href');
                 
@@ -53,6 +60,12 @@
                 
                 // Special case for home page
                 if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
                     link.classList.add('active');
                 }
             });

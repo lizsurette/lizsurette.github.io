@@ -20,6 +20,7 @@ def index():
         return render_template('error.html', title='Error', error="An error occurred while loading the home page.")
 
 @main.route('/writings')
+@main.route('/writings/')
 def writings():
     """
     Render the writings page.
