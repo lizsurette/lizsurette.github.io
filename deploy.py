@@ -119,18 +119,36 @@ def deploy_to_github_pages():
         # Create and switch to temporary branch
         run_command(f"git checkout --orphan {temp_branch}")
         
+        # Create a temporary directory to store _site contents
+        temp_dir = "temp_site"
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+        os.makedirs(temp_dir)
+        
+        # Copy _site contents to temporary directory
+        for item in os.listdir("_site"):
+            src = os.path.join("_site", item)
+            dst = os.path.join(temp_dir, item)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src, dst)
+        
         # Remove everything except _site
         run_command("git rm -rf .")
         run_command("git clean -fxd")
         
-        # Copy _site contents to root
-        for item in os.listdir("_site"):
-            src = os.path.join("_site", item)
+        # Copy temporary directory contents to root
+        for item in os.listdir(temp_dir):
+            src = os.path.join(temp_dir, item)
             dst = item
             if os.path.isdir(src):
                 shutil.copytree(src, dst, dirs_exist_ok=True)
             else:
                 shutil.copy2(src, dst)
+        
+        # Clean up temporary directory
+        shutil.rmtree(temp_dir)
         
         # Add .nojekyll file
         with open(".nojekyll", "w") as f:
