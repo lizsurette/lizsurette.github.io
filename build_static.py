@@ -99,8 +99,8 @@ def generate_static_files():
     games = ['snake', 'strands', 'sudoku', 'maze', 'gem-miner', 'hangman', 'bubble-shooter', 'survival']
     for game in games:
         try:
-            # Create the game directory structure
-            game_dir = os.path.join('_site', 'games', game)
+            # Create the game directory structure directly in _site
+            game_dir = os.path.join('_site', game)
             os.makedirs(game_dir, exist_ok=True)
             
             # Map game names to their template names
@@ -166,6 +166,9 @@ def update_static_paths(html_file):
     # Update home link to be relative
     content = re.sub(r'href="([^"]*)" class="active">About Me</a>', r'href="../../" class="active">About Me</a>', content)
     
+    # Update game links to point to the root directory
+    content = re.sub(r'href="/games/([^"]+)"', r'href="/\1"', content)
+    
     # Remove any remaining absolute paths that start with /
     content = re.sub(r'(href|src)="/', r'\1="../../', content)
     
@@ -206,6 +209,9 @@ def update_index_paths(file_path):
     content = content.replace('href="/games/"', 'href="games/"')
     content = content.replace('href="/projects/"', 'href="projects/"')
     content = content.replace('href="/apps/"', 'href="apps/"')
+
+    # Update game links to point to the root directory
+    content = re.sub(r'href="/games/([^"]+)"', r'href="\1"', content)
 
     # Update post links to use directory structure
     content = re.sub(
