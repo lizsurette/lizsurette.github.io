@@ -10,14 +10,13 @@
 
 <article class="post">
     <header class="post-header">
-        <h1 class="post-title">{{ title }}</h1>
-        <hr />
+        <h1 class="page-header">{{ title }}</h1>
     </header>
 
     <div class="post-content">
         <div class="game-container">
             <div class="game-wrapper">
-                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <canvas id="gameCanvas" width="600" height="400"></canvas>
                 <div class="game-controls">
                     <div class="score-display">Score: <span id="score">0</span></div>
                     <div class="high-score-display">High Score: <span id="highScore">0</span></div>
@@ -30,29 +29,34 @@
 
 <style>
     .game-container {
-        max-width: 800px;
+        max-width: 1000px;
         margin: 0 auto;
         padding: 20px;
     }
     
     .game-wrapper {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
         margin-bottom: 30px;
+        gap: 20px;
     }
     
     #gameCanvas {
         border: 2px solid #3fa757;
         background-color: #f8f8f8;
-        margin-bottom: 20px;
     }
     
     .game-controls {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f8f8;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        min-width: 200px;
     }
     
     .score-display, .high-score-display {
@@ -75,7 +79,12 @@
         background-color: #2d7a41;
     }
     
-    @media (max-width: 500px) {
+    @media (max-width: 700px) {
+        .game-wrapper {
+            flex-direction: column;
+            align-items: center;
+        }
+        
         #gameCanvas {
             width: 300px;
             height: 300px;
