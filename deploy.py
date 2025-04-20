@@ -42,11 +42,31 @@ def build_site():
     # Clean and prepare _site directory
     clean_site_directory()
     
+    # Debug: Check if _site directory exists
+    if os.path.exists("_site"):
+        logging.info("_site directory exists after cleaning")
+    else:
+        logging.error("_site directory does not exist after cleaning")
+    
     # Copy static assets
     copy_static_assets()
     
+    # Debug: Check if _site directory exists after copying static assets
+    if os.path.exists("_site"):
+        logging.info("_site directory exists after copying static assets")
+        logging.info(f"Contents: {os.listdir('_site')}")
+    else:
+        logging.error("_site directory does not exist after copying static assets")
+    
     # Generate static files
     generate_static_files()
+    
+    # Debug: Check if _site directory exists after generating static files
+    if os.path.exists("_site"):
+        logging.info("_site directory exists after generating static files")
+        logging.info(f"Contents: {os.listdir('_site')}")
+    else:
+        logging.error("_site directory does not exist after generating static files")
     
     # Copy any additional directories needed (only non-game directories)
     for directory in ['posts', 'survival']:
@@ -86,6 +106,11 @@ def deploy_to_github_pages():
             raise FileNotFoundError("_site directory not found after building")
         if not os.listdir("_site"):
             raise FileNotFoundError("_site directory is empty after building")
+        
+        # Debug: List contents of _site directory
+        logger.info("Contents of _site directory:")
+        for item in os.listdir("_site"):
+            logger.info(f"  - {item}")
         
         # Create a temporary branch for deployment
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
