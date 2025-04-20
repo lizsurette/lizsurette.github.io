@@ -124,6 +124,7 @@ def deploy_to_github_pages():
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
         os.makedirs(temp_dir)
+        logger.info(f"Created temporary directory: {temp_dir}")
         
         # Copy _site contents to temporary directory
         for item in os.listdir("_site"):
@@ -133,10 +134,32 @@ def deploy_to_github_pages():
                 shutil.copytree(src, dst, dirs_exist_ok=True)
             else:
                 shutil.copy2(src, dst)
+        logger.info(f"Copied _site contents to {temp_dir}")
+        logger.info(f"Contents of {temp_dir}: {os.listdir(temp_dir)}")
         
         # Remove everything except _site
         run_command("git rm -rf .")
         run_command("git clean -fxd")
+        logger.info("Removed everything from git")
+        
+        # Check if temp_dir still exists
+        if os.path.exists(temp_dir):
+            logger.info(f"{temp_dir} still exists after git clean")
+        else:
+            logger.error(f"{temp_dir} was removed by git clean")
+            # Recreate the temporary directory
+            os.makedirs(temp_dir)
+            logger.info(f"Recreated {temp_dir}")
+            
+            # Copy _site contents to temporary directory again
+            for item in os.listdir("_site"):
+                src = os.path.join("_site", item)
+                dst = os.path.join(temp_dir, item)
+                if os.path.isdir(src):
+                    shutil.copytree(src, dst, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(src, dst)
+            logger.info(f"Copied _site contents to {temp_dir} again")
         
         # Copy temporary directory contents to root
         for item in os.listdir(temp_dir):
@@ -146,9 +169,7 @@ def deploy_to_github_pages():
                 shutil.copytree(src, dst, dirs_exist_ok=True)
             else:
                 shutil.copy2(src, dst)
-        
-        # Clean up temporary directory
-        shutil.rmtree(temp_dir)
+        logger.info("Copied temporary directory contents to root")
         
         # Add .nojekyll file
         with open(".nojekyll", "w") as f:
