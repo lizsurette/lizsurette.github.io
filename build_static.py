@@ -25,14 +25,12 @@ def clean_site_directory():
     """Clean the _site directory before generating static files."""
     site_dir = '_site'
     if os.path.exists(site_dir):
-        # Remove HTML files but preserve directories
-        for item in os.listdir(site_dir):
-            item_path = os.path.join(site_dir, item)
-            if os.path.isfile(item_path):
-                os.remove(item_path)
-    else:
-        os.makedirs(site_dir)
-    logger.info(f"Cleaned {site_dir} directory")
+        # Remove the entire directory and recreate it
+        shutil.rmtree(site_dir)
+    
+    # Create the directory
+    os.makedirs(site_dir)
+    logger.info(f"Cleaned and created {site_dir} directory")
 
 def copy_static_assets():
     """Copy static assets to the _site directory."""
@@ -108,8 +106,12 @@ def generate_static_files():
             template_name = f'{game}.html'
             if game == 'bubble':
                 template_name = 'bubble.html'  # Use the correct template name
-            with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
-                f.write(render_template(template_name))
+            
+            # Use the app context for rendering templates
+            with app.test_request_context():
+                game_html = render_template(template_name)
+                with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
+                    f.write(game_html)
         except Exception as e:
             print(f"Error generating {game} game page: {e}")
     
