@@ -48,8 +48,8 @@ def build_site():
     # Generate static files
     generate_static_files()
     
-    # Copy any additional directories needed
-    for directory in ['posts', 'survival', 'snake', 'strands', 'sudoku', 'maze', 'gem-miner', 'hangman', 'bubble']:
+    # Copy any additional directories needed (only non-game directories)
+    for directory in ['posts', 'survival']:
         if os.path.exists(directory):
             shutil.copytree(directory, f'_site/{directory}', dirs_exist_ok=True)
     
@@ -65,7 +65,19 @@ def deploy_to_github_pages():
     original_dir = os.getcwd()
     os.chdir(project_root)
     
+    # Store the current branch name for recovery
+    current_branch = None
     try:
+        # Get current branch name
+        current_branch = run_command("git rev-parse --abbrev-ref HEAD").strip()
+        logger.info(f"Current branch: {current_branch}")
+        
+        # Check for uncommitted changes
+        status = run_command("git status --porcelain")
+        if status:
+            logger.warning("You have uncommitted changes. These will be stashed.")
+            run_command("git stash save 'Auto-stashed by deploy script'")
+        
         # Always rebuild the site before deploying
         build_site()
         
@@ -109,12 +121,31 @@ def deploy_to_github_pages():
         logger.info("Site deployed successfully!")
         
         # Clean up
-        run_command("git checkout main")
         try:
+            # Return to the original branch
+            run_command(f"git checkout {current_branch}")
+            logger.info(f"Returned to branch: {current_branch}")
+            
+            # Delete the temporary branch
             run_command(f"git branch -D {temp_branch}")
-        except:
-            # Ignore errors if the branch doesn't exist
-            pass
+            logger.info(f"Deleted temporary branch: {temp_branch}")
+            
+            # Apply stashed changes if any
+            if status:
+                run_command("git stash pop")
+                logger.info("Applied stashed changes")
+        except Exception as e:
+            logger.error(f"Error during cleanup: {e}")
+            logger.error("You may need to manually restore your branch")
+    except Exception as e:
+        logger.error(f"Deployment failed: {e}")
+        # Try to recover the original branch
+        if current_branch:
+            try:
+                run_command(f"git checkout {current_branch}")
+                logger.info(f"Recovered to branch: {current_branch}")
+            except:
+                logger.error("Failed to recover original branch. Please check your git status.")
     finally:
         # Always change back to the original directory
         os.chdir(original_dir)
