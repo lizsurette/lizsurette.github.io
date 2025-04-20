@@ -137,39 +137,42 @@ def deploy_to_github_pages():
         logger.info(f"Copied _site contents to {temp_dir}")
         logger.info(f"Contents of {temp_dir}: {os.listdir(temp_dir)}")
         
+        # Store _site contents in memory
+        site_contents = {}
+        for item in os.listdir("_site"):
+            src = os.path.join("_site", item)
+            if os.path.isdir(src):
+                site_contents[item] = "directory"
+            else:
+                with open(src, 'rb') as f:
+                    site_contents[item] = f.read()
+        logger.info("Stored _site contents in memory")
+        
         # Remove everything except _site
         run_command("git rm -rf .")
         run_command("git clean -fxd")
         logger.info("Removed everything from git")
         
-        # Check if temp_dir still exists
-        if os.path.exists(temp_dir):
-            logger.info(f"{temp_dir} still exists after git clean")
-        else:
-            logger.error(f"{temp_dir} was removed by git clean")
-            # Recreate the temporary directory
-            os.makedirs(temp_dir)
-            logger.info(f"Recreated {temp_dir}")
-            
-            # Copy _site contents to temporary directory again
-            for item in os.listdir("_site"):
-                src = os.path.join("_site", item)
-                dst = os.path.join(temp_dir, item)
-                if os.path.isdir(src):
-                    shutil.copytree(src, dst, dirs_exist_ok=True)
-                else:
-                    shutil.copy2(src, dst)
-            logger.info(f"Copied _site contents to {temp_dir} again")
+        # Recreate _site directory and restore contents
+        os.makedirs("_site")
+        for item, content in site_contents.items():
+            dst = os.path.join("_site", item)
+            if content == "directory":
+                os.makedirs(dst)
+            else:
+                with open(dst, 'wb') as f:
+                    f.write(content)
+        logger.info("Restored _site contents")
         
-        # Copy temporary directory contents to root
-        for item in os.listdir(temp_dir):
-            src = os.path.join(temp_dir, item)
+        # Copy _site contents to root
+        for item in os.listdir("_site"):
+            src = os.path.join("_site", item)
             dst = item
             if os.path.isdir(src):
                 shutil.copytree(src, dst, dirs_exist_ok=True)
             else:
                 shutil.copy2(src, dst)
-        logger.info("Copied temporary directory contents to root")
+        logger.info("Copied _site contents to root")
         
         # Add .nojekyll file
         with open(".nojekyll", "w") as f:
