@@ -101,10 +101,14 @@ def generate_static_files():
     games = ['snake', 'strands', 'sudoku', 'maze', 'gem-miner', 'hangman', 'bubble']
     for game in games:
         try:
+            # Create the game directory structure
+            game_dir = os.path.join('_site', 'games', game)
+            os.makedirs(game_dir, exist_ok=True)
+            
             template_name = f'{game}.html'
             if game == 'bubble':
                 template_name = 'bubble.html'  # Use the correct template name
-            with open(f'_site/games/{game}/index.html', 'w') as f:
+            with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
                 f.write(render_template(template_name))
         except Exception as e:
             print(f"Error generating {game} game page: {e}")
