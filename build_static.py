@@ -97,6 +97,27 @@ def generate_static_files():
             with open(os.path.join(page_dir, 'index.html'), 'w', encoding='utf-8') as f:
                 f.write(page_html)
     
+    # Generate game pages from templates
+    games = ['snake', 'strands', 'sudoku', 'maze', 'hangman', 'bubble-shooter']
+    for game in games:
+        game_dir = os.path.join('_site', 'games', game)
+        os.makedirs(game_dir, exist_ok=True)
+        
+        with app.test_request_context():
+            try:
+                game_html = render_template(f'{game}.html', title=f'{game.title()} Game')
+                with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
+                    f.write(game_html)
+            except Exception as e:
+                logger.error(f"Error generating {game} game page: {e}")
+                # Fallback to copying static files if template doesn't exist
+                if os.path.exists(os.path.join('app', 'static', 'games', game)):
+                    shutil.copytree(
+                        os.path.join('app', 'static', 'games', game),
+                        game_dir,
+                        dirs_exist_ok=True
+                    )
+    
     logger.info("Static files generated successfully")
 
 def update_static_paths(html_file):
