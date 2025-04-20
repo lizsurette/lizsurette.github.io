@@ -20,21 +20,21 @@
             <div class="game-card">
                 <a href="../hangman/">
                     <img src="{{ url_for('static', filename='projects/hangman-game.svg') }}" alt="Hangman Game">
-                    <h2>Hangman Game</h2>
+                    <h2>Hangman</h2>
                     <p>Guess the word before the hangman is complete!</p>
                 </a>
             </div>
             <div class="game-card">
                 <a href="../strands/">
                     <img src="{{ url_for('static', filename='projects/strands-game.svg') }}" alt="Strands Game">
-                    <h2>Strands Game</h2>
+                    <h2>Strands</h2>
                     <p>Find words by connecting adjacent letters in this word-finding puzzle game.</p>
                 </a>
             </div>
             <div class="game-card">
                 <a href="/maze/">
                     <img src="{{ url_for('static', filename='projects/maze-game.svg') }}" alt="Maze Game">
-                    <h3>Maze Runner</h3>
+                    <h3>Math Maze Runner</h3>
                     <p>Navigate through randomly generated mazes using arrow keys to reach the goal.</p>
                 </a>
             </div>
@@ -53,10 +53,11 @@
                 </a>
             </div>
             <div class="game-card">
-                <img src="{{ url_for('static', filename='projects/survival-game.svg') }}" alt="Survival Game">
-                <h3>Survival</h3>
-                <p>A wilderness survival game inspired by The Long Dark. Collect resources, manage your health, and survive the harsh environment.</p>
-                <a href="{{ url_for('main.survival') }}" class="play-button">Play Now</a>
+                <a href="/survival/">
+                    <img src="{{ url_for('static', filename='projects/survival-game.svg') }}" alt="Survival Game">
+                    <h3>Survival</h3>
+                    <p>A wilderness survival game inspired by The Long Dark. Collect resources, manage your health, and survive the harsh environment.</p>
+                </a>
             </div>
             <div class="game-card">
                 <a href="../sudoku/">
