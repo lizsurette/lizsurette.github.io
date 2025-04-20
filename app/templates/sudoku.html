@@ -2,6 +2,45 @@
 
 {% block title %}Sudoku Game{% endblock %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sudoku.css') }}">
+<style>
+    /* Force grid layout */
+    #sudoku-grid {
+        display: grid !important;
+        grid-template-columns: repeat(9, 40px) !important;
+        grid-template-rows: repeat(9, 40px) !important;
+        gap: 0 !important;
+        border: 2px solid #333 !important;
+        background-color: white !important;
+        margin: 20px auto !important;
+        width: 360px !important; /* Explicit width for 9 cells of 40px each */
+        height: 360px !important; /* Explicit height for 9 cells of 40px each */
+    }
+
+    .cell-container {
+        width: 40px !important;
+        height: 40px !important;
+        border: 1px solid #ccc !important;
+        background-color: white !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .cell-input {
+        width: 100% !important;
+        height: 100% !important;
+        text-align: center !important;
+        font-size: 20px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Back button to return to games list -->
 <div class="custom-back-button-container">
