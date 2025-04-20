@@ -23,185 +23,185 @@
     <script src="../static/js/thickbox-compressed.js"></script>
     <script src="../static/js/super-search.js"></script>
     <script src="../static/js/projects.js"></script>
-    <style>
+<style>
         /* Game styles */
-        .game-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            font-family: 'nyt-franklin', Arial, sans-serif;
-        }
+    .game-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'nyt-franklin', Arial, sans-serif;
+    }
 
-        .game-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .game-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-        .game-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+    .game-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
 
-        .score-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+    .score-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
 
-        .score {
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .score {
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-        .perfect-badge {
-            background-color: #e6f3ff;
-            color: #0066cc;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: bold;
-        }
+    .perfect-badge {
+        background-color: #e6f3ff;
+        color: #0066cc;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: bold;
+    }
 
-        .hidden {
-            display: none;
-        }
+    .hidden {
+        display: none;
+    }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background-color: #e6e6e6;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #e6e6e6;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        overflow: hidden;
+    }
 
-        .progress-fill {
-            height: 100%;
-            background-color: #4caf50;
-            transition: width 0.3s ease;
-        }
+    .progress-fill {
+        height: 100%;
+        background-color: #4caf50;
+        transition: width 0.3s ease;
+    }
 
-        .progress-text {
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
+    .progress-text {
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
 
-        .theme-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .theme-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-        .theme-hint {
-            font-size: 16px;
-            color: #333;
-        }
+    .theme-hint {
+        font-size: 16px;
+        color: #333;
+    }
 
-        .game-board {
-            display: block;
-            width: 100%;
-            aspect-ratio: 1;
-            margin-bottom: 20px;
-        }
+    .game-board {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        margin-bottom: 20px;
+    }
 
-        .game-board table {
-            width: 100%;
-            height: 100%;
-            border-collapse: collapse;
-        }
+    .game-board table {
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+    }
 
-        .game-board td {
-            width: 20%;
-            height: 20%;
-            padding: 0;
-            text-align: center;
-            vertical-align: middle;
-        }
+    .game-board td {
+        width: 20%;
+        height: 20%;
+        padding: 0;
+        text-align: center;
+        vertical-align: middle;
+    }
 
-        .letter {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            background-color: #fff;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin: 4px;
-        }
+    .letter {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        background-color: #fff;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin: 4px;
+    }
 
-        .letter.selected {
-            background-color: #ffd700;
-            border-color: #ffd700;
-            transform: scale(0.95);
-        }
+    .letter.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        transform: scale(0.95);
+    }
 
-        .letter:hover {
-            border-color: #666;
-        }
+    .letter:hover {
+        border-color: #666;
+    }
 
-        .letter.used {
-            background-color: #f0f0f0;
-            border-color: #ccc;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+    .letter.used {
+        background-color: #f0f0f0;
+        border-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
 
-        .letter.used:hover {
-            border-color: #ccc;
-        }
+    .letter.used:hover {
+        border-color: #ccc;
+    }
 
-        .letter.used.selected {
-            background-color: #ffd700;
-            border-color: #ffd700;
-            opacity: 1;
-        }
+    .letter.used.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        opacity: 1;
+    }
 
-        .letter.found {
-            background-color: #e6f3ff;
-            border-color: #0066cc;
-            color: #0066cc;
-            cursor: not-allowed;
-            opacity: 0.9;
-        }
+    .letter.found {
+        background-color: #e6f3ff;
+        border-color: #0066cc;
+        color: #0066cc;
+        cursor: not-allowed;
+        opacity: 0.9;
+    }
 
-        .letter.found:hover {
-            border-color: #0066cc;
-        }
+    .letter.found:hover {
+        border-color: #0066cc;
+    }
 
-        .letter.found.selected {
-            background-color: #ffd700;
-            border-color: #ffd700;
-            color: #000;
-        }
+    .letter.found.selected {
+        background-color: #ffd700;
+        border-color: #ffd700;
+        color: #000;
+    }
 
-        .game-controls {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .game-controls {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-        .selected-word {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            min-height: 24px;
-            color: #0066cc;
-        }
-    </style>
+    .selected-word {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        min-height: 24px;
+        color: #0066cc;
+    }
+</style>
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
             <div class="about">
                 <!-- Social links removed from here -->
-            </div>
+        </div>
             <hr>
             <nav class="main-nav">
                 <ul>
@@ -223,7 +223,7 @@
                 <!-- Back button to return to games list -->
                 <div class="custom-back-button-container">
                     <a href="../games/" class="custom-back-button">← Back to Games</a>
-                </div>
+    </div>
 
                 <div class="post-content">
                     <div class="game-container">
@@ -233,14 +233,14 @@
                                 <div class="score">Score: <span id="score">0</span></div>
                                 <div class="high-score">High Score: <span id="highScore">0</span></div>
                             </div>
-                        </div>
+    </div>
                         <div class="game-board" id="gameBoard"></div>
-                        <div class="game-controls">
+    <div class="game-controls">
                             <button id="startButton" class="custom-back-button">Start Game</button>
                             <button id="resetButton" class="custom-back-button">Reset</button>
-                        </div>
-                    </div>
-                </div>
+    </div>
+    </div>
+</div>
             </article>
         </div>
     </div>

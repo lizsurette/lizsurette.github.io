@@ -195,18 +195,6 @@ def bubble():
     """
     return render_template('bubble.html', title='Bubble Shooter')
 
-@main.route('/factory/')
-def factory():
-    """
-    Serve the factory game from the factory directory.
-    
-    Returns:
-        str: The factory game HTML file
-    """
-    # Get the absolute path to the factory directory
-    factory_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'factory')
-    return send_from_directory(factory_dir, 'index.html')
-
 @main.route('/sudoku/')
 def sudoku():
     """
