@@ -8,6 +8,11 @@
     <a href="{{ url_for('main.games') }}" class="custom-back-button">← Back to Games</a>
 </div>
 
+<article class="post">
+    <header class="post-header">
+        <h1 class="page-header">Strands</h1>
+    </header>
+
 <style>
     .game-container {
         max-width: 600px;
@@ -269,9 +274,8 @@
 
 <div class="game-container">
     <div class="game-header">
-        <div class="game-title">Strands: Renaissance Art</div>
         <div class="score-container">
-            <span class="score">Score 3: <span id="score">0</span></span>
+            <span class="score">Score: <span id="score">0</span></span>
             <span id="perfect-badge" class="perfect-badge hidden">Perfect!</span>
         </div>
         <div class="progress-bar">
@@ -295,17 +299,6 @@
 
     <div id="found-words" class="found-words"></div>
 
-    <div class="game-rules">
-        <h3>How to Play</h3>
-        <ul>
-            <li>Find words by selecting adjacent letters in any direction.</li>
-            <li>Words must be at least 3 letters long.</li>
-            <li>Each letter can only be used once in a word.</li>
-            <li>Theme words are worth double points.</li>
-            <li>The spangram (a word that uses all letters and spans the grid) is worth triple points.</li>
-            <li>Find all theme words and the spangram to achieve a Perfect score!</li>
-        </ul>
-    </div>
 </div>
 
 <script>
