@@ -96,24 +96,48 @@ def generate_static_files():
                 f.write(page_html)
     
     # Generate game pages
-    games = ['snake', 'strands', 'sudoku', 'maze', 'gem-miner', 'hangman', 'bubble']
+    games = ['snake', 'strands', 'sudoku', 'maze', 'gem-miner', 'hangman', 'bubble-shooter', 'survival']
     for game in games:
         try:
             # Create the game directory structure
             game_dir = os.path.join('_site', 'games', game)
             os.makedirs(game_dir, exist_ok=True)
             
-            template_name = f'{game}.html'
-            if game == 'bubble':
-                template_name = 'bubble.html'  # Use the correct template name
+            # Map game names to their template names
+            template_map = {
+                'bubble-shooter': 'bubble.html',
+                'survival': 'survival.html'  # Add explicit mapping for survival
+            }
             
-            # Use the app context for rendering templates
-            with app.test_request_context():
-                game_html = render_template(template_name)
-                with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
-                    f.write(game_html)
+            # For games that should be copied directly from static directory
+            static_only_games = {'gem-miner'}
+            
+            if game in static_only_games:
+                # Copy directly from static directory
+                static_game_dir = os.path.join('app', 'static', 'games', game)
+                if os.path.exists(static_game_dir):
+                    shutil.copytree(static_game_dir, game_dir, dirs_exist_ok=True)
+                    logger.info(f"Copied static files for {game} game")
+                else:
+                    logger.error(f"Static directory not found for {game} game")
+            else:
+                # Use template rendering for other games
+                template_name = template_map.get(game, f'{game}.html')
+                with app.test_request_context():
+                    game_html = render_template(template_name)
+                    with open(os.path.join(game_dir, 'index.html'), 'w', encoding='utf-8') as f:
+                        f.write(game_html)
+                    logger.info(f"Generated {game} game page")
         except Exception as e:
-            print(f"Error generating {game} game page: {e}")
+            logger.error(f"Error generating {game} game page: {e}")
+            # If template generation fails, try to copy from static directory
+            try:
+                static_game_dir = os.path.join('app', 'static', 'games', game)
+                if os.path.exists(static_game_dir):
+                    shutil.copytree(static_game_dir, game_dir, dirs_exist_ok=True)
+                    logger.info(f"Copied static files for {game} game")
+            except Exception as copy_error:
+                logger.error(f"Error copying static files for {game} game: {copy_error}")
     
     logger.info("Static files generated successfully")
 
