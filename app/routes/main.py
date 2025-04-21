@@ -210,12 +210,10 @@ def gem_miner():
     """
     Serve the Gem Miner game from the gem-miner directory.
     
-    Returns:
-        str: The gem miner game HTML file
+     Returns:
+        str: The rendered Gem Miner game page
     """
-    # Get the absolute path to the gem-miner directory
-    gem_miner_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gem-miner')
-    return send_from_directory(gem_miner_dir, 'index.html')
+    return render_template('gem-miner.html', title='Gem Miner')
 
 @main.route('/gem-miner')
 def gem_miner_redirect():
