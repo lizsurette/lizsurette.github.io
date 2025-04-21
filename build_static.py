@@ -116,7 +116,7 @@ def generate_static_files():
             }
             
             # For games that should be copied directly from static directory
-            static_only_games = {'gem-miner'}
+            static_only_games = set()
             
             if game in static_only_games:
                 # Copy directly from static directory
