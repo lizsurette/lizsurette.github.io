@@ -97,51 +97,6 @@ def utility_processor():
         return date.strftime('%B %d, %Y')
     return dict(format_date=format_date)
 
-@app.cli.command("build")
-def build():
-    """Build the static site."""
-    logger.info("Building static site...")
-    
-    # Create _site directory if it doesn't exist
-    if not os.path.exists("_site"):
-        os.makedirs("_site")
-    
-    # Copy static files
-    if os.path.exists("app/static"):
-        import shutil
-        shutil.copytree("app/static", "_site/static", dirs_exist_ok=True)
-    
-    # Generate HTML files for each route
-    with app.test_request_context():
-        # Generate index page
-        with open("_site/index.html", "w") as f:
-            f.write(render_template("index.html"))
-        
-        # Generate writings page
-        posts = post_repository.get_all_posts()
-        os.makedirs("_site/writings", exist_ok=True)
-        with open("_site/writings/index.html", "w") as f:
-            f.write(render_template("writings.html", posts=posts))
-
-        # Generate projects page
-        os.makedirs("_site/projects", exist_ok=True)
-        with open("_site/projects/index.html", "w") as f:
-            f.write(render_template("projects.html"))
-
-        # Generate apps page
-        os.makedirs("_site/apps", exist_ok=True)
-        with open("_site/apps/index.html", "w") as f:
-            f.write(render_template("apps.html"))
-        
-        # Generate individual post pages
-        for post in posts:
-            post_dir = os.path.join("_site", "posts", post.path)
-            os.makedirs(post_dir, exist_ok=True)
-            with open(os.path.join(post_dir, "index.html"), "w") as f:
-                f.write(render_template("post.html", post=post))
-    
-    logger.info("Static site built successfully!")
-
 if __name__ == '__main__':
     logger.info(f"Posts directory at startup: {app.config['FLATPAGES_ROOT']}")
     logger.info(f"Directory exists at startup: {os.path.exists(app.config['FLATPAGES_ROOT'])}")
