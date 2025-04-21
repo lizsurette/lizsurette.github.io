@@ -185,15 +185,15 @@ def maze():
     """
     return render_template('maze.html', title='Maze Game')
 
-@main.route('/bubble/')
-def bubble():
+@main.route('/bubble-shooter/')
+def bubble_shooter():
     """
     Render the bubble shooter game page.
     
     Returns:
         str: The rendered bubble shooter game page
     """
-    return render_template('bubble.html', title='Bubble Shooter')
+    return render_template('bubble-shooter.html', title='Bubble Shooter')
 
 @main.route('/sudoku/')
 def sudoku():

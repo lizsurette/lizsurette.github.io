@@ -105,8 +105,14 @@ def generate_static_files():
             
             # Map game names to their template names
             template_map = {
-                'bubble-shooter': 'bubble.html',
-                'survival': 'survival.html'  # Add explicit mapping for survival
+                'snake': 'snake.html',
+                'strands': 'strands.html',
+                'sudoku': 'sudoku.html',
+                'maze': 'maze.html',
+                'gem-miner': 'gem-miner.html',
+                'hangman': 'hangman.html',
+                'bubble-shooter': 'bubble-shooter.html',
+                'survival': 'survival.html'
             }
             
             # For games that should be copied directly from static directory
