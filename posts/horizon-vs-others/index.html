@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#34;The OpenStack Years: How does Horizon Stack up versus other Cloud Computing UIs?&#34;</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">&#34;The OpenStack Years: How does Horizon Stack up versus other Cloud Computing UIs?&#34;</h1>
+        <div class="post-meta">
+            <span class="post-date">February 21, 2014</span>
+            
+        </div>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <blockquote>
+<p><em>This was originally written and shared on February 21, 2014 when I was working daily with the OpenStack Community.</em></p>
+</blockquote>
+<hr />
+<p>One big part of designing a solution is understanding how the design compares to the other things out there that are similar. What has been done already? What are other users and designers doing in this space? In some cases, the design might be one of a kind, but in the case of Horizon, there are a fair amount of other players in the space. I took some time recently to look into some of the other UIs that exist. It gave me a good idea of how Horizon stacked up compared to these other UIs:</p>
+<blockquote>
+<ol>
+<li>Netflix Asgard</li>
+<li>Windows Azure</li>
+<li>PayPal Aurora</li>
+<li>CloudStack</li>
+<li>Google Compute Engine</li>
+<li>Amazon Web Services</li>
+</ol>
+</blockquote>
+<p>This exercise gave me some great inspiration for improvements that could be made to Horizon. What are others doing out there to solve the needs that Horizon can’t solve for users? How can we improve Horizon to meet these needs? Here are some of the things that I noticed from a design perspective.</p>
+<h4>Netflix Asgard</h4>
+<p>If you’ve used OpenStack enough, you know that certain tables begin to grow to be extremely large. Currently, there is a filter function on the Instances table within Horizon, but it’s not quite as slick as the one that is available in Asgard. A simple, yet powerful search which gives instant feedback to the user will be crucial to be available on all of the tables that continue to grow as OpenStack users continue to gain more and more historical data. Here is a look at a section of a table with 564 items in it. The user does have the option to sort by any of the columns available in the table, but more powerfully, they can start typing in the filter text box to start weeding down the table items:<br />
+<img alt="Asgard Search 1" src="/static/img/_posts/asgard-search-1.png" /></p>
+<p>As the user starts typing, the table below is filtered automatically, and quickly:<br />
+<img alt="Asgard Search 2" src="/static/img/_posts/asgard-search-2.png" /></p>
+<h4>Windows Azure</h4>
+<p>Azure is overall a very polished UI. One thing that stuck out to me as great inspiration is the simplicity of the wizards in this UI for creating items in your cloud. Although this slickness can be done in many different ways, the Azure designers chose to use vertical blades to show the number of steps and the progress that the user has made through the wizard.</p>
+<p>Another very nice design decision that the Azure team made was to build responsive forms. As a user navigates through all of the fields for which they need to provide data, the forms are constantly checking for errors inline. The user will notice right away if a field that requires a unique name needs to be changed before they continue filling out the form. It’s a nice time saver for later on when they click the “Create” button and don’t have to go back to the form to figure out which errors may need to be fixed. Take a look at this design in action:<br />
+<img alt="Azure Wizard and Form" src="/static/img/_posts/azure-wizard-and-form.png" /></p>
+<h4>PayPal Aurora</h4>
+<p>The PayPal designers have done a great job taking the information available via OpenStack and reworking the Information Architecture in their Aurora UI. Take a look at a snapshot of their current navigation structure:<br />
+<img alt="Aurora IA" src="/static/img/_posts/aurora-ia.png" /></p>
+<p>Not only have they grouped things logically in buckets that the user might be looking to act on, but they've included breadcrumbs above the working area on the left for users to be able to ground themselves on where they are at any time in the application. This is especially useful if the user has drilled down into a low level details page. Overall, I think this Information Architecture is a huge improvement over the one in Horizon.</p>
+<h4>CloudStack</h4>
+<p>I personally haven't had the chance to use CloudStack, but any time I catch a glimpse of the dashboards that are in their UI, I know the designers are doing it right. The information is organized in a clear and concise way without too much clutter. It looks as though the folks working on this UI have done research to figure out what is the most important data to surface to users at a glance, and they've left the rest to further drill down detail pages. The visuals are soft are inviting which makes it easy for users to have up on one of their screens throughout the day if needed for monitoring a cloud environment. Here are some of the examples I've seen out there:<br />
+<img alt="CloudStack Dashboard 1" src="/static/img/_posts/cloudstack-dashboard-1.jpg" /></p>
+<p><img alt="CloudStack Dashboard 2" src="/static/img/_posts/cloudstack-dashboard-2.png" /></p>
+<h4>Google Compute Engine</h4>
+<p>I hadn't tried out Google Compute Engine before, so when I gave it a go I was pleasantly surprised at the first time user experience. Rather than dropping the user into an Overview with statistics that are empty considering they haven't spun up any instances, Google decided to try and push the user in the right direction. They give a few options right off the bat:<br />
+<img alt="Google First Time User 1" src="/static/img/_posts/google-first-time-user-1.png" /></p>
+<p><img alt="Google First Time User 2" src="/static/img/_posts/google-first-time-user-2.png" /></p>
+<p>Another important decision that Google made was to be sure to give users plenty of information before they decide to take certain actions. For example, when a user tries to delete a project (a pretty huge action), they are given a description of what will happen next if they confirm the action. I think this is a great view into designers thinking about how certain actions will impact users long term:<br />
+<img alt="Google Delete Project" src="/static/img/_posts/google-delete-project.png" /></p>
+<h4>Amazon Web Services</h4>
+<p>Amazon Web Services includes a ton of different applications that a user can take advantage of. They've done a great job organizing their information architecture to handle all of these selections. One key design feature they added was to take into consideration the importance of horizontal screen space and to allow the user to hide/show the left hand navigation as needed.<br />
+<img alt="AWS Dashboard" src="/static/img/_posts/aws-dashboard.png" /></p>
+<p>The dashboard in this view is also something to note. The designers have included a mixture of statistics along with common actions that they know a user will want to take when they jump into this UI.</p>
+<p>Are there any features that you’ve seen out there that inspire you to have something better in Horizon? These are definitely some of the things that have caught my eye. Let me know if you have seen any others, I’m happy to log blueprints and put together designs!</p>
+<p>Best,<br />
+Liz</p>
+    </div>
+    
+    <div class="post-navigation">
+        <div class="back-link">
+            <a href="/writings/">&laquo; Back to Writings</a>
+        </div>
+        
+        <div class="post-pagination">
+            
+            
+            
+        </div>
+    </div>
+</article>
+
+        </div>
+    </div>
+</body>
+</html> 

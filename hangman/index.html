@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<!-- Back button to return to games list -->
+<div class="custom-back-button-container">
+    <a href="/games" class="custom-back-button">← Back to Games</a>
+</div>
+
+<article class="post">
+    <header class="post-header">
+        <h1 class="page-header">Hangman</h1>
+    </header>
+
+    <div class="post-content">
+        <div class="game-container">
+            <div class="game-info">
+                <p>Guess the word before the hangman is complete!</p>
+                <div class="word-display" id="word-display"></div>
+                <div class="hangman-container">
+                    <svg id="hangman" width="300" height="400">
+                        <!-- Base -->
+                        <line x1="50" y1="350" x2="250" y2="350" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Vertical pole -->
+                        <line x1="100" y1="350" x2="100" y2="50" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Horizontal beam -->
+                        <line x1="100" y1="50" x2="200" y2="50" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Support beam -->
+                        <line x1="100" y1="80" x2="150" y2="50" stroke="#8B4513" stroke-width="3"/>
+                        <!-- Rope -->
+                        <line x1="200" y1="50" x2="200" y2="100" stroke="#FFFFFF" stroke-width="2" class="hangman-part" style="display: none;"/>
+                        <!-- Head with better face details -->
+                        <g class="hangman-part" style="display: none;">
+                            <circle cx="200" cy="120" r="20" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+                            <!-- Eyes -->
+                            <circle cx="193" cy="115" r="2" fill="#FFFFFF"/>
+                            <circle cx="207" cy="115" r="2" fill="#FFFFFF"/>
+                            <!-- Mouth (slightly curved line) -->
+                            <path d="M190 125 Q200 130 210 125" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+                        </g>
+                        <!-- Body with better proportions -->
+                        <line x1="200" y1="140" x2="200" y2="220" stroke="#FFFFFF" stroke-width="2" class="hangman-part" style="display: none;"/>
+                        <!-- Left arm with joint -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="160" x2="170" y2="200" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="185" cy="180" r="3" fill="#FFFFFF"/>
+                        </g>
+                        <!-- Right arm with joint -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="160" x2="230" y2="200" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="215" cy="180" r="3" fill="#FFFFFF"/>
+                        </g>
+                        <!-- Left leg with knee -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="220" x2="170" y2="280" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="185" cy="250" r="3" fill="#FFFFFF"/>
+                        </g>
+                        <!-- Right leg with knee -->
+                        <g class="hangman-part" style="display: none;">
+                            <line x1="200" y1="220" x2="230" y2="280" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="215" cy="250" r="3" fill="#FFFFFF"/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="keyboard" id="keyboard"></div>
+                <div class="game-status" id="game-status"></div>
+                <button id="new-game" class="play-button">New Game</button>
+            </div>
+        </div>
+    </div>
+</article>
+
+<style>
+/* Dark mode theme for Hangman game */
+.game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.game-info {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    color: #e0e0e0;
+}
+
+.game-info p {
+    color: #b0b0b0;
+    margin-bottom: 20px;
+}
+
+.word-display {
+    font-size: 2em;
+    letter-spacing: 0.5em;
+    margin: 20px 0;
+    min-height: 1.5em;
+    color: #ffffff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.hangman-container {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+}
+
+#hangman {
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+}
+
+#hangman line, #hangman circle, #hangman path {
+    transition: all 0.3s ease;
+}
+
+.hangman-part {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Add wood texture effect to gallows */
+#hangman line:not(.hangman-part) {
+    stroke: #D2691E;
+    stroke-linecap: round;
+    filter: url(#wood-texture);
+}
+
+.keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0;
+}
+
+.keyboard button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2em;
+    border: 1px solid #444;
+    background: #333;
+    color: #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.keyboard button:hover {
+    background: #444;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.keyboard button.used {
+    background: #222;
+    color: #666;
+    cursor: not-allowed;
+    border-color: #333;
+}
+
+.game-status {
+    margin: 20px 0;
+    font-size: 1.2em;
+    min-height: 1.5em;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.play-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #3fa757;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.play-button:hover {
+    background-color: #2d7a41;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Fireworks styles based on the Medium article */
+.fireworks-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+@keyframes firework-animation {
+    0% {background-color: #ff8426;}
+    25% {background-color: #fffc84;}
+    50% {background-color: #ff83f4;}
+    75% {background-color: #83b6ff;}
+    100% {background-color: #ff8426;}
+}
+
+@-webkit-keyframes firework-animation {
+    0% {background-color: #ff8426;}
+    25% {background-color: #fffc84;}
+    50% {background-color: #ff83f4;}
+    75% {background-color: #83b6ff;}
+    100% {background-color: #ff8426;}
+}
+
+.firework-particle {
+    z-index: 999;
+    position: absolute;
+    height: 5px;
+    width: 5px;
+    border-radius: 5px;
+    animation-name: firework-animation;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    box-shadow: 0 0 5px 1px currentColor;
+}
+
+.firework-seed {
+    z-index: 999;
+    position: absolute;
+    height: 5px;
+    width: 5px;
+    border-radius: 5px;
+    background-color: #ff8426;
+    box-shadow: 0 0 10px 2px rgba(255, 132, 38, 0.8);
+}
+</style>
+
+<defs>
+    <!-- Wood texture filter -->
+    <filter id="wood-texture">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+    </filter>
+</defs>
+
+<script>
+const words = [
+    // Kid-friendly words
+    'APPLE', 'BANANA', 'ORANGE', 'GRAPE', 'STRAWBERRY', 'WATERMELON', 'PINEAPPLE', 'BLUEBERRY',
+    'CHERRY', 'LEMON', 'PEACH', 'PLUM', 'MANGO', 'KIWI', 'MELON', 'RASPBERRY',
+    'PENGUIN', 'DOLPHIN', 'ELEPHANT', 'GIRAFFE', 'LION', 'TIGER', 'ZEBRA', 'MONKEY',
+    'KANGAROO', 'KOALA', 'PANDA', 'RABBIT', 'SQUIRREL', 'HEDGEHOG', 'HORSE', 'COW',
+    'SUN', 'MOON', 'STAR', 'CLOUD', 'RAIN', 'SNOW', 'WIND', 'STORM',
+    'TREE', 'FLOWER', 'GRASS', 'BUSH', 'LEAF', 'ROSE', 'TULIP', 'DAISY',
+    'HOUSE', 'CAR', 'BUS', 'TRAIN', 'PLANE', 'SHIP', 'BOAT', 'BIKE',
+    'BALL', 'DOLL', 'BLOCK', 'PUZZLE', 'GAME', 'TOY', 'BOOK', 'CRAYON',
+    'PENCIL', 'PAPER', 'DESK', 'CHAIR', 'TABLE', 'BED', 'SOFA', 'LAMP',
+    'DOOR', 'WINDOW', 'WALL', 'FLOOR', 'CEILING', 'ROOF', 'GARDEN', 'PARK',
+    'SCHOOL', 'LIBRARY', 'STORE', 'HOSPITAL', 'ZOO', 'BEACH', 'POOL', 'PLAYGROUND',
+    'PIZZA', 'HAMBURGER', 'HOTDOG', 'SANDWICH', 'COOKIE', 'CAKE', 'ICE CREAM', 'CANDY',
+    'MILK', 'JUICE', 'WATER', 'SODA', 'TEA', 'COFFEE', 'CHOCOLATE', 'CEREAL',
+    'SHIRT', 'PANTS', 'DRESS', 'SHOES', 'SOCKS', 'HAT', 'GLOVES', 'SCARF',
+    'RED', 'BLUE', 'GREEN', 'YELLOW', 'PURPLE', 'ORANGE', 'PINK', 'BROWN',
+    'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT',
+    'NINE', 'TEN', 'ZERO', 'PLUS', 'MINUS', 'EQUAL', 'CIRCLE', 'SQUARE',
+    'TRIANGLE', 'HEART', 'DIAMOND', 'STAR', 'MOON', 'SUN', 'CLOUD', 'RAINBOW',
+    'MUSIC', 'SONG', 'DANCE', 'SING', 'DRUM', 'PIANO', 'GUITAR', 'VIOLIN',
+    'FRIEND', 'FAMILY', 'MOTHER', 'FATHER', 'SISTER', 'BROTHER', 'BABY', 'GRANDPA',
+    'GRANDMA', 'AUNT', 'UNCLE', 'COUSIN', 'TEACHER', 'DOCTOR', 'NURSE', 'POLICE',
+    'FIREFIGHTER', 'MAILMAN', 'CHEF', 'ARTIST', 'DENTIST', 'VET', 'FARMER', 'BUILDER',
+    'SPRING', 'SUMMER', 'FALL', 'WINTER', 'MORNING', 'AFTERNOON', 'EVENING', 'NIGHT',
+    'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY', 'TODAY',
+    'TOMORROW', 'YESTERDAY', 'BIRTHDAY', 'CHRISTMAS', 'HALLOWEEN', 'EASTER', 'THANKSGIVING', 'NEW YEAR',
+    // Existing programming-related words
+    'PYTHON', 'JAVASCRIPT', 'PROGRAMMING', 'DEVELOPER', 'COMPUTER',
+    'ALGORITHM', 'DATABASE', 'NETWORK', 'SECURITY', 'INTERNET'
+];
+
+const hangmanStages = [
+    `
+     +---+
+     |   |
+         |
+         |
+         |
+         |
+    =========`,
+    `
+     +---+
+     |   |
+     O   |
+         |
+         |
+         |
+    =========`,
+    `
+     +---+
+     |   |
+     O   |
+     |   |
+         |
+         |
+    =========`,
+    `
+     +---+
+     |   |
+     O   |
+    /|   |
+         |
+         |
+    =========`,
+    `
+     +---+
+     |   |
+     O   |
+    /|\\  |
+         |
+         |
+    =========`,
+    `
+     +---+
+     |   |
+     O   |
+    /|\\  |
+    /    |
+         |
+    =========`,
+    `
+     +---+
+     |   |
+     O   |
+    /|\\  |
+    / \\  |
+         |
+    =========`
+];
+
+let currentWord = '';
+let guessedLetters = new Set();
+let wrongGuesses = 0;
+let gameOver = false;
+
+// Create fireworks container
+const fireworksContainer = document.createElement('div');
+fireworksContainer.className = 'fireworks-container';
+document.querySelector('.game-info').appendChild(fireworksContainer);
+
+// Create board for fireworks
+const board = document.createElement('div');
+board.id = 'board';
+fireworksContainer.appendChild(board);
+
+// Arrays to store fireworks elements
+let particles = [];
+let seeds = [];
+
+// Physics constants
+const fwkPtcIniV = 0.5; // Initial velocity for particles
+const fwkPtcIniT = 2500; // Time particles will survive (ms)
+const fwkSedIniV = 0.8; // Initial velocity for seeds (rockets)
+const fwkSedIniT = 1000; // Time seeds will survive (ms)
+const a = 0.0005; // Air resistance
+const g = 0.0005; // Gravity
+const v = 0.3; // Randomness factor for velocity
+
+// Create a new firework particle
+function newFireworkParticle(x, y, angle) {
+    const fwkPtc = document.createElement('div');
+    fwkPtc.setAttribute('class', 'firework-particle');
+    board.appendChild(fwkPtc);
+    
+    // Set initial position
+    fwkPtc.style.left = x + 'px';
+    fwkPtc.style.top = y + 'px';
+    
+    // Set time to live
+    fwkPtc.time = fwkPtcIniT;
+    
+    // Normalize angle
+    while(angle > 360) angle -= 360;
+    while(angle < 0) angle += 360;
+    
+    // Calculate velocity based on angle
+    fwkPtc.velocity = {};
+    fwkPtc.velocity.x = fwkPtcIniV * Math.sin(angle * Math.PI / 180) * (1 - Math.random() * v);
+    fwkPtc.velocity.y = fwkPtcIniV * Math.cos(angle * Math.PI / 180) * (1 - Math.random() * v);
+    
+    // Store position
+    fwkPtc.position = {};
+    fwkPtc.position.x = x;
+    fwkPtc.position.y = y;
+    
+    // Add to particles array
+    particles.push(fwkPtc);
+    
+    return fwkPtc;
+}
+
+// Create a new firework seed (rocket)
+function newFireworkSeed(x, y) {
+    const fwkSed = document.createElement('div');
+    fwkSed.setAttribute('class', 'firework-seed');
+    board.appendChild(fwkSed);
+    
+    // Set initial position
+    fwkSed.style.left = x + 'px';
+    fwkSed.style.top = y + 'px';
+    
+    // Set time to live
+    fwkSed.time = fwkSedIniT;
+    
+    // Set velocity (moving upward)
+    fwkSed.velocity = {};
+    fwkSed.velocity.x = 0;
+    fwkSed.velocity.y = fwkSedIniV;
+    
+    // Store position
+    fwkSed.position = {};
+    fwkSed.position.x = x;
+    fwkSed.position.y = y;
+    
+    // Add to seeds array
+    seeds.push(fwkSed);
+    
+    return fwkSed;
+}
+
+// Create a firework star (explosion)
+function newFireworkStar(x, y) {
+    // Create particles in a circular pattern
+    let angle = 0;
+    while(angle < 360) {
+        newFireworkParticle(x, y, angle);
+        angle += 5; // Adjust for density of particles
+    }
+}
+
+// Animation frame function
+let before = Date.now();
+let animationId = null;
+
+function frame() {
+    const current = Date.now();
+    const deltaTime = current - before;
+    before = current;
+    
+    // Update seeds (rockets)
+    for(let i in seeds) {
+        const fwkSed = seeds[i];
+        fwkSed.time -= deltaTime;
+        
+        if(fwkSed.time > 0) {
+            // Apply physics
+            fwkSed.velocity.x -= fwkSed.velocity.x * a * deltaTime;
+            fwkSed.velocity.y -= g * deltaTime + fwkSed.velocity.y * a * deltaTime;
+            
+            // Update position
+            fwkSed.position.x += fwkSed.velocity.x * deltaTime;
+            fwkSed.position.y -= fwkSed.velocity.y * deltaTime;
+            
+            // Update visual position
+            fwkSed.style.left = fwkSed.position.x + 'px';
+            fwkSed.style.top = fwkSed.position.y + 'px';
+        } else {
+            // Create explosion when seed expires
+            newFireworkStar(fwkSed.position.x, fwkSed.position.y);
+            fwkSed.parentNode.removeChild(fwkSed);
+            seeds.splice(i, 1);
+        }
+    }
+    
+    // Update particles
+    for(let i in particles) {
+        const fwkPtc = particles[i];
+        fwkPtc.time -= deltaTime;
+        
+        if(fwkPtc.time > 0) {
+            // Apply physics
+            fwkPtc.velocity.x -= fwkPtc.velocity.x * a * deltaTime;
+            fwkPtc.velocity.y -= g * deltaTime + fwkPtc.velocity.y * a * deltaTime;
+            
+            // Update position
+            fwkPtc.position.x += fwkPtc.velocity.x * deltaTime;
+            fwkPtc.position.y -= fwkPtc.velocity.y * deltaTime;
+            
+            // Update visual position
+            fwkPtc.style.left = fwkPtc.position.x + 'px';
+            fwkPtc.style.top = fwkPtc.position.y + 'px';
+        } else {
+            // Remove expired particles
+            fwkPtc.parentNode.removeChild(fwkPtc);
+            particles.splice(i, 1);
+        }
+    }
+    
+    // Continue animation if there are still elements
+    if(seeds.length > 0 || particles.length > 0) {
+        animationId = requestAnimationFrame(frame);
+    } else {
+        // Stop animation when all elements are gone
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+}
+
+// Launch a firework from a specific position
+function launchFirework(x, y) {
+    newFireworkSeed(x, y);
+    
+    // Start animation if not already running
+    if(animationId === null) {
+        before = Date.now();
+        animationId = requestAnimationFrame(frame);
+    }
+}
+
+// Show fireworks celebration
+function showFireworks() {
+    fireworksContainer.style.display = 'block';
+    
+    // Get the game container dimensions
+    const gameInfo = document.querySelector('.game-info');
+    const gameWidth = gameInfo.offsetWidth;
+    const gameHeight = gameInfo.offsetHeight;
+    
+    // Launch multiple fireworks
+    const interval = setInterval(() => {
+        // Random position for each firework within the game area
+        const x = Math.random() * gameWidth;
+        const y = gameHeight;
+        launchFirework(x, y);
+    }, 300);
+    
+    // Stop fireworks after 5 seconds
+    setTimeout(() => {
+        clearInterval(interval);
+        setTimeout(() => {
+            fireworksContainer.style.display = 'none';
+        }, 2000); // Wait for last fireworks to finish
+    }, 5000);
+}
+
+function initGame() {
+    currentWord = words[Math.floor(Math.random() * words.length)];
+    guessedLetters.clear();
+    wrongGuesses = 0;
+    gameOver = false;
+    updateWordDisplay();
+    updateHangmanDisplay();
+    updateKeyboard();
+    document.getElementById('game-status').textContent = '';
+}
+
+function updateWordDisplay() {
+    const display = document.getElementById('word-display');
+    display.textContent = currentWord
+        .split('')
+        .map(letter => guessedLetters.has(letter) ? letter : '_')
+        .join(' ');
+    
+    if (!display.textContent.includes('_')) {
+        gameOver = true;
+        document.getElementById('game-status').textContent = 'Congratulations! You won!';
+        showFireworks(); // Show fireworks when player wins
+    }
+}
+
+function updateHangmanDisplay() {
+    const parts = document.getElementsByClassName('hangman-part');
+    // Show parts up to the current number of wrong guesses
+    for (let i = 0; i < parts.length; i++) {
+        if (i < wrongGuesses) {
+            parts[i].style.display = 'block';
+            // Add slight swing animation to the hanging parts
+            if (i > 0) { // Don't animate the rope
+                parts[i].style.transform = `rotate(${Math.sin(Date.now() / 1000) * 2}deg)`;
+            }
+        } else {
+            parts[i].style.display = 'none';
+        }
+    }
+
+    if (wrongGuesses === 7) { // Game over after 7 wrong guesses
+        // Add sad face expression
+        const face = document.querySelector('#hangman g:nth-child(2)');
+        if (face) {
+            const mouth = face.querySelector('path');
+            mouth.setAttribute('d', 'M190 130 Q200 120 210 130');
+        }
+        
+        // Set game over state
+        gameOver = true;
+        document.getElementById('game-status').textContent = `Game Over! The word was: ${currentWord}`;
+        updateKeyboard(); // Disable all keyboard buttons
+    }
+}
+
+function showWinAnimation() {
+    const hangman = document.getElementById('hangman');
+    const parts = document.getElementsByClassName('hangman-part');
+    
+    // Hide all parts with a fade out effect
+    for (let part of parts) {
+        part.style.transition = 'opacity 0.5s ease';
+        part.style.opacity = '0';
+    }
+
+    // Add happy jumping animation to celebrate
+    hangman.style.animation = 'jump 0.5s ease infinite alternate';
+}
+
+// Add CSS animation for the jump
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes jump {
+        from { transform: translateY(0); }
+        to { transform: translateY(-20px); }
+    }
+`;
+document.head.appendChild(style);
+
+function updateKeyboard() {
+    const keyboard = document.getElementById('keyboard');
+    keyboard.innerHTML = '';
+    
+    for (let i = 65; i <= 90; i++) {
+        const letter = String.fromCharCode(i);
+        const button = document.createElement('button');
+        button.textContent = letter;
+        button.disabled = guessedLetters.has(letter) || gameOver;
+        button.classList.toggle('used', guessedLetters.has(letter));
+        
+        button.addEventListener('click', () => {
+            guessLetter(letter);
+        });
+        
+        keyboard.appendChild(button);
+    }
+}
+
+// Function to handle letter guessing
+function guessLetter(letter) {
+    if (!gameOver && !guessedLetters.has(letter)) {
+        guessedLetters.add(letter);
+        if (!currentWord.includes(letter)) {
+            wrongGuesses++;
+            updateHangmanDisplay();
+            
+            // Check if game is over after updating hangman
+            if (wrongGuesses === 7) { // Game over after 7 wrong guesses
+                gameOver = true;
+                document.getElementById('game-status').textContent = `Game Over! The word was: ${currentWord}`;
+                updateKeyboard(); // Disable all keyboard buttons
+            }
+        }
+        updateWordDisplay();
+        updateKeyboard();
+    }
+}
+
+// Add keyboard event listener for typing letters
+document.addEventListener('keydown', (event) => {
+    // Only process if it's a letter key (A-Z)
+    if (event.key.length === 1 && /[a-zA-Z]/.test(event.key)) {
+        const letter = event.key.toUpperCase();
+        guessLetter(letter);
+    }
+});
+
+document.getElementById('new-game').addEventListener('click', initGame);
+
+// Initialize the game
+initGame();
+</script>
+
+        </div>
+    </div>
+</body>
+</html> 

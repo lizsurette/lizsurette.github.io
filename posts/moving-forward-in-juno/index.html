@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#34;The OpenStack Years: Moving forward as a User Experience Team in the OpenStack Juno release cycle&#34;</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">&#34;The OpenStack Years: Moving forward as a User Experience Team in the OpenStack Juno release cycle&#34;</h1>
+        <div class="post-meta">
+            <span class="post-date">June 13, 2014</span>
+            
+        </div>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <blockquote>
+<p><em>This was originally written and shared on June 13, 2014 when I was working daily with the OpenStack Community.</em></p>
+<p><em>This post was <a href="https://superuser.openstack.org/articles/moving-forward-as-a-user-experience-team-in-the-openstack-juno-release-cycle/">featured on superuser.openstack.org</a>.</em></p>
+</blockquote>
+<hr />
+<p>OpenStack Juno Summit in Atlanta was a major turning point for User Experience professionals working on OpenStack. Not only did we have 3 specific design sessions around UX work and <a href="https://www.openstack.org/summit/openstack-summit-atlanta-2014/session-videos/presentation/user-experience-in-the-openstack-community">1 talk on the persona work we’ve done</a>, all with great attendance, but we’ve committed to a number of actions we will be taking over the course of the Juno development cycle. All of these actions will improve User Experience work within the OpenStack community and the best part is that we will be working as a team to do this.</p>
+<h4>Better Communication...</h4>
+<p>The first session that we had at Summit around UX was an hour and a half long design session to talk about all things User Experience. It was great to have almost everyone working on design and user focused work in one room together brainstorming on how we can work better as a team moving forward now that there are more than 2 of us :) One major step forward that we agreed on is that we will start <a href="https://wiki.openstack.org/wiki/Meetings/UX">meeting bi-weekly over IRC</a>. We had our first meeting already and the communication channel is so much better already. There were just about 15 people who attended (a mixture of developers and designers) representing at least 7 different companies that I’m aware of. We covered a few basic topics during the first meeting such as a standing schedule of times for future meetings. But this meeting will eventually be important for us all to be on the same page around what we are designing towards for a specific release. We also invite anyone working on any project within OpenStack who may need some UX guidance. This gives a specific time and place that is published for anyone looking to get their requests on our radar.</p>
+<h4>Making it Easy for Folks to Get in Touch with the UX Team...</h4>
+<p>Coming to our bi-weekly meeting would be a great option. Also, if you prefer IRC and have something you’d like to contact us about right away you can find us in the #openstack-ux channel on Freenode. We agreed at summit that we will standardize on using the tag [UX] on the developer mailing list for communications as well, so if it’s an e-mail you’d like to craft and send, adding this tag to the subject line will be sure to get our attention.</p>
+<h4>Prioritizing work on the UI, CLI, and API...</h4>
+<p>A big topic within the UX team currently is around how we can be sure to evangelize User Experience work that can be done for projects that don\'t include a UI. We’d love to be able to contribute resources with 100% focus on UX work towards CLI and API efforts, but we unfortunately don’t have anyone with bandwidth to take this on currently. We are thinking it would be a good idea to reach out to folks in each project to be sure they know how UX could help with things like consistency of CLIs and APIs. If there is anyone currently working on these projects who have interest in UX type work, it would be great to connect with them and help drive forward their current UX efforts. Keep an eye out for more discussion on this topic within each of the teams. Also, if you currently work on a team and are interested in bringing more UX focus to CLIs, APIs, or anything else, let us know and we can do our best to help out!</p>
+<h4>Tracking UX Tasks...</h4>
+<p>UX tasks are a bit unique in the way that the outcome of the tasks normally influence tasks that already exist or need to be created in other projects. <a href="https://storyboard.openstack.org/#!/">Storyboard</a> is a tool that has been created within the OpenStack community that is being designed and developed based on the OpenStack task tracking process needs. The <a href="https://wiki.openstack.org/wiki/StoryBoard">Storyboard team</a> has been amazing to work with and have been really interested in getting feedback from all of their users and potential users (including the UX team!). They are currently focusing on the features that are needed for users to transition over to using StoryBoard. The UX team has some requirements that are different from other projects (such as attaching images to stories) but the Storyboard team has been very responsive to getting these features in for us. We have already decided to move over to using Storyboard as a way to track out work as soon as a few infrastructure issues have been ironed out. This will be a great way to continue to give early feedback to the team as they solidify the first version of Storyboard for all of their end users.</p>
+<h4>A Standard Design Review Tool...</h4>
+<p>We’ve been attempting to find a great design review tool that we can all use to share and get feedback on our designs as a team. We haven’t had any luck with finding a great open source tool for this, but we are still searching. One tool that we’ve considered using is called <a href="http://www.invisionapp.com/">InVision</a>. With this tool, we can upload images and keep revision history of images. Reviewers can come in and view these images and provide feedback directly on the images in the place that the comment applies. A conversation can then take place on this topic right inline to the design. Having one tool that everyone can subscribe to would make it easy to take our design communication to the next step. If you have any suggestions on open source design review tools, please let us know! In the meantime, we will continue to use a mixture of InVision and the mailing list to get feedback on our designs.</p>
+<h4>A Standard Design Tool?...</h4>
+<p>We talked a little bit about whether we need to standardize on one tool for design work or not. We all ultimately agreed that since there are a lot of stages of designs (ranging from sketching to high fidelity) and people have preferences and access to different design tools it makes sense to not standardize on one tool, but rather to have design template files for a number of different tools that folks can use. This file would include all of the basic design elements used in Horizon designs today. We will most likely start with templates for tools that a few of the very active designers are using (InDesign, Balsamiq, and maybe Axure). If there is a designer who starts contributing in the community and wants to use a new tool, they could put together a template for that tool and contribute that to the community as a first step. These templates will eventually live on the <a href="https://wiki.openstack.org/wiki/UX">UX wiki</a> for designer consumption.</p>
+<h4>Juno Design Priorities...</h4>
+<p>Since we had a few design sessions within the Horizon track, we were able to discuss some of the specific design work that we've been doing and would like to continue working on through the Juno cycle. We <a href="https://etherpad.openstack.org/p/juno-summit-horizon-usability-test-results">discussed</a> the results that we got from running the baseline Horizon Usability Testing and all agreed that we should continue to make design proposal updates for the Launch Instance Workflow, Error Messaging Guidelines, and Inline Help Guidelines within Horizon. We also proposed some ideas about improving the Overview Pages within Horizon. This work will continue to move forward this release based on <a href="https://etherpad.openstack.org/p/juno-summit-overview-page-horizon">feedback</a> from the Horizon developers and operators in attendance. Another big focus during the Juno cycle will be around <a href="https://etherpad.openstack.org/p/juno-summit-horizon-tuskar-ui">finding the right place for the Tuskar UI work</a> that has been done. This UI is starting to touch more components than just Horizon and TripleO and will continue to grow throughout the next release. And of course, we will continue to push our <a href="https://wiki.openstack.org/wiki/Personas">Persona work</a> forward and strive towards having a final first set of personas to use as we design new features.</p>
+<p>This isn’t an exhaustive list of things we plan to accomplish in the Juno release cycle, and some of these will continue throughout releases moving forward. But I’m proud of the incredible progress we’ve made as a new group that is still forming within such a large community of lots of projects. Are there items that you think the UX team should get involved with in the community? Drop me a note if you think so and we can add in new stories to Storyboard :)</p>
+<p>Best,<br />
+Liz</p>
+    </div>
+    
+    <div class="post-navigation">
+        <div class="back-link">
+            <a href="/writings/">&laquo; Back to Writings</a>
+        </div>
+        
+        <div class="post-pagination">
+            
+            
+            
+        </div>
+    </div>
+</article>
+
+        </div>
+    </div>
+</body>
+</html> 

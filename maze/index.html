@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Game</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<!-- Back button to return to games list -->
+<div class="custom-back-button-container">
+    <a href="/games" class="custom-back-button">← Back to Games</a>
+</div>
+
+<article class="post">
+    <header class="post-header">
+        <h1 class="page-header">Math Maze Runner</h1>
+    </header>
+
+<style>
+    .game-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'nyt-franklin', Arial, sans-serif;
+        text-align: center;
+    }
+
+    .game-header {
+        margin-bottom: 20px;
+    }
+
+    .game-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .score-container {
+        font-size: 18px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .maze-container {
+        display: inline-block;
+        padding: 10px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .maze {
+        display: grid;
+        grid-template-columns: repeat(25, 20px);
+        grid-template-rows: repeat(25, 20px);
+        gap: 1px;
+        background: #ccc;
+        padding: 1px;
+        border: 2px solid #333;
+    }
+
+    .cell {
+        width: 20px;
+        height: 20px;
+        background: white;
+        position: relative;
+    }
+
+    .wall {
+        background: #333;
+    }
+
+    .visited {
+        background: #e8f5e9;
+        position: relative;
+    }
+
+    .visited::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 6px;
+        height: 6px;
+        background: #81c784;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .current-path {
+        background: #c8e6c9;
+    }
+
+    .current-path::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 8px;
+        height: 8px;
+        background: #4caf50;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .number {
+        background: #e3f2fd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        color: #1976D2;
+    }
+
+    .collected {
+        background: #c8e6c9;
+    }
+
+    .target-sum {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1976D2;
+        margin-bottom: 10px;
+    }
+
+    .current-sum {
+        font-size: 18px;
+        color: #4CAF50;
+        margin-bottom: 10px;
+    }
+
+    .player {
+        background: #4CAF50;
+        border-radius: 50%;
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+        transition: all 0.1s ease;
+    }
+
+    .goal {
+        background: #f44336;
+        border-radius: 50%;
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+    }
+
+    .controls {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .control-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .control-btn:hover {
+        background: #1976D2;
+    }
+
+    .win-message {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 20px 40px;
+        border-radius: 8px;
+        font-size: 24px;
+        z-index: 100;
+    }
+
+    .instructions {
+        margin-top: 20px;
+        padding: 15px;
+        background: #e3f2fd;
+        border-radius: 8px;
+        text-align: left;
+    }
+
+    .instructions h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .instructions ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .instructions li {
+        margin-bottom: 5px;
+    }
+
+    .difficulty-select {
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="game-container">
+    <div class="game-header">
+        <div class="difficulty-select">
+            <label for="difficulty">Difficulty:</label>
+            <select id="difficulty" class="control-btn">
+                <option value="hard">Hard</option>
+                <option value="extreme">Extreme</option>
+                <option value="nightmare">Nightmare</option>
+            </select>
+        </div>
+        <div class="target-sum">Target Sum: <span id="targetSum">0</span></div>
+        <div class="current-sum">Current Sum: <span id="currentSum">0</span></div>
+        <div class="score-container">
+            <div>Moves: <span id="moves">0</span></div>
+        </div>
+    </div>
+
+    <div class="maze-container">
+        <div id="maze" class="maze"></div>
+    </div>
+
+    <div class="controls">
+        <button id="newGame" class="control-btn">New Game</button>
+        <button id="backButton" class="control-btn">Back (B)</button>
+    </div>
+
+    <div class="instructions">
+        <h3>How to Play</h3>
+        <ul>
+            <li>Use arrow keys to move the green player</li>
+            <li>Collect blue numbers that add up to the target sum</li>
+            <li>You must reach the exact target sum before reaching the goal</li>
+            <li>Avoid the black walls</li>
+            <li>Try to reach the goal in as few moves as possible</li>
+            <li>Press 'New Game' to start over</li>
+            <li>Press 'c' or 'C' to clear the current path</li>
+            <li>Press 'b' or 'B' or click Back to backtrack one step</li>
+            <li>Warning: This is an extremely challenging maze!</li>
+        </ul>
+    </div>
+
+    <div id="winMessage" class="win-message">
+        You won in <span id="finalMoves">0</span> moves with a sum of <span id="finalSum">0</span>! Click New Game to play again.
+    </div>
+</div>
+
+<script>
+class MazeGame {
+    constructor() {
+        this.difficulty = document.getElementById('difficulty').value;
+        this.setDifficultyParams();
+        this.maze = [];
+        this.numbers = [];
+        this.playerPos = { x: 1, y: 1 };
+        this.goalPos = { x: this.width - 2, y: this.height - 2 };
+        this.moves = 0;
+        this.gameWon = false;
+        this.currentSum = 0;
+        this.targetSum = 0;
+        this.collectedNumbers = new Set();
+        this.visitedCells = new Set();
+        this.currentPath = new Set();
+        this.moveHistory = [];
+        this.collectedNumbersHistory = [];
+        this.currentSumHistory = [];
+        
+        this.initMaze();
+        this.generateMaze();
+        this.placeNumbers();
+        this.addToPath(this.playerPos.x, this.playerPos.y);
+        this.render();
+        this.setupEventListeners();
+    }
+    
+    setDifficultyParams() {
+        switch(this.difficulty) {
+            case 'extreme':
+                this.width = 31;
+                this.height = 31;
+                this.numberCount = 8;
+                this.maxNumber = 12;
+                break;
+            case 'nightmare':
+                this.width = 35;
+                this.height = 35;
+                this.numberCount = 10;
+                this.maxNumber = 15;
+                break;
+            default: // hard
+                this.width = 25;
+                this.height = 25;
+                this.numberCount = 6;
+                this.maxNumber = 9;
+        }
+    }
+    
+    initMaze() {
+        // Initialize maze with walls
+        for (let y = 0; y < this.height; y++) {
+            this.maze[y] = [];
+            for (let x = 0; x < this.width; x++) {
+                this.maze[y][x] = 1; // 1 represents wall
+            }
+        }
+    }
+    
+    generateMaze() {
+        const stack = [];
+        const start = { x: 1, y: 1 };
+        
+        // Create a path from start
+        this.maze[start.y][start.x] = 0;
+        stack.push(start);
+        
+        while (stack.length > 0) {
+            const current = stack[stack.length - 1];
+            const neighbors = this.getUnvisitedNeighbors(current);
+            
+            if (neighbors.length === 0) {
+                // Add more dead ends
+                if (Math.random() < 0.3) {
+                    const deadEnd = this.createDeadEnd(current);
+                    if (deadEnd) stack.push(deadEnd);
+                }
+                stack.pop();
+                continue;
+            }
+            
+            const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+            
+            // Remove wall between current and next
+            this.maze[next.y][next.x] = 0;
+            this.maze[current.y + Math.floor((next.y - current.y) / 2)]
+                     [current.x + Math.floor((next.x - current.x) / 2)] = 0;
+            
+            stack.push(next);
+        }
+        
+        // Ensure path to goal exists but make it longer
+        this.createLongerPathToGoal();
+    }
+    
+    createDeadEnd(pos) {
+        const directions = [
+            { dx: 2, dy: 0 },
+            { dx: -2, dy: 0 },
+            { dx: 0, dy: 2 },
+            { dx: 0, dy: -2 }
+        ];
+        
+        for (const dir of directions) {
+            const newX = pos.x + dir.dx * 2;
+            const newY = pos.y + dir.dy * 2;
+            
+            if (newX > 0 && newX < this.width - 1 && 
+                newY > 0 && newY < this.height - 1 && 
+                this.maze[newY][newX] === 1) {
+                
+                this.maze[newY][newX] = 0;
+                this.maze[pos.y + dir.dy][pos.x + dir.dx] = 0;
+                return { x: newX, y: newY };
+            }
+        }
+        return null;
+    }
+    
+    createLongerPathToGoal() {
+        // Create a winding path to the goal
+        let x = this.width - 2;
+        let y = this.height - 2;
+        
+        this.maze[y][x] = 0; // Set goal position
+        
+        while (x > 1 || y > 1) {
+            // Randomly choose direction (prefer moving away from goal)
+            const goHorizontal = Math.random() < 0.6;
+            
+            if (goHorizontal && x > 1) {
+                this.maze[y][x-1] = 0;
+                x -= 2;
+            } else if (y > 1) {
+                this.maze[y-1][x] = 0;
+                y -= 2;
+            }
+            
+            // Add some random turns to make it more complex
+            if (Math.random() < 0.3) {
+                const dx = Math.random() < 0.5 ? 2 : -2;
+                const dy = Math.random() < 0.5 ? 2 : -2;
+                
+                if (x + dx > 0 && x + dx < this.width - 1) {
+                    this.maze[y][x+dx/2] = 0;
+                    x += dx;
+                }
+                if (y + dy > 0 && y + dy < this.height - 1) {
+                    this.maze[y+dy/2][x] = 0;
+                    y += dy;
+                }
+            }
+        }
+    }
+    
+    getUnvisitedNeighbors(pos) {
+        const neighbors = [];
+        const directions = [
+            { dx: 2, dy: 0 },  // right
+            { dx: -2, dy: 0 }, // left
+            { dx: 0, dy: 2 },  // down
+            { dx: 0, dy: -2 }  // up
+        ];
+        
+        // Shuffle directions for more randomness
+        directions.sort(() => Math.random() - 0.5);
+        
+        for (const dir of directions) {
+            const newX = pos.x + dir.dx;
+            const newY = pos.y + dir.dy;
+            
+            if (newX > 0 && newX < this.width - 1 && 
+                newY > 0 && newY < this.height - 1 && 
+                this.maze[newY][newX] === 1) {
+                neighbors.push({ x: newX, y: newY });
+            }
+        }
+        
+        return neighbors;
+    }
+    
+    placeNumbers() {
+        this.numbers = [];
+        this.currentSum = 0;
+        this.collectedNumbers.clear();
+        
+        // Create array of available positions (empty cells)
+        const availablePositions = [];
+        for (let y = 1; y < this.height - 1; y++) {
+            for (let x = 1; x < this.width - 1; x++) {
+                if (this.maze[y][x] === 0 && 
+                    !(x === this.playerPos.x && y === this.playerPos.y) && 
+                    !(x === this.goalPos.x && y === this.goalPos.y)) {
+                    availablePositions.push({x, y});
+                }
+            }
+        }
+
+        // Shuffle available positions
+        for (let i = availablePositions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [availablePositions[i], availablePositions[j]] = [availablePositions[j], availablePositions[i]];
+        }
+
+        // Place numbers and calculate target sum
+        this.targetSum = 0;
+        for (let i = 0; i < this.numberCount; i++) {
+            if (availablePositions.length === 0) break;
+            
+            const pos = availablePositions.pop();
+            const number = Math.floor(Math.random() * this.maxNumber) + 1;
+            this.numbers.push({x: pos.x, y: pos.y, value: number});
+            
+            // Add some numbers to target sum (not all, to make it more challenging)
+            if (Math.random() < 0.7) {
+                this.targetSum += number;
+            }
+        }
+
+        // Update display
+        document.getElementById('targetSum').textContent = this.targetSum;
+        document.getElementById('currentSum').textContent = this.currentSum;
+    }
+    
+    render() {
+        const mazeElement = document.getElementById('maze');
+        mazeElement.innerHTML = '';
+        
+        mazeElement.style.gridTemplateColumns = `repeat(${this.width}, 20px)`;
+        mazeElement.style.gridTemplateRows = `repeat(${this.height}, 20px)`;
+        
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                const key = `${x},${y}`;
+                
+                if (this.maze[y][x] === 1) {
+                    cell.classList.add('wall');
+                } else if (this.visitedCells.has(key)) {
+                    cell.classList.add('visited');
+                    if (this.currentPath.has(key)) {
+                        cell.classList.add('current-path');
+                    }
+                }
+                
+                // Render numbers
+                const number = this.numbers.find(n => n.x === x && n.y === y);
+                if (number) {
+                    cell.classList.add('number');
+                    if (this.collectedNumbers.has(`${x},${y}`)) {
+                        cell.classList.add('collected');
+                    }
+                    cell.textContent = number.value;
+                }
+                
+                if (x === this.playerPos.x && y === this.playerPos.y) {
+                    const player = document.createElement('div');
+                    player.className = 'player';
+                    cell.appendChild(player);
+                }
+                
+                if (x === this.goalPos.x && y === this.goalPos.y) {
+                    const goal = document.createElement('div');
+                    goal.className = 'goal';
+                    cell.appendChild(goal);
+                }
+                
+                mazeElement.appendChild(cell);
+            }
+        }
+        
+        document.getElementById('moves').textContent = this.moves;
+        document.getElementById('currentSum').textContent = this.currentSum;
+    }
+    
+    addToPath(x, y) {
+        const key = `${x},${y}`;
+        this.visitedCells.add(key);
+        this.currentPath.add(key);
+    }
+
+    clearCurrentPath() {
+        this.currentPath.clear();
+        this.addToPath(this.playerPos.x, this.playerPos.y);
+        this.render();
+    }
+
+    moveBack() {
+        if (this.gameWon || this.moveHistory.length === 0) return;
+
+        // Restore previous position
+        const previousPos = this.moveHistory.pop();
+        this.playerPos = previousPos;
+        
+        // Remove current position from path
+        const key = `${this.playerPos.x},${this.playerPos.y}`;
+        this.currentPath.add(key);
+        
+        // Restore previous sum and collected numbers state
+        if (this.collectedNumbersHistory.length > 0) {
+            this.collectedNumbers = new Set(this.collectedNumbersHistory.pop());
+            this.currentSum = this.currentSumHistory.pop();
+        }
+        
+        this.moves++;
+        this.render();
+    }
+
+    movePlayer(dx, dy) {
+        if (this.gameWon) return;
+        
+        const newX = this.playerPos.x + dx;
+        const newY = this.playerPos.y + dy;
+        
+        if (newX >= 0 && newX < this.width && 
+            newY >= 0 && newY < this.height && 
+            this.maze[newY][newX] === 0) {
+            
+            // Save current state before moving
+            this.moveHistory.push({...this.playerPos});
+            this.collectedNumbersHistory.push([...this.collectedNumbers]);
+            this.currentSumHistory.push(this.currentSum);
+            
+            this.playerPos.x = newX;
+            this.playerPos.y = newY;
+            this.moves++;
+            
+            // Add new position to path
+            this.addToPath(newX, newY);
+            
+            // Check if player collected a number
+            const numberIndex = this.numbers.findIndex(n => 
+                n.x === newX && n.y === newY && !this.collectedNumbers.has(`${newX},${newY}`));
+            
+            if (numberIndex !== -1) {
+                this.currentSum += this.numbers[numberIndex].value;
+                this.collectedNumbers.add(`${newX},${newY}`);
+            }
+            
+            // Check if player reached goal with correct sum
+            if (newX === this.goalPos.x && newY === this.goalPos.y) {
+                if (this.currentSum === this.targetSum) {
+                    this.gameWon = true;
+                    document.getElementById('finalMoves').textContent = this.moves;
+                    document.getElementById('finalSum').textContent = this.currentSum;
+                    document.getElementById('winMessage').style.display = 'block';
+                } else {
+                    // Move player back if sum is not correct
+                    this.moveBack();
+                    alert('You need to collect numbers that sum to exactly ' + this.targetSum + ' before reaching the goal!');
+                }
+            }
+            
+            this.render();
+        }
+    }
+    
+    setupEventListeners() {
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowUp':
+                    this.movePlayer(0, -1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowDown':
+                    this.movePlayer(0, 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowLeft':
+                    this.movePlayer(-1, 0);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    this.movePlayer(1, 0);
+                    e.preventDefault();
+                    break;
+                case 'c':
+                case 'C':
+                    this.clearCurrentPath();
+                    e.preventDefault();
+                    break;
+                case 'b':
+                case 'B':
+                    this.moveBack();
+                    e.preventDefault();
+                    break;
+            }
+        });
+        
+        document.getElementById('newGame').addEventListener('click', () => {
+            this.resetGame();
+        });
+
+        document.getElementById('backButton').addEventListener('click', () => {
+            this.moveBack();
+        });
+        
+        document.getElementById('difficulty').addEventListener('change', (e) => {
+            this.difficulty = e.target.value;
+            this.resetGame();
+        });
+    }
+    
+    resetGame() {
+        this.setDifficultyParams();
+        this.playerPos = { x: 1, y: 1 };
+        this.goalPos = { x: this.width - 2, y: this.height - 2 };
+        this.moves = 0;
+        this.gameWon = false;
+        this.currentSum = 0;
+        this.collectedNumbers.clear();
+        this.visitedCells.clear();
+        this.currentPath.clear();
+        this.moveHistory = [];
+        this.collectedNumbersHistory = [];
+        this.currentSumHistory = [];
+        document.getElementById('winMessage').style.display = 'none';
+        
+        this.initMaze();
+        this.generateMaze();
+        this.placeNumbers();
+        this.addToPath(this.playerPos.x, this.playerPos.y);
+        this.render();
+    }
+}
+
+// Start the game when the page loads
+window.addEventListener('load', () => {
+    window.game = new MazeGame();
+});
+</script>
+
+        </div>
+    </div>
+</body>
+</html> 

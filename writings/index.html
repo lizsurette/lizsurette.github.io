@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<article class="post">
+    <header class="page-header">
+        <h1></h1>
+    </header>
+
+    <div class="post-content">
+        <div class="search-section">
+            <div class="search" id="js-writings-search">
+                <div class="search-input-wrapper">
+                    <i class="fa fa-search search-icon"></i>
+                    <input type="text" placeholder="Search my writings..." class="search__input form-control" id="js-writings-search__input">
+                </div>
+                <ul class="search__results" id="js-writings-search__results"></ul>
+            </div>
+        </div>
+
+        <ul class="posts" id="posts-list">
+            
+                <li class="post-item" data-title="&#34;Running an Example Node.js Kubernetes Application with the Developer Sandbox for Red Hat OpenShift&#34;" data-date="April 01, 2021" data-path="example-kubernetes-on-openshift-sandbox">
+                    <i><span>April 01, 2021</span></i> &raquo; 
+                    
+                        <a href="/posts/example-kubernetes-on-openshift-sandbox/">&#34;Running an Example Node.js Kubernetes Application with the Developer Sandbox for Red Hat OpenShift&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;Hello Again, World&#34;" data-date="March 17, 2021" data-path="hello-world">
+                    <i><span>March 17, 2021</span></i> &raquo; 
+                    
+                        <a href="/posts/hello-world/">&#34;Hello Again, World&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit&#34;" data-date="August 05, 2015" data-path="ovirt-dashboard-findings">
+                    <i><span>August 05, 2015</span></i> &raquo; 
+                    
+                        <a href="/posts/ovirt-dashboard-findings/">&#34;Findings from Reviewing the oVirt Overall Dashboard Concept at Red Hat Summit&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;A fresh look for the oVirt Administrator Portal Dashboard&#34;" data-date="June 18, 2015" data-path="fresh-look-oVirt-admin-portal">
+                    <i><span>June 18, 2015</span></i> &raquo; 
+                    
+                        <a href="/posts/fresh-look-oVirt-admin-portal/">&#34;A fresh look for the oVirt Administrator Portal Dashboard&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: Streamlining the Install of OpenStack with the RDO Manager UI&#34;" data-date="June 10, 2015" data-path="streamlining-openstack-install">
+                    <i><span>June 10, 2015</span></i> &raquo; 
+                    
+                        <a href="/posts/streamlining-openstack-install/">&#34;The OpenStack Years: Streamlining the Install of OpenStack with the RDO Manager UI&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: Moving forward as a User Experience Team in the OpenStack Juno release cycle&#34;" data-date="June 13, 2014" data-path="moving-forward-in-juno">
+                    <i><span>June 13, 2014</span></i> &raquo; 
+                    
+                        <a href="/posts/moving-forward-in-juno/">&#34;The OpenStack Years: Moving forward as a User Experience Team in the OpenStack Juno release cycle&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: An explosion of User Experience discussions at the OpenStack Juno Summit&#34;" data-date="May 06, 2014" data-path="explosion-ux-juno-summit">
+                    <i><span>May 06, 2014</span></i> &raquo; 
+                    
+                        <a href="/posts/explosion-ux-juno-summit/">&#34;The OpenStack Years: An explosion of User Experience discussions at the OpenStack Juno Summit&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: Running a Baseline Usability Test on Horizon&#34;" data-date="March 25, 2014" data-path="horizon-baseline-usability-test">
+                    <i><span>March 25, 2014</span></i> &raquo; 
+                    
+                        <a href="/posts/horizon-baseline-usability-test/">&#34;The OpenStack Years: Running a Baseline Usability Test on Horizon&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: How does Horizon Stack up versus other Cloud Computing UIs?&#34;" data-date="February 21, 2014" data-path="horizon-vs-others">
+                    <i><span>February 21, 2014</span></i> &raquo; 
+                    
+                        <a href="/posts/horizon-vs-others/">&#34;The OpenStack Years: How does Horizon Stack up versus other Cloud Computing UIs?&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: Maturing the Horizon Overview Page Part 2 - Interaction Design&#34;" data-date="January 30, 2014" data-path="maturing-horizon-overview-part-2">
+                    <i><span>January 30, 2014</span></i> &raquo; 
+                    
+                        <a href="/posts/maturing-horizon-overview-part-2/">&#34;The OpenStack Years: Maturing the Horizon Overview Page Part 2 - Interaction Design&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: Maturing the Horizon Overview Page Part 1 - Understanding the User&#34;" data-date="January 27, 2014" data-path="maturing-horizon-overview-part-1">
+                    <i><span>January 27, 2014</span></i> &raquo; 
+                    
+                        <a href="/posts/maturing-horizon-overview-part-1/">&#34;The OpenStack Years: Maturing the Horizon Overview Page Part 1 - Understanding the User&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: Which groups in OpenStack do User Experience designers influence today?&#34;" data-date="December 16, 2013" data-path="openstack-user-experience-influence">
+                    <i><span>December 16, 2013</span></i> &raquo; 
+                    
+                        <a href="/posts/openstack-user-experience-influence/">&#34;The OpenStack Years: Which groups in OpenStack do User Experience designers influence today?&#34;</a>
+                    
+                </li>
+            
+                <li class="post-item" data-title="&#34;The OpenStack Years: Why a blog?&#34;" data-date="December 12, 2013" data-path="openstack-an-introduction">
+                    <i><span>December 12, 2013</span></i> &raquo; 
+                    
+                        <a href="/posts/openstack-an-introduction/">&#34;The OpenStack Years: Why a blog?&#34;</a>
+                    
+                </li>
+            
+        </ul>
+    </div>
+</article>
+
+<style>
+.search-section {
+    margin-bottom: 2em;
+}
+.search-section .search {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.search-icon {
+    position: absolute;
+    left: 10px;
+    color: #666;
+}
+.search__input {
+    padding-left: 35px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    height: 40px;
+    width: 100%;
+    font-size: 16px;
+}
+.search__input:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 2px rgba(0,102,204,0.2);
+}
+.search__results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 5px;
+    padding: 0;
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+}
+.search__results.active {
+    display: block;
+}
+.search__results li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+.search__results li:last-child {
+    border-bottom: none;
+}
+.search__results li:hover {
+    background-color: #f5f5f5;
+}
+.posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.post-item {
+    padding-bottom: 2px;
+    border-bottom: 1px solid #eee;
+}
+.post-item:last-child {
+    border-bottom: none;
+}
+.post-item i {
+    color: #666;
+    font-style: normal;
+    margin-right: 0.5em;
+}
+.post-item a {
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.post-item a:hover {
+    color: #004499;
+    text-decoration: underline;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('js-writings-search__input');
+    const searchResults = document.getElementById('js-writings-search__results');
+    const postsList = document.getElementById('posts-list');
+    const postItems = postsList.getElementsByClassName('post-item');
+    
+    // Store original posts list with their original HTML
+    const originalPosts = Array.from(postItems).map(post => ({
+        element: post,
+        html: post.outerHTML
+    }));
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        // Clear previous results
+        searchResults.innerHTML = '';
+        postsList.innerHTML = '';
+        
+        if (searchTerm === '') {
+            // If search is empty, show all posts
+            originalPosts.forEach(post => {
+                postsList.insertAdjacentHTML('beforeend', post.html);
+            });
+            searchResults.classList.remove('active');
+            return;
+        }
+        
+        // Filter posts
+        const filteredPosts = originalPosts.filter(post => {
+            const title = post.element.getAttribute('data-title').toLowerCase();
+            const date = post.element.getAttribute('data-date').toLowerCase();
+            return title.includes(searchTerm) || date.includes(searchTerm);
+        });
+        
+        // Show filtered posts
+        filteredPosts.forEach(post => {
+            postsList.insertAdjacentHTML('beforeend', post.html);
+        });
+        
+        // Show search results
+        if (filteredPosts.length > 0) {
+            searchResults.classList.add('active');
+            filteredPosts.forEach(post => {
+                const li = document.createElement('li');
+                li.innerHTML = post.html;
+                li.addEventListener('click', function() {
+                    const link = this.querySelector('a');
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                });
+                searchResults.appendChild(li);
+            });
+        } else {
+            searchResults.classList.remove('active');
+        }
+    });
+    
+    // Close search results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchResults.contains(e.target) && e.target !== searchInput) {
+            searchResults.classList.remove('active');
+        }
+    });
+});
+</script>
+
+        </div>
+    </div>
+</body>
+</html> 

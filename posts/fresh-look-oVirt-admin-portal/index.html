@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#34;A fresh look for the oVirt Administrator Portal Dashboard&#34;</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">&#34;A fresh look for the oVirt Administrator Portal Dashboard&#34;</h1>
+        <div class="post-meta">
+            <span class="post-date">June 18, 2015</span>
+            
+        </div>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <blockquote>
+<p><em>This was originally written and shared on June 18, 2015 when I was working with the oVirt Community.</em></p>
+</blockquote>
+<hr />
+<p>In the next major release of <a href="http://www.ovirt.org/Home">oVirt</a>, we have been putting some thought into updating the Dashboard for the Administrator Portal. The goal for this update would be to allow admins to quickly glance at the state of their environment, see the metrics that are most important to them, and then jump off to dig even deeper from there.</p>
+<p>The first step in our design efforts was to research what exists today in the oVirt Administrator Portal as well as other virtualization administration UIs out there and decide which of this information might make sense to surface on a dashboard. We did an initial mock-up based on this research so that we could show people and get some first glance reactions.<br />
+<img alt="oVirt Dashboard 1" src="/static/img/_posts/ovirt-dashboard-1.png" /></p>
+<p>After running this initial mockup by a few people who know the virtualization space well, we put together and sent out a <a href="https://docs.google.com/forms/d/1nGMgjHeWszisxWAuiV5eCahW_-OK_ytIiCpwEx_gFQE/viewform">survey</a> to the oVirt community <a href="https://twitter.com/ovirt/status/601452731493011456">asking for feedback</a> from any and all administrators on what they’d like to see on a dashboard.</p>
+<p>After excellent feedback in both areas, we were able to bring everything together that we’d learned and landed on a more polished first cut of what the oVirt.next Administrator Portal Dashboard could look like.<br />
+<img alt="oVirt Dashboard 2" src="/static/img/_posts/ovirt-dashboard-2.png" /></p>
+<p>We are still looking to gather feedback on the first round of this dashboard design. Please feel free to leave your thoughts in a comment below. Are you going to be attending <a href="http://www.redhat.com/summit/">Red Hat Summit</a> this year? Stop by the oVirt booth in Community Central on Wednesday or Thursday if you want to take a closer look and give your feedback in person. We are working on a few other concepts that we will be sharing there as well, so come help shape the future direction of the oVirt Administrator Portal!</p>
+<p>Thanks,<br />
+Liz</p>
+    </div>
+    
+    <div class="post-navigation">
+        <div class="back-link">
+            <a href="/writings/">&laquo; Back to Writings</a>
+        </div>
+        
+        <div class="post-pagination">
+            
+            
+            
+        </div>
+    </div>
+</article>
+
+        </div>
+    </div>
+</body>
+</html> 

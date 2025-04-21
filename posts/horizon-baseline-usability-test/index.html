@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#34;The OpenStack Years: Running a Baseline Usability Test on Horizon&#34;</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">&#34;The OpenStack Years: Running a Baseline Usability Test on Horizon&#34;</h1>
+        <div class="post-meta">
+            <span class="post-date">March 25, 2014</span>
+            
+        </div>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <blockquote>
+<p><em>This was originally written and shared on March 25, 2014 when I was working daily with the OpenStack Community.</em></p>
+</blockquote>
+<hr />
+<p>Over the last few months, I’ve been working with a group of folks from multiple companies on doing research around <a href="https://wiki.openstack.org/wiki/Personas#The_OpenStack_Personas_Working_Group">building a set of Personas</a> to present at the Atlanta Summit. In one of our first meetings, we talked about the need to do some <a href="http://en.wikipedia.org/wiki/Usability_testing">usability testing</a> as a separate effort from the Persona research. Earlier this month, a few of the folks from HP mentioned that they were hoping to run a usability test on the most recent (Icehouse) version of Horizon. This would be the first usability test within the community that I’m aware of and I was super excited that they were willing to let those of us interested to be a part of this testing effort.</p>
+<p>The decision was made to focus this first round of testing on self-service end users of Horizon and write tasks for our participants to perform based on typical tasks these types of users often perform. NOTE: We would like to do more and more usability testing and continue to include other types of users and tasks.</p>
+<p>We started out by putting together a <a href="https://www.surveymonkey.com/s/R8QZ2RB">screener</a> to be sure that we got the correct people to test. Here's a quick look at the questions that we asked:</p>
+<blockquote>
+<ol>
+<li>What company do your work for?</li>
+<li>How many people work for your organization worldwide? Please take into account all branches and locations.</li>
+<li>What is the primary business or industry of your company?</li>
+<li>What is your job title?</li>
+<li>What is your primary job role?</li>
+<li>How many years have you performed system administration and/or network management/administration?</li>
+<li>Do your PRIMARY job responsibilities include any of the following?</li>
+<li>Do you manage or use cloud services?</li>
+<li>Please select the cloud service providers and technologies that you have good working knowledge of.</li>
+<li>Which of the following administration tasks do you perform at least once a month?</li>
+<li>In your daily software use as an IT professional, what percent of your time do you use?</li>
+<li>Does your IT department currently offer cloud computing services at you company?</li>
+<li>How many virtual servers are there in your server environment?</li>
+<li>Who owns the servers in your company?</li>
+<li>Please provide your email so we can potentially contact you for a study.</li>
+<li>Please provide your first and last name.</li>
+<li>Would you like us to consider you for other OpenStack community studies?</li>
+</ol>
+</blockquote>
+<p>This is one of the most important pieces to doing a usability test. It’s really important to be sure to test the users on tasks that they would actually perform in their daily work so that you get the best results possible. We kept the screener nice and short so that folks didn’t feel overwhelmed and could respond to the survey in just a few minutes. We actually ended up getting a really great response from the community mailing lists and LinkedIn on the screener. It was very encouraging as responses of people interested in participating in the testing started to flow in.</p>
+<p>As we sifted through the screener results, we took some time to write up the scenarios and tasks that each participant would go through. We made sure to list these in priority order since depending on time, we might not be able to get to each task with all of our users. Here’s a list of what the users would be doing during the testing:</p>
+<blockquote>
+<p><strong>Scenario 1: Launching an instance</strong><br />
+- Individual Tasks:<br />
+  - Create a security key pair.<br />
+  - Create a network.<br />
+  - Boot from cirros image.<br />
+  - Confirm that instance was launched successfully.</p>
+<p><strong>Scenario 2: Understand how many vCPUs are currently in use vs. how much quota is left.</strong><br />
+- Individual Tasks:<br />
+  - Check out Overview Page to review current quota use/limit details.</p>
+<p><strong>Scenario 3: Take a snapshot of an Instance to save for later use.</strong><br />
+- Individual Tasks:<br />
+  - Either Launch an instance successfully, or identify a running instance in the instance view.<br />
+  - Choose to take a snapshot of that instance.<br />
+  - Confirm that the snapshot was successful.</p>
+<p><strong>Scenario 4: Launch an instance from a snapshot.</strong><br />
+- Individual Tasks:<br />
+  - Choose to either create an instance and boot from a snapshot, or identify a snapshot to create an instance from.<br />
+  - Confirm that the instance was started successfully.</p>
+<p><strong>Scenario 5: Launch an instance that boots from a specific volume.</strong><br />
+- Individual Tasks:<br />
+  - Create a volume.<br />
+  - Launch an instance using Volume X as a boot source.</p>
+</blockquote>
+<p>At this point, we were pretty much ready to run the tests. HP had a system running the latest and greatest version of Horizon that our users could access, it was just a matter of scheduling some time with a few of the people who responded to the screener. Scheduling can sometimes take a fair amount of time, but these users were extremely quick to respond. I wondered if that’s just the way it is with testing passionate open source software users.</p>
+<p>We didn’t record the testing, since we wanted to be sure that the identity of the participants was protected, but we did take a ton of notes during each of the tests to be sure we captured everything that went on both good and bad. Since there were a few of us who wanted to observe the testing and one person running the test, we used online meeting software in order to share the screen and audio during the test. We had a few hiccups with audio quality and definitely have areas that we could improve on for the next round of testing, but for a first test we got some awesome results.</p>
+<p>Throughout the testing, we found that the majority of the hour that we had with participants was taken up by the first task. This isn’t necessarily a bad thing, especially for a first time test within the community. There were a lot of findings that came out of “Launching your first Instance" since it is fairly broad and hit a lot of pieces of the UI. We did get to go through a few of the other scenarios with a few users as well for additional findings, but here's where we ended up with the list of improvements that we can make:</p>
+<blockquote>
+<p><strong>High Priority</strong><br />
+* Improve error messages and error message catalog.<br />
+* Fix Launch Instance workflow for end user and power user.<br />
+* Improve informational help information about form fields.<br />
+* Fix terminology. (e.g. launch instance, boot, shutoff, shutdown, etc.)<br />
+* Show details for key pair and network in Launch Instance workflow.<br />
+* Recommend a new Information Architecture.</p>
+<p><strong>Medium Priority</strong><br />
+* Create UI guidelines (of best practices) for Developers to use.<br />
+* Improve Online Help.<br />
+* Provide clearer indication the application is working after clicking a button and the application doesn’t respond immediately.<br />
+* Ensure consistency of network selection. (Drag and drop of networks very inconsistent from the other pieces of the launch instance modal)<br />
+* Create consistency of visualizations and section of action button recommendations on Instance table.<br />
+* Suggest defaults for the forms entry fields.<br />
+* Provide Image information details during image selection.</p>
+<p><strong>Low Priority</strong><br />
+* Allow users to edit the network an instance after launching instance.<br />
+* Resolve confusion around the split inline actions button.<br />
+* Explain what the Instance Boot Source field in Create Instance modal.<br />
+* Provide description/high level information about flavors for flavor selection.<br />
+* Make sorting clearer visually.<br />
+* Provide solution for subnet checkbox to improve usability.</p>
+<p><strong>Nice to Have</strong><br />
+* Provide "Save as Draft" option in the wizard.<br />
+* Change security group default name to "Default security group".</p>
+</blockquote>
+<p>Now that we’ve gathered a lot of great data, we will be focusing on how to make improvements to Horizon based initially on the high priority findings. This includes logging bugs and registering blueprints within Launchpad (both in the <a href="https://launchpad.net/horizon">Horizon</a> and <a href="https://launchpad.net/openstack-ux">User Experience</a> spaces). The current plan is to come up with some proposal designs and have a <a href="http://summit.openstack.org/cfp/details/32">design session</a> at the Atlanta Summit to create a plan for next steps on making sure Juno releases with features and improved functionality in Horizon that is important to our OpenStack users.</p>
+    </div>
+    
+    <div class="post-navigation">
+        <div class="back-link">
+            <a href="/writings/">&laquo; Back to Writings</a>
+        </div>
+        
+        <div class="post-pagination">
+            
+            
+            
+        </div>
+    </div>
+</article>
+
+        </div>
+    </div>
+</body>
+</html> 

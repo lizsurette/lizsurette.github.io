@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#34;The OpenStack Years: Maturing the Horizon Overview Page Part 1 - Understanding the User&#34;</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/projects.js"></script>
+    
+    <script>
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.main-nav a');
+            
+            // Get the base path for the site (for GitHub Pages)
+            const basePath = window.location.pathname.includes('/lizsurette.github.io') 
+                ? '/lizsurette.github.io' 
+                : '';
+            
+            // List of game routes
+            const gameRoutes = [
+                '/snake/', '/hangman/', '/strands/', '/maze/', 
+                '/bubble-shooter/', '/survival/', '/sudoku/', '/gem-miner/',
+                '/factory/'
+            ];
+            
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                
+                // Handle relative paths
+                let normalizedLinkPath = linkPath;
+                if (linkPath.startsWith('../')) {
+                    // Count the number of '../' to determine the relative path
+                    const depth = (linkPath.match(/\.\.\//g) || []).length;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    normalizedLinkPath = '/' + pathParts.slice(0, pathParts.length - depth).join('/');
+                }
+                
+                // Check if this is the active link
+                if (currentPath === normalizedLinkPath || 
+                    (currentPath.startsWith(normalizedLinkPath + '/') && normalizedLinkPath !== '/')) {
+                    link.classList.add('active');
+                }
+                
+                // Special case for home page
+                if (normalizedLinkPath === '/' && currentPath === basePath + '/') {
+                    link.classList.add('active');
+                }
+                
+                // Special case for games - highlight Games nav item when on any game page
+                if (normalizedLinkPath === '/games' && 
+                    (currentPath.includes('/games/') || gameRoutes.some(route => currentPath === route))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="about">
+                <!-- Social links removed from here -->
+            </div>
+            <hr>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">About Me</a></li>
+                    <li><a href="/writings/">Writings</a></li>
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/apps">Apps</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content">
+            
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">&#34;The OpenStack Years: Maturing the Horizon Overview Page Part 1 - Understanding the User&#34;</h1>
+        <div class="post-meta">
+            <span class="post-date">January 27, 2014</span>
+            
+        </div>
+        <hr />
+    </header>
+
+    <div class="post-content">
+        <blockquote>
+<p><em>This was originally written and shared on January 27, 2014 when I was working daily with the OpenStack Community.</em></p>
+</blockquote>
+<hr />
+<p>Let's take a quick look at the current (Havana) Horizon Overview page:<br />
+<img alt="Havana Horizon Overview" src="/static/img/_posts/current-horizon-overview-page.png" /></p>
+<p>Upon login, non-administrator users are taken to the Project Overview page within <a href="http://docs.openstack.org/developer/horizon/">Horizon</a>. Here the user can see a basic set of information about the number of instances, VCPUs, RAM, Floating IPs, and Security Groups that are currently in use in their environment along with the quota that they are allowed. There is also a table that lets the user view the running instances along with a usage summary for the instances shown. The user has the opportunity to filter this table by date range when needed. While this information might cover certain use cases, my colleague <a href="https://plus.google.com/105626042354015503324/posts">Ju Lim</a> and I wanted to take a step back from the current Overview page and think through the type of information that this user of Horizon would want to see when they first log in.</p>
+<p>Now before I go on, this is when <a href="http://en.wikipedia.org/wiki/Persona_(user_experience)">Personas</a> could have <em>REALLY</em>  helped us. Unfortunately, we hadn't gotten far enough along with our Persona work within OpenStack to use them, so we had to rely on what we knew from past projects we've worked on as well as the data we had from the set of users we had talked to about how they currently use OpenStack. In the coming months, I'll share the work that we are starting to do in the Persona space, but for now I'd like to note that we plan to revisit these requirements once we have some great Persona data so that we are sure that these completely meet end users needs.</p>
+<p>After reviewing the current state of the Horizon Project Overview page, Ju and I started to brainstorm on how we might improve this page for end users. The goal of this effort was to take this page to the next level of maturity. The big questions that we needed to answer were:<br />
+1. Who is the main end user of this page?<br />
+2. What does this user want and need to see at an Overview level?</p>
+<p>Without Personas, we started off by defining the main responsibilities and objectives of the Consumer, the end user of the Overview page:</p>
+<blockquote>
+<p>As a Consumer, I need to understand the usage of the resources I consume within each project. Due to this, I am concerned with getting a bird’s eye view to the resources within my project. I want to monitor usage data over time so that I can optimize the utilization of my resources.</p>
+<p>My responsibilities/objectives:<br />
+1. I'm interested in monitoring usage for the projects that I manage:<br />
+  - I want to be able to see usage vs. quota limit.<br />
+  - I'd like to be able to drill-down in order to view more details.<br />
+  - I need to be able to troubleshoot an alert to identify root cause.<br />
+  - I want to analyze usage levels and trends to see if the resource is running out of capacity<br />
+2. I'm responsible for managing resources within my project:<br />
+  - I can have access to one or more projects but currently have no ability to see an overview page with multiple projects.  I can only switch between projects.<br />
+  - I interact with project images (create, rename, delete).<br />
+  - I launch and terminate instances.<br />
+  - I attach and detach network interfaces.<br />
+  - I associate and unassociate Floating IP addresses.<br />
+  - I manage key pairs (as needed for object storage).</p>
+</blockquote>
+<p>After gathering a better understanding of what the primary user looking at the Overview page wants to do, it was important for us to stay focused on the word Overview. As we talked about all of the information that we could <i>potentially</i> show, we kept a list. Of course, we needed to make sure we kept ourselves honest and took a look through the metrics that are <a href="http://docs.openstack.org/developer/ceilometer/measurements.html">available in Ceilometer today</a>. Here is the list of important metrics that we came up with:</p>
+<blockquote>
+<ul>
+<li>Instances</li>
+<li>Public Images</li>
+<li>Private Images</li>
+<li>vCores</li>
+<li>vCPUs</li>
+<li>Memory usage</li>
+<li>Ephemeral storage capacity</li>
+<li>Duration of the ephemeral storage</li>
+<li>Object storage capacity</li>
+<li>Objects</li>
+<li>Average object size</li>
+<li>Containers</li>
+<li>Key Pairs</li>
+<li>Block volume capacity</li>
+<li>Block volumes</li>
+<li>Snapshot capacity</li>
+<li>Snapshots</li>
+<li>Backup capacity</li>
+<li>Backups</li>
+<li>Floating IPs Mapped / Allocated</li>
+<li>Floating IPs Unmapped / Unallocated</li>
+<li>Load Balancers</li>
+<li>Security Groups</li>
+<li>Services’ Status -- globally and across region (and domain)</li>
+<li>Alerts</li>
+</ul>
+</blockquote>
+<p>We took this rough list of metrics and started to discuss each one.<br />
+1. What specifically about each would the user be interested in seeing?<br />
+2. What would the units be?<br />
+3. Is this really a piece of information that's helpful to see at an overview level?<br />
+4. Would it make more sense for the user to drill in further for this information?<br />
+5. Is this a future concept?</p>
+<p>We wanted to be sure that our current requirements are attainable. We also started to think about not only the metrics that a user would want to monitor, but what actions would a user want to be able to quickly perform from this view? After a few revisions, we ended up with a more detailed requirement list, organized by metric type:</p>
+<blockquote>
+<ol>
+<li>Summary (Count) of resources</li>
+<li>Instances and Images<ul>
+<li>Instances (used / running and available out my quota limit)</li>
+<li>Images (aka instance snapshots)</li>
+<li>Public Images</li>
+<li>Private Images</li>
+<li>vCores (used and available)</li>
+<li>vCPUs (used and available)</li>
+<li>Memory (used and available)</li>
+<li>Quick Links: Launch a new instance, Launch a new stack</li>
+</ul>
+</li>
+<li>Storage<ul>
+<li>Ephemeral</li>
+<li>Ephemeral capacity (used and available)</li>
+<li>Duration of the ephemeral storage</li>
+<li>Object</li>
+<li>Object capacity (used and available)</li>
+<li>Number of Objects</li>
+<li>Average object size</li>
+<li>Number of Containers</li>
+<li>Number of Key Pairs</li>
+<li>Quick Links: Create a container, Create a key pair</li>
+<li>Block / Persistent</li>
+<li>Block volume capacity (used / active and available)</li>
+<li>Number of Block volumes (used and available)</li>
+<li>Snapshot capacity (used and available)</li>
+<li>Number of Snapshots</li>
+<li>Backup capacity (used and available)</li>
+<li>Number of Backups</li>
+<li>Quick Links: Create a volume</li>
+</ul>
+</li>
+<li>Network</li>
+<li>Number of Floating IPs</li>
+<li>Number of Mapped / Number of Allocated&lt;</li>
+<li>Number of Unmapped / Number of Unallocated&lt;</li>
+<li>Number of Load Balancers (currently available on experimental basis)</li>
+<li>Security</li>
+<li>Number of Security Groups</li>
+<li>Health</li>
+<li>Services’ Status -- globally and across region (and domain)</li>
+<li>Alerts</li>
+<li>Number of Alerts</li>
+</ol>
+</blockquote>
+<p>There. A nice organized list of metrics that we want to design towards. Do you have any feedback on this list of requirements as it exists so far? I'm always looking to improve requirements and designs based on user feedback.</p>
+<p>Also, keep an eye out for my next post in the "Maturing the Overview page in Horizon\" series where I walk through the design phase of this effort.</p>
+<p>Best,<br />
+Liz</p>
+    </div>
+    
+    <div class="post-navigation">
+        <div class="back-link">
+            <a href="/writings/">&laquo; Back to Writings</a>
+        </div>
+        
+        <div class="post-pagination">
+            
+            
+            
+        </div>
+    </div>
+</article>
+
+        </div>
+    </div>
+</body>
+</html> 
